@@ -14,7 +14,7 @@ namespace ShockRouter
         /// <summary>
         /// The currently active source
         /// </summary>
-        private Sources currentSource;
+        private Sources currentSource = Sources.NONE;
         /// <summary>
         /// Handle of the recording stream
         /// </summary>
@@ -63,8 +63,19 @@ namespace ShockRouter
             /// <summary>
             /// Emergency output file
             /// </summary>
-            EMERGENCY
+            EMERGENCY,
+            /// <summary>
+            /// Not initialised
+            /// </summary>
+            NONE
         }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Signals that the source has been changed
+        /// </summary>
+        public event EventHandler SourceChanged;
         #endregion
 
         #region Methods
@@ -152,11 +163,19 @@ namespace ShockRouter
             }
         }
 
+        /// <summary>
+        /// Change the current source to the requested source
+        /// </summary>
+        /// <param name="source">Source to change to</param>
         private void ChangeSource(Sources source)
         {
-            if (source == Sources.STUDIO)
+            if (source == Sources.STUDIO && Source != Sources.STUDIO)
             {
                 currentSource = Sources.STUDIO;
+                if (SourceChanged != null)
+                {
+                    SourceChanged(this, new EventArgs());
+                }
             }
         }
         #endregion

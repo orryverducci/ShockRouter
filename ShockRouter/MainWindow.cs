@@ -21,6 +21,56 @@ namespace ShockRouter
             this.Font = SystemFonts.MessageBoxFont;
             // Initialise UI
             InitializeComponent();
+            // Increase font size on source buttons
+            studioButton.Font = new Font(studioButton.Font.FontFamily, 12, FontStyle.Regular);
+            chartButton.Font = new Font(chartButton.Font.FontFamily, 12, FontStyle.Regular);
+            obButton.Font = new Font(obButton.Font.FontFamily, 12, FontStyle.Regular);
+            emergencyButton.Font = new Font(emergencyButton.Font.FontFamily, 12, FontStyle.Regular);
+            // Handle router source changed event
+            router.SourceChanged += SourceChanged;
+            // Set to studio
+            router.Source = Router.Sources.STUDIO;
+        }
+
+        /// <summary>
+        /// Updates UI to show the new source
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event arguments</param>
+        private void SourceChanged(object sender, EventArgs e)
+        {
+            if (router.Source == Router.Sources.STUDIO) // If source is studio
+            {
+                // Make studio button bold
+                studioButton.Font = new Font(studioButton.Font, FontStyle.Bold);
+                chartButton.Font = new Font(chartButton.Font, FontStyle.Regular);
+                obButton.Font = new Font(obButton.Font, FontStyle.Regular);
+                emergencyButton.Font = new Font(emergencyButton.Font, FontStyle.Regular);
+            }
+            else if (router.Source == Router.Sources.SRA) // If source is chart show
+            {
+                // Make chart show button bold
+                studioButton.Font = new Font(studioButton.Font, FontStyle.Regular);
+                chartButton.Font = new Font(chartButton.Font, FontStyle.Bold);
+                obButton.Font = new Font(obButton.Font, FontStyle.Regular);
+                emergencyButton.Font = new Font(emergencyButton.Font, FontStyle.Regular);
+            }
+            else if (router.Source == Router.Sources.OB) // If source is an outside broadcast
+            {
+                // Make outside broadcast button bold
+                studioButton.Font = new Font(studioButton.Font, FontStyle.Regular);
+                chartButton.Font = new Font(chartButton.Font, FontStyle.Regular);
+                obButton.Font = new Font(obButton.Font, FontStyle.Bold);
+                emergencyButton.Font = new Font(emergencyButton.Font, FontStyle.Regular);
+            }
+            else if (router.Source == Router.Sources.EMERGENCY) // If source is the emergency output file
+            {
+                // Make emergency output button bold
+                studioButton.Font = new Font(studioButton.Font, FontStyle.Regular);
+                chartButton.Font = new Font(chartButton.Font, FontStyle.Regular);
+                obButton.Font = new Font(obButton.Font, FontStyle.Regular);
+                emergencyButton.Font = new Font(emergencyButton.Font, FontStyle.Bold);
+            }
         }
 
         /// <summary>
