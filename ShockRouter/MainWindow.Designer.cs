@@ -343,9 +343,9 @@
             this.sourceRightMeter.MaxDb = 0F;
             this.sourceRightMeter.MinDb = -60F;
             this.sourceRightMeter.Name = "sourceRightMeter";
+            this.sourceRightMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sourceRightMeter.Size = new System.Drawing.Size(303, 16);
             this.sourceRightMeter.TabIndex = 21;
-            this.sourceRightMeter.Text = "volumeMeter1";
             // 
             // sourceLeftMeter
             // 
@@ -355,9 +355,9 @@
             this.sourceLeftMeter.MaxDb = 0F;
             this.sourceLeftMeter.MinDb = -60F;
             this.sourceLeftMeter.Name = "sourceLeftMeter";
+            this.sourceLeftMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sourceLeftMeter.Size = new System.Drawing.Size(303, 16);
             this.sourceLeftMeter.TabIndex = 20;
-            this.sourceLeftMeter.Text = "volumeMeter1";
             // 
             // LevelsSeperator
             // 

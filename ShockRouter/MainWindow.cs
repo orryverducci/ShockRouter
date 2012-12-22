@@ -30,6 +30,8 @@ namespace ShockRouter
             router.SourceChanged += SourceChanged;
             // Set to studio
             router.Source = Router.Sources.STUDIO;
+            // Handle audio events to update level metres
+            router.PeakLevelMeterUpdate += PeakLevelMeterUpdate;
         }
 
         /// <summary>
@@ -96,6 +98,17 @@ namespace ShockRouter
             {
                 router.Source = Router.Sources.EMERGENCY;
             }
+        }
+
+        /// <summary>
+        /// Updates audio meters with sent levels
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event arguments</param>
+        private void PeakLevelMeterUpdate(object sender, Router.LevelEventArgs e)
+        {
+            sourceLeftMeter.Amplitude = (float)e.LeftLevel;
+            sourceRightMeter.Amplitude = (float)e.RightLevel;
         }
     }
 }

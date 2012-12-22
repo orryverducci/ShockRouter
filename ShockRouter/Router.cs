@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
+using Un4seen.Bass.Misc;
 
 namespace ShockRouter
 {
@@ -23,6 +24,10 @@ namespace ShockRouter
         /// Handle of the audio mixer
         /// </summary>
         private int mixerHandle;
+        /// <summary>
+        /// Peak level meter
+        /// </summary>
+        private DSP_PeakLevelMeter peakLevelMeter;
         #endregion
 
         #region Properties
@@ -76,6 +81,30 @@ namespace ShockRouter
         /// Signals that the source has been changed
         /// </summary>
         public event EventHandler SourceChanged;
+        /// <summary>
+        /// Audio level event arguments
+        /// </summary>
+        public class LevelEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Left audio level in db
+            /// </summary>
+            public double LeftLevel { get; set; }
+            /// <summary>
+            /// Right audio level in db
+            /// </summary>
+            public double RightLevel { get; set; }
+        }
+        /// <summary>
+        /// Event handler for audio level events
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Audio level event arguments</param>
+        public delegate void LevelEventHandler(object sender, LevelEventArgs e);
+        /// <summary>
+        /// Event to update peak level meters
+        /// </summary>
+        public event LevelEventHandler PeakLevelMeterUpdate;
         #endregion
 
         #region Methods
@@ -115,6 +144,9 @@ namespace ShockRouter
             Bass.BASS_ChannelPlay(mixerHandle, false);
             // Initalise Line In
             InitaliseLineIn();
+            // Add Input Peak Level Meter DSP and Event Handler
+            peakLevelMeter = new DSP_PeakLevelMeter(mixerHandle, 1);
+            peakLevelMeter.Notification += new EventHandler(PeakLevelMeterNotification);
         }
 
         /// <summary>
@@ -176,6 +208,24 @@ namespace ShockRouter
                 {
                     SourceChanged(this, new EventArgs());
                 }
+            }
+        }
+
+        /// <summary>
+        /// Triggers event sending peak level meter values
+        /// </summary>
+        /// <param name="sender">Sending Object</param>
+        /// <param name="e">Event argument</param>
+        private void PeakLevelMeterNotification(object sender, EventArgs e)
+        {
+            if (PeakLevelMeterUpdate != null)
+            {
+                // Create event args containing levels
+                LevelEventArgs levelEvent = new LevelEventArgs();
+                levelEvent.LeftLevel = peakLevelMeter.LevelL_dBV;
+                levelEvent.RightLevel = peakLevelMeter.LevelR_dBV;
+                // Trigger event
+                PeakLevelMeterUpdate(null, levelEvent);
             }
         }
         #endregion
