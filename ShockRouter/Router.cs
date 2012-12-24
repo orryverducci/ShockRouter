@@ -212,6 +212,23 @@ namespace ShockRouter
         }
 
         /// <summary>
+        /// Retrieves a list of the available audio devices
+        /// </summary>
+        /// <returns>List of device names, in order of their ID, starting at 1</returns>
+        public List<string> GetDevices()
+        {
+            // Create list
+            List<string> devices = new List<string>();
+            // Get information for each device and add to list
+            foreach(BASS_DEVICEINFO device in Bass.BASS_RecordGetDeviceInfos())
+            {
+                devices.Add(device.name);
+            }
+            // Return list of devices
+            return devices;
+        }
+
+        /// <summary>
         /// Triggers event sending peak level meter values
         /// </summary>
         /// <param name="sender">Sending Object</param>

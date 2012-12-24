@@ -30,6 +30,13 @@ namespace ShockRouter
             router.SourceChanged += SourceChanged;
             // Set to studio
             router.Source = Router.Sources.STUDIO;
+            // Add audio devices to list
+            studioInputComboBox.Items.Add("Default Input");
+            foreach (string device in router.GetDevices())
+            {
+                studioInputComboBox.Items.Add(device);
+            }
+            studioInputComboBox.SelectedIndex = 0;
             // Handle audio events to update level metres
             router.PeakLevelMeterUpdate += PeakLevelMeterUpdate;
         }
