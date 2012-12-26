@@ -117,5 +117,15 @@ namespace ShockRouter
             sourceLeftMeter.Amplitude = (float)e.LeftLevel;
             sourceRightMeter.Amplitude = (float)e.RightLevel;
         }
+
+        /// <summary>
+        /// Changes audio input to selected input
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event args</param>
+        private void studioInputComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            router.InputDevice = ((ComboBox)sender).SelectedIndex - 1;
+        }
     }
 }

@@ -45,6 +45,21 @@ namespace ShockRouter
                 ChangeSource(value);
             }
         }
+
+        /// <summary>
+        /// Gets or set the current studio input device
+        /// </summary>
+        public int InputDevice
+        {
+            get
+            {
+                return Bass.BASS_RecordGetDevice();
+            }
+            set
+            {
+                InitaliseLineIn(value);
+            }
+        }
         #endregion
 
         #region Enumerations
@@ -178,6 +193,7 @@ namespace ShockRouter
             {
                 BassMix.BASS_Mixer_ChannelRemove(recordingHandle); // Remove channel from mixer
                 Bass.BASS_ChannelStop(recordingHandle); // Stop recording
+                Bass.BASS_RecordFree(); // Free recording resources
                 recordingHandle = default(int); // Set handle to default value
             }
             if (!Bass.BASS_RecordInit(deviceID)) // If unable to initialise input device

@@ -131,6 +131,7 @@
             this.studioInputComboBox.Name = "studioInputComboBox";
             this.studioInputComboBox.Size = new System.Drawing.Size(303, 21);
             this.studioInputComboBox.TabIndex = 7;
+            this.studioInputComboBox.SelectedIndexChanged += new System.EventHandler(this.studioInputComboBox_SelectedIndexChanged);
             // 
             // ChartUrlLabel
             // 
