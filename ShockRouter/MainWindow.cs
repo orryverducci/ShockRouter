@@ -127,5 +127,23 @@ namespace ShockRouter
         {
             router.InputDevice = ((ComboBox)sender).SelectedIndex - 1;
         }
+
+        /// <summary>
+        /// Sets emergency file from file selected in browse dialog
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event arguments</param>
+        private void browseButton_Click(object sender, EventArgs e)
+        {
+            // Setup file dialog
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "MP3 (*.mp3)|*.mp3|WAV (*.wav)|*.wav";
+            // Show dialog, change file if OK is pressed
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                fileLabel.Text = fileDialog.FileName;
+                router.EmergencyFile = fileDialog.FileName;
+            }
+        }
     }
 }

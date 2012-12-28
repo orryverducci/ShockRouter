@@ -21,6 +21,10 @@ namespace ShockRouter
         /// </summary>
         private int recordingHandle;
         /// <summary>
+        /// Handle of the emergency file stream
+        /// </summary>
+        private int emergencyHandle;
+        /// <summary>
         /// Handle of the audio mixer
         /// </summary>
         private int mixerHandle;
@@ -60,6 +64,11 @@ namespace ShockRouter
                 InitaliseLineIn(value);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the file to be played for Emergency Output
+        /// </summary>
+        public string EmergencyFile { get; set; }
         #endregion
 
         #region Enumerations
@@ -174,7 +183,46 @@ namespace ShockRouter
         }
         #endregion
 
-        #region Audio Sources
+        /// <summary>
+        /// Change the current source to the requested source
+        /// </summary>
+        /// <param name="source">Source to change to</param>
+        private void ChangeSource(Sources source)
+        {
+            if (source != Source) // If selected source is not already chosen
+            {
+                // Make note of current source
+                Sources previousSource = Source;
+                // Start new source
+                switch (source)
+                {
+                    case Sources.STUDIO:
+                        StartStudio();
+                        break;
+                    case Sources.EMERGENCY:
+                        StartEmergency();
+                        break;
+                }
+                // Stop old source
+                switch (previousSource)
+                {
+                    case Sources.STUDIO:
+                        StopStudio();
+                        break;
+                    case Sources.EMERGENCY:
+                        StopEmergency();
+                        break;
+                }
+                // Send event showing source has been changed
+                currentSource = source;
+                if (SourceChanged != null)
+                {
+                    SourceChanged(this, new EventArgs());
+                }
+            }
+        }
+
+        #region Studio Source
         /// <summary>
         /// Sets Studio Line In input to default device
         /// </summary>
@@ -212,22 +260,6 @@ namespace ShockRouter
         }
 
         /// <summary>
-        /// Change the current source to the requested source
-        /// </summary>
-        /// <param name="source">Source to change to</param>
-        private void ChangeSource(Sources source)
-        {
-            if (source == Sources.STUDIO && Source != Sources.STUDIO)
-            {
-                currentSource = Sources.STUDIO;
-                if (SourceChanged != null)
-                {
-                    SourceChanged(this, new EventArgs());
-                }
-            }
-        }
-
-        /// <summary>
         /// Retrieves a list of the available audio devices
         /// </summary>
         /// <returns>List of device names, in order of their ID, starting at 1</returns>
@@ -243,6 +275,66 @@ namespace ShockRouter
             // Return list of devices
             return devices;
         }
+
+        /// <summary>
+        /// Starts playback of the studio input
+        /// </summary>
+        private void StartStudio()
+        {
+            // Fade up studio input
+            Bass.BASS_ChannelSlideAttribute(recordingHandle, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+        }
+
+        /// <summary>
+        /// Stops playback of the studio input
+        /// </summary>
+        private void StopStudio()
+        {
+            // Fade down studio input
+            Bass.BASS_ChannelSlideAttribute(recordingHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+        #endregion
+
+        #region Emergency Source
+        /// <summary>
+        /// Starts playback of the emergency file
+        /// </summary>
+        private void StartEmergency()
+        {
+            if (EmergencyFile != default(string)) // If a file has been set
+            {
+                // Create file stream
+                emergencyHandle = Bass.BASS_StreamCreateFile(EmergencyFile, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
+                // Set to mute
+                Bass.BASS_ChannelSetAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0);
+                // Start playing from start
+                Bass.BASS_ChannelPlay(emergencyHandle, true);
+                // Add to mixer
+                BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, emergencyHandle, BASSFlag.BASS_DEFAULT);
+                // Fade up
+                Bass.BASS_ChannelSlideAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+            }
+            else // Otherwise throw exception saying file hasn't been set
+            {
+                throw new ApplicationException("No emergency file is set");
+            }
+        }
+
+        /// <summary>
+        /// Stops playback of the emergency file
+        /// </summary>
+        private void StopEmergency()
+        {
+            // Fade down
+            Bass.BASS_ChannelSlideAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+            // Remove from mixer
+            BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
+            // Stop playing
+            Bass.BASS_ChannelStop(emergencyHandle);
+            // Free stream
+            Bass.BASS_StreamFree(emergencyHandle);
+        }
+        #endregion
 
         /// <summary>
         /// Triggers event sending peak level meter values
@@ -261,7 +353,6 @@ namespace ShockRouter
                 PeakLevelMeterUpdate(null, levelEvent);
             }
         }
-        #endregion
         #endregion
     }
 }
