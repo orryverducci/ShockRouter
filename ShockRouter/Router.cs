@@ -325,14 +325,18 @@ namespace ShockRouter
         /// </summary>
         private void StopEmergency()
         {
+            // Set sync function for fade down
+            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user) {
+                // Remove from mixer
+                BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
+                // Stop playing
+                Bass.BASS_ChannelStop(emergencyHandle);
+                // Free stream
+                Bass.BASS_StreamFree(emergencyHandle);
+            });
+            Bass.BASS_ChannelSetSync(emergencyHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
-            // Remove from mixer
-            BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
-            // Stop playing
-            Bass.BASS_ChannelStop(emergencyHandle);
-            // Free stream
-            Bass.BASS_StreamFree(emergencyHandle);
         }
         #endregion
 
