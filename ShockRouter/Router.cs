@@ -304,7 +304,7 @@ namespace ShockRouter
             if (EmergencyFile != default(string)) // If a file has been set
             {
                 // Create file stream
-                emergencyHandle = Bass.BASS_StreamCreateFile(EmergencyFile, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE);
+                emergencyHandle = Bass.BASS_StreamCreateFile(EmergencyFile, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_SAMPLE_LOOP);
                 // Set to mute
                 Bass.BASS_ChannelSetAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0);
                 // Start playing from start
