@@ -251,6 +251,11 @@ namespace ShockRouter
             }
             // Start recording
             recordingHandle = Bass.BASS_RecordStart(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT, null, IntPtr.Zero);
+            // Set volume to 0 if not current source
+            if (Source != Sources.STUDIO)
+            {
+                Bass.BASS_ChannelSetAttribute(recordingHandle, BASSAttribute.BASS_ATTRIB_VOL, 0);
+            }
             // Add to mixer
             if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, recordingHandle, BASSFlag.BASS_DEFAULT)) // If unable to add to mixer
             {
