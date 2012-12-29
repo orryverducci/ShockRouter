@@ -22,10 +22,10 @@ namespace ShockRouter
             // Initialise UI
             InitializeComponent();
             // Increase font size on source buttons
-            studioButton.Font = new Font(studioButton.Font.FontFamily, 12, FontStyle.Regular);
-            chartButton.Font = new Font(chartButton.Font.FontFamily, 12, FontStyle.Regular);
-            obButton.Font = new Font(obButton.Font.FontFamily, 12, FontStyle.Regular);
-            emergencyButton.Font = new Font(emergencyButton.Font.FontFamily, 12, FontStyle.Regular);
+            studioButton.Font = new Font(studioButton.Font.FontFamily, 14, FontStyle.Regular);
+            chartButton.Font = new Font(chartButton.Font.FontFamily, 14, FontStyle.Regular);
+            obButton.Font = new Font(obButton.Font.FontFamily, 14, FontStyle.Regular);
+            emergencyButton.Font = new Font(emergencyButton.Font.FontFamily, 14, FontStyle.Regular);
             // Handle router source changed event
             router.SourceChanged += SourceChanged;
             // Set to studio
