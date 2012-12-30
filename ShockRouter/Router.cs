@@ -25,6 +25,10 @@ namespace ShockRouter
         /// </summary>
         private int chartHandle;
         /// <summary>
+        /// Handle of the outside broadcast stream
+        /// </summary>
+        private int obHandle;
+        /// <summary>
         /// Handle of the emergency file stream
         /// </summary>
         private int emergencyHandle;
@@ -78,6 +82,11 @@ namespace ShockRouter
         /// Gets or sets the URL of the chart show
         /// </summary>
         public string ChartURL { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL for outside broadcasts
+        /// </summary>
+        public string ObURL { get; set; }
         #endregion
 
         #region Enumerations
@@ -211,6 +220,9 @@ namespace ShockRouter
                     case Sources.SRA:
                         StartChart();
                         break;
+                    case Sources.OB:
+                        StartOB();
+                        break;
                     case Sources.EMERGENCY:
                         StartEmergency();
                         break;
@@ -223,6 +235,9 @@ namespace ShockRouter
                         break;
                     case Sources.SRA:
                         StopChart();
+                        break;
+                    case Sources.OB:
+                        StopOB();
                         break;
                     case Sources.EMERGENCY:
                         StopEmergency();
@@ -358,6 +373,52 @@ namespace ShockRouter
             Bass.BASS_ChannelSetSync(chartHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+        #endregion
+
+        #region Outside Broadcast Source
+        /// <summary>
+        /// Starts playback of the outside broadcast stream
+        /// </summary>
+        private void StartOB()
+        {
+            if (ObURL != default(string)) // If a URL has been set
+            {
+                // Create stream
+                obHandle = Bass.BASS_StreamCreateURL(ObURL, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, null, IntPtr.Zero);
+                // Set to mute
+                Bass.BASS_ChannelSetAttribute(obHandle, BASSAttribute.BASS_ATTRIB_VOL, 0);
+                // Start playing from start
+                Bass.BASS_ChannelPlay(obHandle, true);
+                // Add to mixer
+                BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, obHandle, BASSFlag.BASS_DEFAULT);
+                // Fade up
+                Bass.BASS_ChannelSlideAttribute(obHandle, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+            }
+            else // Otherwise throw exception saying file hasn't been set
+            {
+                throw new ApplicationException("No outside broadcast URL is set");
+            }
+        }
+
+        /// <summary>
+        /// Stops playback of the outside broadcast stream
+        /// </summary>
+        private void StopOB()
+        {
+            // Set sync function for fade down
+            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
+            {
+                // Remove from mixer
+                BassMix.BASS_Mixer_ChannelRemove(obHandle);
+                // Stop playing
+                Bass.BASS_ChannelStop(obHandle);
+                // Free stream
+                Bass.BASS_StreamFree(obHandle);
+            });
+            Bass.BASS_ChannelSetSync(obHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
+            // Fade down
+            Bass.BASS_ChannelSlideAttribute(obHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
         }
         #endregion
 

@@ -37,7 +37,7 @@
             this.ChartUrlLabel = new System.Windows.Forms.Label();
             this.chartUrlTextBox = new System.Windows.Forms.TextBox();
             this.obUrlLabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.obUrlTextBox = new System.Windows.Forms.TextBox();
             this.emergencyFileLabel = new System.Windows.Forms.Label();
             this.browseButton = new System.Windows.Forms.Button();
             this.fileLabel = new System.Windows.Forms.Label();
@@ -159,12 +159,13 @@
             this.obUrlLabel.TabIndex = 10;
             this.obUrlLabel.Text = "Outside Broadcast Stream URL:";
             // 
-            // textBox1
+            // obUrlTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 252);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(303, 20);
-            this.textBox1.TabIndex = 11;
+            this.obUrlTextBox.Location = new System.Drawing.Point(15, 252);
+            this.obUrlTextBox.Name = "obUrlTextBox";
+            this.obUrlTextBox.Size = new System.Drawing.Size(303, 20);
+            this.obUrlTextBox.TabIndex = 11;
+            this.obUrlTextBox.TextChanged += new System.EventHandler(this.obUrlTextBox_TextChanged);
             // 
             // emergencyFileLabel
             // 
@@ -412,7 +413,7 @@
             this.Controls.Add(this.fileLabel);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.emergencyFileLabel);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.obUrlTextBox);
             this.Controls.Add(this.obUrlLabel);
             this.Controls.Add(this.chartUrlTextBox);
             this.Controls.Add(this.ChartUrlLabel);
@@ -447,7 +448,7 @@
         private System.Windows.Forms.Label ChartUrlLabel;
         private System.Windows.Forms.TextBox chartUrlTextBox;
         private System.Windows.Forms.Label obUrlLabel;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox obUrlTextBox;
         private System.Windows.Forms.Label emergencyFileLabel;
         private System.Windows.Forms.Button browseButton;
         private System.Windows.Forms.Label fileLabel;

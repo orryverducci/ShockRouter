@@ -150,5 +150,10 @@ namespace ShockRouter
         {
             router.ChartURL = ((TextBox)sender).Text;
         }
+
+        private void obUrlTextBox_TextChanged(object sender, EventArgs e)
+        {
+            router.ObURL = ((TextBox)sender).Text;
+        }
     }
 }
