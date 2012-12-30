@@ -148,6 +148,7 @@
             this.chartUrlTextBox.Name = "chartUrlTextBox";
             this.chartUrlTextBox.Size = new System.Drawing.Size(303, 20);
             this.chartUrlTextBox.TabIndex = 9;
+            this.chartUrlTextBox.TextChanged += new System.EventHandler(this.chartUrlTextBox_TextChanged);
             // 
             // obUrlLabel
             // 

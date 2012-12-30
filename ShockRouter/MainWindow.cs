@@ -145,5 +145,10 @@ namespace ShockRouter
                 router.EmergencyFile = fileDialog.FileName;
             }
         }
+
+        private void chartUrlTextBox_TextChanged(object sender, EventArgs e)
+        {
+            router.ChartURL = ((TextBox)sender).Text;
+        }
     }
 }

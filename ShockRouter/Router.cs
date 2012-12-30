@@ -21,6 +21,10 @@ namespace ShockRouter
         /// </summary>
         private int recordingHandle;
         /// <summary>
+        /// Handle of the chart show stream
+        /// </summary>
+        private int chartHandle;
+        /// <summary>
         /// Handle of the emergency file stream
         /// </summary>
         private int emergencyHandle;
@@ -69,6 +73,11 @@ namespace ShockRouter
         /// Gets or sets the file to be played for Emergency Output
         /// </summary>
         public string EmergencyFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL of the chart show
+        /// </summary>
+        public string ChartURL { get; set; }
         #endregion
 
         #region Enumerations
@@ -199,6 +208,9 @@ namespace ShockRouter
                     case Sources.STUDIO:
                         StartStudio();
                         break;
+                    case Sources.SRA:
+                        StartChart();
+                        break;
                     case Sources.EMERGENCY:
                         StartEmergency();
                         break;
@@ -208,6 +220,9 @@ namespace ShockRouter
                 {
                     case Sources.STUDIO:
                         StopStudio();
+                        break;
+                    case Sources.SRA:
+                        StopChart();
                         break;
                     case Sources.EMERGENCY:
                         StopEmergency();
@@ -297,6 +312,52 @@ namespace ShockRouter
         {
             // Fade down studio input
             Bass.BASS_ChannelSlideAttribute(recordingHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+        #endregion
+
+        #region Chart Source
+        /// <summary>
+        /// Starts playback of the emergency file
+        /// </summary>
+        private void StartChart()
+        {
+            if (ChartURL != default(string)) // If a file has been set
+            {
+                // Create stream
+                chartHandle = Bass.BASS_StreamCreateURL(ChartURL, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, null, IntPtr.Zero);
+                // Set to mute
+                Bass.BASS_ChannelSetAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 0);
+                // Start playing from start
+                Bass.BASS_ChannelPlay(chartHandle, true);
+                // Add to mixer
+                BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, chartHandle, BASSFlag.BASS_DEFAULT);
+                // Fade up
+                Bass.BASS_ChannelSlideAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+            }
+            else // Otherwise throw exception saying file hasn't been set
+            {
+                throw new ApplicationException("No chart URL is set");
+            }
+        }
+
+        /// <summary>
+        /// Stops playback of the emergency file
+        /// </summary>
+        private void StopChart()
+        {
+            // Set sync function for fade down
+            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
+            {
+                // Remove from mixer
+                BassMix.BASS_Mixer_ChannelRemove(chartHandle);
+                // Stop playing
+                Bass.BASS_ChannelStop(chartHandle);
+                // Free stream
+                Bass.BASS_StreamFree(chartHandle);
+            });
+            Bass.BASS_ChannelSetSync(chartHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
+            // Fade down
+            Bass.BASS_ChannelSlideAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
         }
         #endregion
 
