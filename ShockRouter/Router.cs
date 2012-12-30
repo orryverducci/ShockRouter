@@ -15,27 +15,33 @@ namespace ShockRouter
         /// <summary>
         /// The currently active source
         /// </summary>
-        private Sources currentSource = Sources.NONE;
+        private Sources currentSource = Sources.NONE; // Initialised to no source
+
         /// <summary>
         /// Handle of the recording stream
         /// </summary>
         private int recordingHandle;
+
         /// <summary>
         /// Handle of the chart show stream
         /// </summary>
         private int chartHandle;
+
         /// <summary>
         /// Handle of the outside broadcast stream
         /// </summary>
         private int obHandle;
+
         /// <summary>
         /// Handle of the emergency file stream
         /// </summary>
         private int emergencyHandle;
+
         /// <summary>
         /// Handle of the audio mixer
         /// </summary>
         private int mixerHandle;
+
         /// <summary>
         /// Peak level meter
         /// </summary>
@@ -74,11 +80,6 @@ namespace ShockRouter
         }
 
         /// <summary>
-        /// Gets or sets the file to be played for Emergency Output
-        /// </summary>
-        public string EmergencyFile { get; set; }
-
-        /// <summary>
         /// Gets or sets the URL of the chart show
         /// </summary>
         public string ChartURL { get; set; }
@@ -87,6 +88,11 @@ namespace ShockRouter
         /// Gets or sets the URL for outside broadcasts
         /// </summary>
         public string ObURL { get; set; }
+
+        /// <summary>
+        /// Gets or sets the file to be played for Emergency Output
+        /// </summary>
+        public string EmergencyFile { get; set; }
         #endregion
 
         #region Enumerations
@@ -123,6 +129,7 @@ namespace ShockRouter
         /// Signals that the source has been changed
         /// </summary>
         public event EventHandler SourceChanged;
+
         /// <summary>
         /// Audio level event arguments
         /// </summary>
@@ -137,12 +144,14 @@ namespace ShockRouter
             /// </summary>
             public double RightLevel { get; set; }
         }
+
         /// <summary>
         /// Event handler for audio level events
         /// </summary>
         /// <param name="sender">Sending object</param>
         /// <param name="e">Audio level event arguments</param>
         public delegate void LevelEventHandler(object sender, LevelEventArgs e);
+
         /// <summary>
         /// Event to update peak level meters
         /// </summary>
@@ -332,11 +341,11 @@ namespace ShockRouter
 
         #region Chart Source
         /// <summary>
-        /// Starts playback of the emergency file
+        /// Starts playback of the chart show stream
         /// </summary>
         private void StartChart()
         {
-            if (ChartURL != default(string)) // If a file has been set
+            if (ChartURL != default(string)) // If a URL has been set
             {
                 // Create stream
                 chartHandle = Bass.BASS_StreamCreateURL(ChartURL, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, null, IntPtr.Zero);
@@ -356,12 +365,12 @@ namespace ShockRouter
         }
 
         /// <summary>
-        /// Stops playback of the emergency file
+        /// Stops playback of the chart show stream
         /// </summary>
         private void StopChart()
         {
             // Set sync function for fade down
-            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
+            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
             {
                 // Remove from mixer
                 BassMix.BASS_Mixer_ChannelRemove(chartHandle);
@@ -370,7 +379,7 @@ namespace ShockRouter
                 // Free stream
                 Bass.BASS_StreamFree(chartHandle);
             });
-            Bass.BASS_ChannelSetSync(chartHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
+            Bass.BASS_ChannelSetSync(chartHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
         }
@@ -407,7 +416,7 @@ namespace ShockRouter
         private void StopOB()
         {
             // Set sync function for fade down
-            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
+            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
             {
                 // Remove from mixer
                 BassMix.BASS_Mixer_ChannelRemove(obHandle);
@@ -416,7 +425,7 @@ namespace ShockRouter
                 // Free stream
                 Bass.BASS_StreamFree(obHandle);
             });
-            Bass.BASS_ChannelSetSync(obHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
+            Bass.BASS_ChannelSetSync(obHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(obHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
         }
@@ -453,7 +462,7 @@ namespace ShockRouter
         private void StopEmergency()
         {
             // Set sync function for fade down
-            SYNCPROC _mySync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user) {
+            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user) {
                 // Remove from mixer
                 BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
                 // Stop playing
@@ -461,7 +470,7 @@ namespace ShockRouter
                 // Free stream
                 Bass.BASS_StreamFree(emergencyHandle);
             });
-            Bass.BASS_ChannelSetSync(emergencyHandle, BASSSync.BASS_SYNC_SLIDE, 0, _mySync, IntPtr.Zero);
+            Bass.BASS_ChannelSetSync(emergencyHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
         }
