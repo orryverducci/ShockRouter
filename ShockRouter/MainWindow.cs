@@ -37,7 +37,8 @@ namespace ShockRouter
                 studioInputComboBox.Items.Add(device);
             }
             // Handle audio events to update level metres
-            router.PeakLevelMeterUpdate += PeakLevelMeterUpdate;
+            router.SourceLevelMeterUpdate += SourceLevelMeterUpdate;
+            router.OutputLevelMeterUpdate += OutputLevelMeterUpdate;
             // Load user settings
             studioInputComboBox.SelectedIndex = Properties.Settings.Default.AudioInput;
             chartUrlTextBox.Text = Properties.Settings.Default.ChartShowURL;
@@ -123,14 +124,25 @@ namespace ShockRouter
         }
 
         /// <summary>
-        /// Updates audio meters with sent levels
+        /// Updates source audio meters with sent levels
         /// </summary>
         /// <param name="sender">Sending object</param>
         /// <param name="e">Event arguments</param>
-        private void PeakLevelMeterUpdate(object sender, Router.LevelEventArgs e)
+        private void SourceLevelMeterUpdate(object sender, Router.LevelEventArgs e)
         {
             sourceLeftMeter.Amplitude = (float)e.LeftLevel;
             sourceRightMeter.Amplitude = (float)e.RightLevel;
+        }
+
+        /// <summary>
+        /// Updates output audio meters with sent levels
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event arguments</param>
+        private void OutputLevelMeterUpdate(object sender, Router.LevelEventArgs e)
+        {
+            outputLeftMeter.Amplitude = (float)e.LeftLevel;
+            outputRightMeter.Amplitude = (float)e.RightLevel;
         }
 
         /// <summary>

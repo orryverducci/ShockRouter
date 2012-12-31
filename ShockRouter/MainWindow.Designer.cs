@@ -323,9 +323,9 @@
             this.outputRightMeter.MaxDb = 0F;
             this.outputRightMeter.MinDb = -60F;
             this.outputRightMeter.Name = "outputRightMeter";
+            this.outputRightMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.outputRightMeter.Size = new System.Drawing.Size(303, 16);
             this.outputRightMeter.TabIndex = 24;
-            this.outputRightMeter.Text = "volumeMeter1";
             // 
             // outputLeftMeter
             // 
@@ -335,9 +335,9 @@
             this.outputLeftMeter.MaxDb = 0F;
             this.outputLeftMeter.MinDb = -60F;
             this.outputLeftMeter.Name = "outputLeftMeter";
+            this.outputLeftMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.outputLeftMeter.Size = new System.Drawing.Size(303, 16);
             this.outputLeftMeter.TabIndex = 23;
-            this.outputLeftMeter.Text = "volumeMeter1";
             // 
             // sourceRightMeter
             // 

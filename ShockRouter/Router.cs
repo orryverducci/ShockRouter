@@ -43,9 +43,14 @@ namespace ShockRouter
         private int mixerHandle;
 
         /// <summary>
-        /// Peak level meter
+        /// Source peak level meter
         /// </summary>
-        private DSP_PeakLevelMeter peakLevelMeter;
+        private DSP_PeakLevelMeter sourceLevelMeter;
+
+        /// <summary>
+        /// Output peak level meter
+        /// </summary>
+        private DSP_PeakLevelMeter outputLevelMeter;
         #endregion
 
         #region Properties
@@ -153,9 +158,14 @@ namespace ShockRouter
         public delegate void LevelEventHandler(object sender, LevelEventArgs e);
 
         /// <summary>
-        /// Event to update peak level meters
+        /// Event to update source level meters
         /// </summary>
-        public event LevelEventHandler PeakLevelMeterUpdate;
+        public event LevelEventHandler SourceLevelMeterUpdate;
+
+        /// <summary>
+        /// Event to update output level meters
+        /// </summary>
+        public event LevelEventHandler OutputLevelMeterUpdate;
         #endregion
 
         #region Methods
@@ -195,9 +205,12 @@ namespace ShockRouter
             Bass.BASS_ChannelPlay(mixerHandle, false);
             // Initalise Line In
             InitaliseLineIn();
-            // Add Input Peak Level Meter DSP and Event Handler
-            peakLevelMeter = new DSP_PeakLevelMeter(mixerHandle, 1);
-            peakLevelMeter.Notification += new EventHandler(PeakLevelMeterNotification);
+            // Add source peak level meter DSP and event handler
+            sourceLevelMeter = new DSP_PeakLevelMeter(mixerHandle, 3);
+            sourceLevelMeter.Notification += new EventHandler(SourceLevelMeterNotification);
+            // Add output peak level meter DSP and event handler
+            outputLevelMeter = new DSP_PeakLevelMeter(mixerHandle, 1);
+            outputLevelMeter.Notification += new EventHandler(OutputLevelMeterNotification);
         }
 
         /// <summary>
@@ -505,20 +518,38 @@ namespace ShockRouter
         #endregion
 
         /// <summary>
-        /// Triggers event sending peak level meter values
+        /// Triggers event sending source level meter values
         /// </summary>
         /// <param name="sender">Sending Object</param>
         /// <param name="e">Event argument</param>
-        private void PeakLevelMeterNotification(object sender, EventArgs e)
+        private void SourceLevelMeterNotification(object sender, EventArgs e)
         {
-            if (PeakLevelMeterUpdate != null)
+            if (SourceLevelMeterUpdate != null)
             {
                 // Create event args containing levels
                 LevelEventArgs levelEvent = new LevelEventArgs();
-                levelEvent.LeftLevel = peakLevelMeter.LevelL_dBV;
-                levelEvent.RightLevel = peakLevelMeter.LevelR_dBV;
+                levelEvent.LeftLevel = sourceLevelMeter.LevelL_dBV;
+                levelEvent.RightLevel = sourceLevelMeter.LevelR_dBV;
                 // Trigger event
-                PeakLevelMeterUpdate(null, levelEvent);
+                SourceLevelMeterUpdate(null, levelEvent);
+            }
+        }
+
+        /// <summary>
+        /// Triggers event sending output level meter values
+        /// </summary>
+        /// <param name="sender">Sending Object</param>
+        /// <param name="e">Event argument</param>
+        private void OutputLevelMeterNotification(object sender, EventArgs e)
+        {
+            if (OutputLevelMeterUpdate != null)
+            {
+                // Create event args containing levels
+                LevelEventArgs levelEvent = new LevelEventArgs();
+                levelEvent.LeftLevel = outputLevelMeter.LevelL_dBV;
+                levelEvent.RightLevel = outputLevelMeter.LevelR_dBV;
+                // Trigger event
+                OutputLevelMeterUpdate(null, levelEvent);
             }
         }
         #endregion
