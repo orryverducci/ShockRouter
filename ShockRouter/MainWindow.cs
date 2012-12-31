@@ -36,9 +36,24 @@ namespace ShockRouter
             {
                 studioInputComboBox.Items.Add(device);
             }
-            studioInputComboBox.SelectedIndex = 0;
             // Handle audio events to update level metres
             router.PeakLevelMeterUpdate += PeakLevelMeterUpdate;
+            // Load user settings
+            studioInputComboBox.SelectedIndex = Properties.Settings.Default.AudioInput;
+            chartUrlTextBox.Text = Properties.Settings.Default.ChartShowURL;
+            obUrlTextBox.Text = Properties.Settings.Default.ObURL;
+            fileLabel.Text = Properties.Settings.Default.EmergencyFile;
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Update settings with current state
+            Properties.Settings.Default.AudioInput = studioInputComboBox.SelectedIndex;
+            Properties.Settings.Default.ChartShowURL = chartUrlTextBox.Text;
+            Properties.Settings.Default.ObURL = obUrlTextBox.Text;
+            Properties.Settings.Default.EmergencyFile = fileLabel.Text;
+            // Save settings
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>

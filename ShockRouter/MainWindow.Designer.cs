@@ -429,6 +429,7 @@
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "ShockRouter";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
