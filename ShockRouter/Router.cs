@@ -370,18 +370,27 @@ namespace ShockRouter
         private void StopChart()
         {
             // Set sync function for fade down
-            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
-            {
-                // Remove from mixer
-                BassMix.BASS_Mixer_ChannelRemove(chartHandle);
-                // Stop playing
-                Bass.BASS_ChannelStop(chartHandle);
-                // Free stream
-                Bass.BASS_StreamFree(chartHandle);
-            });
+            SYNCPROC streamEndSync = new SYNCPROC(RemoveChartStream);
             Bass.BASS_ChannelSetSync(chartHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(chartHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+
+        /// <summary>
+        /// Removes the chart show stream from the mixer
+        /// </summary>
+        /// <param name="handle">Handle for the sync</param>
+        /// <param name="channel">Handle for the channel</param>
+        /// <param name="data">Data associated with the sync</param>
+        /// <param name="user">User instance handle</param>
+        private void RemoveChartStream(int handle, int channel, int data, IntPtr user)
+        {
+            // Remove from mixer
+            BassMix.BASS_Mixer_ChannelRemove(chartHandle);
+            // Stop playing
+            Bass.BASS_ChannelStop(chartHandle);
+            // Free stream
+            Bass.BASS_StreamFree(chartHandle);
         }
         #endregion
 
@@ -416,18 +425,27 @@ namespace ShockRouter
         private void StopOB()
         {
             // Set sync function for fade down
-            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user)
-            {
-                // Remove from mixer
-                BassMix.BASS_Mixer_ChannelRemove(obHandle);
-                // Stop playing
-                Bass.BASS_ChannelStop(obHandle);
-                // Free stream
-                Bass.BASS_StreamFree(obHandle);
-            });
+            SYNCPROC streamEndSync = new SYNCPROC(RemoveOBStream);
             Bass.BASS_ChannelSetSync(obHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(obHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+
+        /// <summary>
+        /// Removes the outside broadcast stream from the mixer
+        /// </summary>
+        /// <param name="handle">Handle for the sync</param>
+        /// <param name="channel">Handle for the channel</param>
+        /// <param name="data">Data associated with the sync</param>
+        /// <param name="user">User instance handle</param>
+        private void RemoveOBStream(int handle, int channel, int data, IntPtr user)
+        {
+            // Remove from mixer
+            BassMix.BASS_Mixer_ChannelRemove(obHandle);
+            // Stop playing
+            Bass.BASS_ChannelStop(obHandle);
+            // Free stream
+            Bass.BASS_StreamFree(obHandle);
         }
         #endregion
 
@@ -462,17 +480,27 @@ namespace ShockRouter
         private void StopEmergency()
         {
             // Set sync function for fade down
-            SYNCPROC streamEndSync = new SYNCPROC(delegate(int handle, int channel, int data, IntPtr user) {
-                // Remove from mixer
-                BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
-                // Stop playing
-                Bass.BASS_ChannelStop(emergencyHandle);
-                // Free stream
-                Bass.BASS_StreamFree(emergencyHandle);
-            });
+            SYNCPROC streamEndSync = new SYNCPROC(RemoveEmergencyStream);
             Bass.BASS_ChannelSetSync(emergencyHandle, BASSSync.BASS_SYNC_SLIDE, 0, streamEndSync, IntPtr.Zero);
             // Fade down
             Bass.BASS_ChannelSlideAttribute(emergencyHandle, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
+        }
+
+        /// <summary>
+        /// Removes the emergency stream from the mixer
+        /// </summary>
+        /// <param name="handle">Handle for the sync</param>
+        /// <param name="channel">Handle for the channel</param>
+        /// <param name="data">Data associated with the sync</param>
+        /// <param name="user">User instance handle</param>
+        private void RemoveEmergencyStream(int handle, int channel, int data, IntPtr user)
+        {
+            // Remove from mixer
+            BassMix.BASS_Mixer_ChannelRemove(emergencyHandle);
+            // Stop playing
+            Bass.BASS_ChannelStop(emergencyHandle);
+            // Free stream
+            Bass.BASS_StreamFree(emergencyHandle);
         }
         #endregion
 
