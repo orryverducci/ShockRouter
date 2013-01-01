@@ -178,17 +178,9 @@ namespace ShockRouter
             // Registration code for Bass.Net
             // Provided value should be used only for ShockRouter, not derived products
             BassNet.Registration("orry@orryverducci.co.uk", "2X24373423243720");
-            // Set dll locations
-            if (IntPtr.Size == 8) // If running in 64 bit
-            {
-                Bass.LoadMe("x64");
-                BassMix.LoadMe("x64");
-            }
-            else // Else if running in 32 bit
-            {
-                Bass.LoadMe("x86");
-                BassMix.LoadMe("x86");
-            }
+            // Load BASS libraries
+            Bass.LoadMe();
+            BassMix.LoadMe();
             // Initialise BASS
             if (!Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero)) // If unable to initialise audio output
             {
