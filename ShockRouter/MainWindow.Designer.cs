@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.studioButton = new System.Windows.Forms.Button();
             this.chartButton = new System.Windows.Forms.Button();
             this.obButton = new System.Windows.Forms.Button();
@@ -426,6 +427,7 @@
             this.Controls.Add(this.chartButton);
             this.Controls.Add(this.studioButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "ShockRouter";
