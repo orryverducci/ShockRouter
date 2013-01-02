@@ -165,6 +165,11 @@ namespace ShockRouter
             router.InputDevice = ((ComboBox)sender).SelectedIndex - 1;
         }
 
+        private void fileLabel_TextChanged(object sender, EventArgs e)
+        {
+            router.EmergencyFile = ((Label)sender).Text;
+        }
+
         /// <summary>
         /// Sets emergency file from file selected in browse dialog
         /// </summary>
@@ -179,7 +184,6 @@ namespace ShockRouter
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 fileLabel.Text = fileDialog.FileName;
-                router.EmergencyFile = fileDialog.FileName;
             }
         }
 

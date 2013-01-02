@@ -194,6 +194,7 @@
             this.fileLabel.Name = "fileLabel";
             this.fileLabel.Size = new System.Drawing.Size(224, 18);
             this.fileLabel.TabIndex = 13;
+            this.fileLabel.TextChanged += new System.EventHandler(this.fileLabel_TextChanged);
             // 
             // processorLabel
             // 
