@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
+using Un4seen.Bass.AddOn.WaDsp;
 using Un4seen.Bass.Misc;
 
 namespace ShockRouter
@@ -41,6 +43,16 @@ namespace ShockRouter
         /// Handle of the audio mixer
         /// </summary>
         private int mixerHandle;
+
+        /// <summary>
+        /// Array of available DSP filenames
+        /// </summary>
+        private string[] availableDSPs;
+
+        /// <summary>
+        /// Handle of the Winamp DSP
+        /// </summary>
+        private int dspHandle;
 
         /// <summary>
         /// Source peak level meter
@@ -98,6 +110,17 @@ namespace ShockRouter
         /// Gets or sets the file to be played for Emergency Output
         /// </summary>
         public string EmergencyFile { get; set; }
+
+        /// <summary>
+        /// Sets the processor from one of the available ones, with index starting at 1. An index of 0 sets no processor
+        /// </summary>
+        public int Processor
+        {
+            set
+            {
+                InitialiseDSP(value);
+            }
+        }
         #endregion
 
         #region Enumerations
@@ -173,7 +196,8 @@ namespace ShockRouter
         /// <summary>
         /// Initialises the audio inputs and outputs
         /// </summary>
-        public Router()
+        /// <param name="mainWindowHandle">Handle of the main user interface window</param>
+        public Router(IntPtr mainWindowHandle)
         {
             // Registration code for Bass.Net
             // Provided value should be used only for ShockRouter, not derived products
@@ -181,6 +205,7 @@ namespace ShockRouter
             // Load BASS libraries
             Bass.LoadMe();
             BassMix.LoadMe();
+            BassWaDsp.LoadMe();
             // Initialise BASS
             if (!Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero)) // If unable to initialise audio output
             {
@@ -195,6 +220,33 @@ namespace ShockRouter
                 throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString());
             }
             Bass.BASS_ChannelPlay(mixerHandle, false);
+            // Initalise Winamp DSP support
+            BassWaDsp.BASS_WADSP_Init(mainWindowHandle);
+            // Find Winamp DSPs
+            if (Directory.Exists(Path.GetPathRoot(Environment.CurrentDirectory) + "Program Files (x86)")) // If on 64 bit Windows
+            {
+                if (Directory.Exists(Path.GetPathRoot(Environment.CurrentDirectory) + "Program Files (x86)\\Winamp\\Plugins"))
+                {
+                    WINAMP_DSP.FindPlugins(Path.GetPathRoot(Environment.CurrentDirectory) + "Program Files (x86)\\Winamp\\Plugins");
+                }
+            }
+            else // If on 32 bit Windows
+            {
+                if (Directory.Exists(Path.GetPathRoot(Environment.CurrentDirectory) + "Program Files\\Winamp\\Plugins"))
+                {
+                    WINAMP_DSP.FindPlugins(Path.GetPathRoot(Environment.CurrentDirectory) + "Program Files\\Winamp\\Plugins");
+                }
+            }
+            // Create list of Winamp DSPs
+            if (WINAMP_DSP.PlugIns.Count > 0) // If there is plugins available
+            {
+                availableDSPs = new string[WINAMP_DSP.PlugIns.Count]; // Set size of array
+                // Get information for each DSP and add to list
+                for (int i = 0; i < WINAMP_DSP.PlugIns.Count; i++)
+                {
+                    availableDSPs[i] = WINAMP_DSP.PlugIns[i].File;
+                }
+            }
             // Initalise Line In
             InitaliseLineIn();
             // Add source peak level meter DSP and event handler
@@ -210,6 +262,9 @@ namespace ShockRouter
         /// </summary>
         ~Router()
         {
+            FreeDSP(); // Stops running DSP
+            BassWaDsp.BASS_WADSP_Free(); // Free DSP resources
+            BassWaDsp.FreeMe(); // Free BASS Winamp DSP
             BassMix.FreeMe(); // Free BASSmix
             Bass.FreeMe(); // Free BASS
         }
@@ -506,6 +561,64 @@ namespace ShockRouter
             Bass.BASS_ChannelStop(emergencyHandle);
             // Free stream
             Bass.BASS_StreamFree(emergencyHandle);
+        }
+        #endregion
+
+        #region Digital Signal Processing
+        /// <summary>
+        /// Retrieves a list of the available DSPs
+        /// </summary>
+        /// <returns>List of DSPs, in order of their ID, starting at 1</returns>
+        public List<string> GetDSPs()
+        {
+            // Create list
+            List<string> dsps = new List<string>();
+            // Return plugins
+            for (int i = 0; i < availableDSPs.Count(); i++)
+            {
+                dsps.Add(WINAMP_DSP.PlugIns[i].Description);
+            }
+            // Return list of devices
+            return dsps;
+        }
+
+        /// <summary>
+        /// Sets the processing DSP to the specified index
+        /// </summary>
+        /// <param name="dspIndex">Index of the DSP to be loaded</param>
+        private void InitialiseDSP(int dspIndex)
+        {
+            // Free DSP running, if any
+            FreeDSP();
+            // Load DSP
+            if (dspIndex > 0) // If a DSP is chosen
+            {
+                dspHandle = BassWaDsp.BASS_WADSP_Load(availableDSPs[dspIndex - 1], 5, 5, 100, 100, null);
+                BassWaDsp.BASS_WADSP_Start(dspHandle, 0, mixerHandle);
+                BassWaDsp.BASS_WADSP_ChannelSetDSP(dspHandle, mixerHandle, 2);
+            }
+        }
+
+        /// <summary>
+        /// Opens the configuration window for the DSP
+        /// </summary>
+        /// <param name="dspName"></param>
+        public void ConfigureDSP(string dspName)
+        {
+            BassWaDsp.BASS_WADSP_Config(dspHandle);
+        }
+
+        /// <summary>
+        /// Stops the DSP
+        /// </summary>
+        private void FreeDSP()
+        {
+            if (dspHandle != default(int)) // If a DSP is running
+            {
+                BassWaDsp.BASS_WADSP_Stop(dspHandle);
+                BassWaDsp.BASS_WADSP_FreeDSP(dspHandle);
+                dspHandle = default(int);
+            }
         }
         #endregion
 

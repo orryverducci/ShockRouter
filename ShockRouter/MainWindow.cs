@@ -13,7 +13,7 @@ namespace ShockRouter
     public partial class MainWindow : Form
     {
         // Private fields
-        Router router = new Router();
+        Router router;
 
         public MainWindow()
         {
@@ -26,6 +26,8 @@ namespace ShockRouter
             chartButton.Font = new Font(chartButton.Font.FontFamily, 14, FontStyle.Regular);
             obButton.Font = new Font(obButton.Font.FontFamily, 14, FontStyle.Regular);
             emergencyButton.Font = new Font(emergencyButton.Font.FontFamily, 14, FontStyle.Regular);
+            // Create router
+            router = new Router(this.Handle);
             // Handle router source changed event
             router.SourceChanged += SourceChanged;
             // Set to studio
@@ -39,11 +41,18 @@ namespace ShockRouter
             // Handle audio events to update level metres
             router.SourceLevelMeterUpdate += SourceLevelMeterUpdate;
             router.OutputLevelMeterUpdate += OutputLevelMeterUpdate;
+            // Add DSPs to list
+            processorComboBox.Items.Add("None");
+            foreach (string processor in router.GetDSPs())
+            {
+                processorComboBox.Items.Add(processor);
+            }
             // Load user settings
             studioInputComboBox.SelectedIndex = Properties.Settings.Default.AudioInput;
             chartUrlTextBox.Text = Properties.Settings.Default.ChartShowURL;
             obUrlTextBox.Text = Properties.Settings.Default.ObURL;
             fileLabel.Text = Properties.Settings.Default.EmergencyFile;
+            processorComboBox.SelectedIndex = Properties.Settings.Default.Processor;
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -53,6 +62,7 @@ namespace ShockRouter
             Properties.Settings.Default.ChartShowURL = chartUrlTextBox.Text;
             Properties.Settings.Default.ObURL = obUrlTextBox.Text;
             Properties.Settings.Default.EmergencyFile = fileLabel.Text;
+            Properties.Settings.Default.Processor = processorComboBox.SelectedIndex;
             // Save settings
             Properties.Settings.Default.Save();
         }
@@ -181,6 +191,26 @@ namespace ShockRouter
         private void obUrlTextBox_TextChanged(object sender, EventArgs e)
         {
             router.ObURL = ((TextBox)sender).Text;
+        }
+
+        private void processorComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Disable configure button if "None" is selected
+            if (((ComboBox)sender).SelectedIndex == 0)
+            {
+                processorConfigButton.Enabled = false;
+            }
+            else
+            {
+                processorConfigButton.Enabled = true;
+            }
+            // Set processor to selected option
+            router.Processor = ((ComboBox)sender).SelectedIndex;
+        }
+
+        private void processorConfigButton_Click(object sender, EventArgs e)
+        {
+            router.ConfigureDSP(processorComboBox.SelectedItem.ToString());
         }
     }
 }

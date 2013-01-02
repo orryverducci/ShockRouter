@@ -70,5 +70,17 @@ namespace ShockRouter.Properties {
                 this["EmergencyFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Processor {
+            get {
+                return ((int)(this["Processor"]));
+            }
+            set {
+                this["Processor"] = value;
+            }
+        }
     }
 }

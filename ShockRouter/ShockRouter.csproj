@@ -113,6 +113,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="bass_wadsp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

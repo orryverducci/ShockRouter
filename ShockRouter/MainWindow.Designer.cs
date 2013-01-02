@@ -212,6 +212,7 @@
             this.processorComboBox.Name = "processorComboBox";
             this.processorComboBox.Size = new System.Drawing.Size(222, 21);
             this.processorComboBox.TabIndex = 16;
+            this.processorComboBox.SelectedIndexChanged += new System.EventHandler(this.processorComboBox_SelectedIndexChanged);
             // 
             // processorConfigButton
             // 
@@ -221,6 +222,7 @@
             this.processorConfigButton.TabIndex = 17;
             this.processorConfigButton.Text = "Configure";
             this.processorConfigButton.UseVisualStyleBackColor = true;
+            this.processorConfigButton.Click += new System.EventHandler(this.processorConfigButton_Click);
             // 
             // sourceLevelLabel
             // 
