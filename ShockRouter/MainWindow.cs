@@ -52,6 +52,7 @@ namespace ShockRouter
             chartUrlTextBox.Text = Properties.Settings.Default.ChartShowURL;
             obUrlTextBox.Text = Properties.Settings.Default.ObURL;
             fileLabel.Text = Properties.Settings.Default.EmergencyFile;
+            detectorUpDown.Value = Properties.Settings.Default.DetectorTime;
             processorComboBox.SelectedIndex = Properties.Settings.Default.Processor;
         }
 
@@ -62,6 +63,7 @@ namespace ShockRouter
             Properties.Settings.Default.ChartShowURL = chartUrlTextBox.Text;
             Properties.Settings.Default.ObURL = obUrlTextBox.Text;
             Properties.Settings.Default.EmergencyFile = fileLabel.Text;
+            Properties.Settings.Default.DetectorTime = (int)detectorUpDown.Value;
             Properties.Settings.Default.Processor = processorComboBox.SelectedIndex;
             // Save settings
             Properties.Settings.Default.Save();
@@ -195,6 +197,11 @@ namespace ShockRouter
         private void obUrlTextBox_TextChanged(object sender, EventArgs e)
         {
             router.ObURL = ((TextBox)sender).Text;
+        }
+
+        private void detectorUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            router.SilenceDetectorTime = (int)((NumericUpDown)sender).Value;
         }
 
         private void processorComboBox_SelectedIndexChanged(object sender, EventArgs e)

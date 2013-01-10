@@ -52,7 +52,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addButton = new System.Windows.Forms.Button();
             this.removeButton = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.detectorUpDown = new System.Windows.Forms.NumericUpDown();
             this.detectorLabel = new System.Windows.Forms.Label();
             this.secondsLabel = new System.Windows.Forms.Label();
             this.scheduleSeperator = new ShockCast.Seperator();
@@ -63,7 +63,7 @@
             this.LevelsSeperator = new ShockCast.Seperator();
             this.settingsSeperator = new ShockCast.Seperator();
             this.sourceSeperator = new ShockCast.Seperator();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.detectorUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // studioButton
@@ -281,17 +281,18 @@
             this.removeButton.Text = "-";
             this.removeButton.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // detectorUpDown
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(144, 317);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.detectorUpDown.Location = new System.Drawing.Point(144, 317);
+            this.detectorUpDown.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(62, 20);
-            this.numericUpDown1.TabIndex = 29;
+            this.detectorUpDown.Name = "detectorUpDown";
+            this.detectorUpDown.Size = new System.Drawing.Size(62, 20);
+            this.detectorUpDown.TabIndex = 29;
+            this.detectorUpDown.ValueChanged += new System.EventHandler(this.detectorUpDown_ValueChanged);
             // 
             // detectorLabel
             // 
@@ -399,7 +400,7 @@
             this.ClientSize = new System.Drawing.Size(642, 393);
             this.Controls.Add(this.secondsLabel);
             this.Controls.Add(this.detectorLabel);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.detectorUpDown);
             this.Controls.Add(this.removeButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.scheduleListView);
@@ -435,7 +436,7 @@
             this.Name = "MainWindow";
             this.Text = "ShockRouter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.detectorUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -474,7 +475,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.Button removeButton;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown detectorUpDown;
         private System.Windows.Forms.Label detectorLabel;
         private System.Windows.Forms.Label secondsLabel;
     }

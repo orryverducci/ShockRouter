@@ -82,5 +82,17 @@ namespace ShockRouter.Properties {
                 this["Processor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int DetectorTime {
+            get {
+                return ((int)(this["DetectorTime"]));
+            }
+            set {
+                this["DetectorTime"] = value;
+            }
+        }
     }
 }

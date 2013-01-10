@@ -63,6 +63,16 @@ namespace ShockRouter
         /// Output peak level meter
         /// </summary>
         private DSP_PeakLevelMeter outputLevelMeter;
+
+        /// <summary>
+        /// True if the stream is currently silent
+        /// </summary>
+        private bool currentlySilent = false;
+
+        /// <summary>
+        /// Time the source first went silent
+        /// </summary>
+        private DateTime silentSince;
         #endregion
 
         #region Properties
@@ -110,6 +120,11 @@ namespace ShockRouter
         /// Gets or sets the file to be played for Emergency Output
         /// </summary>
         public string EmergencyFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time the source can be silent for before it is switched to Emergency Output
+        /// </summary>
+        public int SilenceDetectorTime { get; set; }
 
         /// <summary>
         /// Sets the processor from one of the available ones, with index starting at 1. An index of 0 sets no processor
@@ -622,13 +637,15 @@ namespace ShockRouter
         }
         #endregion
 
+        #region Levels Meters Update and Silence Detection
         /// <summary>
-        /// Triggers event sending source level meter values
+        /// Triggers event sending source level meter values, and monitors for periods of silence
         /// </summary>
         /// <param name="sender">Sending Object</param>
         /// <param name="e">Event argument</param>
         private void SourceLevelMeterNotification(object sender, EventArgs e)
         {
+            // Update level meter
             if (SourceLevelMeterUpdate != null)
             {
                 // Create event args containing levels
@@ -637,6 +654,28 @@ namespace ShockRouter
                 levelEvent.RightLevel = sourceLevelMeter.LevelR_dBV;
                 // Trigger event
                 SourceLevelMeterUpdate(null, levelEvent);
+            }
+            // If silent and not already on emergency output, carry out silence detection tasks
+            if (Source != Sources.EMERGENCY && sourceLevelMeter.LevelL_dBV <= -40 && sourceLevelMeter.LevelL_dBV <= -40)
+            {
+                if (currentlySilent) // If already noted as being silent
+                {
+                    // If silent longer than set silence detection period, switch to emergency output
+                    if (silentSince.AddSeconds(SilenceDetectorTime) <= DateTime.Now)
+                    {
+                        ChangeSource(Sources.EMERGENCY);
+                        currentlySilent = false;
+                    }
+                }
+                else // Else make note that the stream is silent
+                {
+                    currentlySilent = true;
+                    silentSince = DateTime.Now;
+                }
+            }
+            else // Else stream is not silent
+            {
+                currentlySilent = false;
             }
         }
 
@@ -657,6 +696,7 @@ namespace ShockRouter
                 OutputLevelMeterUpdate(null, levelEvent);
             }
         }
+        #endregion
         #endregion
     }
 }
