@@ -94,5 +94,17 @@ namespace ShockRouter.Properties {
                 this["DetectorTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ClockIP {
+            get {
+                return ((string)(this["ClockIP"]));
+            }
+            set {
+                this["ClockIP"] = value;
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ namespace ShockRouter
             fileLabel.Text = Properties.Settings.Default.EmergencyFile;
             detectorUpDown.Value = Properties.Settings.Default.DetectorTime;
             processorComboBox.SelectedIndex = Properties.Settings.Default.Processor;
+            clockIPTextBox.Text = Properties.Settings.Default.ClockIP;
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -65,6 +66,7 @@ namespace ShockRouter
             Properties.Settings.Default.EmergencyFile = fileLabel.Text;
             Properties.Settings.Default.DetectorTime = (int)detectorUpDown.Value;
             Properties.Settings.Default.Processor = processorComboBox.SelectedIndex;
+            Properties.Settings.Default.ClockIP = clockIPTextBox.Text;
             // Save settings
             Properties.Settings.Default.Save();
         }
