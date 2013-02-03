@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
@@ -136,6 +137,11 @@ namespace ShockRouter
                 InitialiseDSP(value);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the IP address of the clock to send source information to
+        /// </summary>
+        public string ClockIP { get; set; }
         #endregion
 
         #region Enumerations
@@ -332,6 +338,39 @@ namespace ShockRouter
                 if (SourceChanged != null)
                 {
                     SourceChanged(this, new EventArgs());
+                }
+                // Send source information to clock
+                if (ClockIP != "" && ClockIP != null) // If an IP has been set
+                {
+                    try
+                    {
+                        TcpClient client = new TcpClient(ClockIP, 7000);
+                        StreamWriter writer = new StreamWriter(client.GetStream());
+                        writer.AutoFlush = true;
+                        if (source == Sources.STUDIO)
+                        {
+                            writer.WriteLine("STUDIO ON");
+                        }
+                        else
+                        {
+                            writer.WriteLine("STUDIO OFF");
+                        }
+                        if (source == Sources.EMERGENCY)
+                        {
+                            writer.WriteLine("EMERGENCY ON");
+                        }
+                        else
+                        {
+                            writer.WriteLine("EMERGENCY OFF");
+                        }
+                        writer.WriteLine("EXIT");
+                        client.GetStream().Close();
+                        client.Close();
+                    }
+                    catch
+                    {
+                        // Do nothing if an exception occurs
+                    }
                 }
             }
         }

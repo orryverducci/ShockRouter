@@ -55,6 +55,8 @@
             this.detectorUpDown = new System.Windows.Forms.NumericUpDown();
             this.detectorLabel = new System.Windows.Forms.Label();
             this.secondsLabel = new System.Windows.Forms.Label();
+            this.clockIPTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.scheduleSeperator = new ShockCast.Seperator();
             this.outputRightMeter = new ShockCast.VolumeMeter();
             this.outputLeftMeter = new ShockCast.VolumeMeter();
@@ -231,7 +233,7 @@
             this.sourceLevelLabel.Location = new System.Drawing.Point(324, 157);
             this.sourceLevelLabel.Name = "sourceLevelLabel";
             this.sourceLevelLabel.Size = new System.Drawing.Size(73, 13);
-            this.sourceLevelLabel.TabIndex = 19;
+            this.sourceLevelLabel.TabIndex = 21;
             this.sourceLevelLabel.Text = "Source Level:";
             // 
             // outputLevelLabel
@@ -240,7 +242,7 @@
             this.outputLevelLabel.Location = new System.Drawing.Point(324, 213);
             this.outputLevelLabel.Name = "outputLevelLabel";
             this.outputLevelLabel.Size = new System.Drawing.Size(71, 13);
-            this.outputLevelLabel.TabIndex = 22;
+            this.outputLevelLabel.TabIndex = 24;
             this.outputLevelLabel.Text = "Output Level:";
             // 
             // scheduleListView
@@ -250,8 +252,8 @@
             this.columnHeader2});
             this.scheduleListView.Location = new System.Drawing.Point(327, 291);
             this.scheduleListView.Name = "scheduleListView";
-            this.scheduleListView.Size = new System.Drawing.Size(273, 86);
-            this.scheduleListView.TabIndex = 26;
+            this.scheduleListView.Size = new System.Drawing.Size(273, 125);
+            this.scheduleListView.TabIndex = 28;
             this.scheduleListView.UseCompatibleStateImageBehavior = false;
             this.scheduleListView.View = System.Windows.Forms.View.Details;
             // 
@@ -268,7 +270,7 @@
             this.addButton.Location = new System.Drawing.Point(606, 290);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(24, 23);
-            this.addButton.TabIndex = 27;
+            this.addButton.TabIndex = 29;
             this.addButton.Text = "+";
             this.addButton.UseVisualStyleBackColor = true;
             // 
@@ -277,7 +279,7 @@
             this.removeButton.Location = new System.Drawing.Point(606, 319);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(24, 23);
-            this.removeButton.TabIndex = 28;
+            this.removeButton.TabIndex = 30;
             this.removeButton.Text = "-";
             this.removeButton.UseVisualStyleBackColor = true;
             // 
@@ -312,13 +314,30 @@
             this.secondsLabel.TabIndex = 31;
             this.secondsLabel.Text = "Seconds";
             // 
+            // clockIPTextBox
+            // 
+            this.clockIPTextBox.Location = new System.Drawing.Point(16, 396);
+            this.clockIPTextBox.Name = "clockIPTextBox";
+            this.clockIPTextBox.Size = new System.Drawing.Size(303, 20);
+            this.clockIPTextBox.TabIndex = 19;
+            this.clockIPTextBox.TextChanged += new System.EventHandler(this.clockIPTextBox_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 380);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 13);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Clock IP Address";
+            // 
             // scheduleSeperator
             // 
             this.scheduleSeperator.Label = "Scheduled Changes";
             this.scheduleSeperator.Location = new System.Drawing.Point(324, 272);
             this.scheduleSeperator.Name = "scheduleSeperator";
             this.scheduleSeperator.Size = new System.Drawing.Size(306, 15);
-            this.scheduleSeperator.TabIndex = 25;
+            this.scheduleSeperator.TabIndex = 27;
             // 
             // outputRightMeter
             // 
@@ -330,7 +349,7 @@
             this.outputRightMeter.Name = "outputRightMeter";
             this.outputRightMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.outputRightMeter.Size = new System.Drawing.Size(303, 16);
-            this.outputRightMeter.TabIndex = 24;
+            this.outputRightMeter.TabIndex = 26;
             // 
             // outputLeftMeter
             // 
@@ -342,7 +361,7 @@
             this.outputLeftMeter.Name = "outputLeftMeter";
             this.outputLeftMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.outputLeftMeter.Size = new System.Drawing.Size(303, 16);
-            this.outputLeftMeter.TabIndex = 23;
+            this.outputLeftMeter.TabIndex = 25;
             // 
             // sourceRightMeter
             // 
@@ -354,7 +373,7 @@
             this.sourceRightMeter.Name = "sourceRightMeter";
             this.sourceRightMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sourceRightMeter.Size = new System.Drawing.Size(303, 16);
-            this.sourceRightMeter.TabIndex = 21;
+            this.sourceRightMeter.TabIndex = 23;
             // 
             // sourceLeftMeter
             // 
@@ -366,7 +385,7 @@
             this.sourceLeftMeter.Name = "sourceLeftMeter";
             this.sourceLeftMeter.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sourceLeftMeter.Size = new System.Drawing.Size(303, 16);
-            this.sourceLeftMeter.TabIndex = 20;
+            this.sourceLeftMeter.TabIndex = 22;
             // 
             // LevelsSeperator
             // 
@@ -374,7 +393,7 @@
             this.LevelsSeperator.Location = new System.Drawing.Point(324, 139);
             this.LevelsSeperator.Name = "LevelsSeperator";
             this.LevelsSeperator.Size = new System.Drawing.Size(306, 15);
-            this.LevelsSeperator.TabIndex = 18;
+            this.LevelsSeperator.TabIndex = 20;
             // 
             // settingsSeperator
             // 
@@ -397,7 +416,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CausesValidation = false;
-            this.ClientSize = new System.Drawing.Size(642, 393);
+            this.ClientSize = new System.Drawing.Size(642, 426);
+            this.Controls.Add(this.clockIPTextBox);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.secondsLabel);
             this.Controls.Add(this.detectorLabel);
             this.Controls.Add(this.detectorUpDown);
@@ -478,6 +499,8 @@
         private System.Windows.Forms.NumericUpDown detectorUpDown;
         private System.Windows.Forms.Label detectorLabel;
         private System.Windows.Forms.Label secondsLabel;
+        private System.Windows.Forms.TextBox clockIPTextBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

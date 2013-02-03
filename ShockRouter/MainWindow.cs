@@ -223,5 +223,10 @@ namespace ShockRouter
         {
             router.ConfigureDSP(processorComboBox.SelectedItem.ToString());
         }
+
+        private void clockIPTextBox_TextChanged(object sender, EventArgs e)
+        {
+            router.ClockIP = ((TextBox)sender).Text;
+        }
     }
 }
