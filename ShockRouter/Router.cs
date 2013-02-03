@@ -360,8 +360,11 @@ namespace ShockRouter
             }
             if (!Bass.BASS_RecordInit(deviceID)) // If unable to initialise input device
             {
-                // Throw exception
-                throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString());
+                if (!Bass.BASS_RecordInit(-1)) // Try default device
+                {
+                    // If that fails throw exception
+                    throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString());
+                }
             }
             // Start recording
             recordingHandle = Bass.BASS_RecordStart(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT, null, IntPtr.Zero);
@@ -589,9 +592,12 @@ namespace ShockRouter
             // Create list
             List<string> dsps = new List<string>();
             // Return plugins
-            for (int i = 0; i < availableDSPs.Count(); i++)
+            if (availableDSPs != null)
             {
-                dsps.Add(WINAMP_DSP.PlugIns[i].Description);
+                for (int i = 0; i < availableDSPs.Count(); i++)
+                {
+                    dsps.Add(WINAMP_DSP.PlugIns[i].Description);
+                }
             }
             // Return list of devices
             return dsps;
