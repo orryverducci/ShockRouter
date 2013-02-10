@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShockRouter", "ShockRouter\ShockRouter.csproj", "{DFFD6537-E160-4A0C-B4BF-77FAD3CC3765}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouterClient", "RouterClient\RouterClient.csproj", "{4206BF2B-21A3-43BB-BC61-5E777EC3CC64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{DFFD6537-E160-4A0C-B4BF-77FAD3CC3765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFFD6537-E160-4A0C-B4BF-77FAD3CC3765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFFD6537-E160-4A0C-B4BF-77FAD3CC3765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4206BF2B-21A3-43BB-BC61-5E777EC3CC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4206BF2B-21A3-43BB-BC61-5E777EC3CC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4206BF2B-21A3-43BB-BC61-5E777EC3CC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4206BF2B-21A3-43BB-BC61-5E777EC3CC64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
