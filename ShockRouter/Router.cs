@@ -74,6 +74,11 @@ namespace ShockRouter
         /// Time the source first went silent
         /// </summary>
         private DateTime silentSince;
+
+        /// <summary>
+        /// Remote control connection
+        /// </summary>
+        private RemoteControl remote = new RemoteControl();
         #endregion
 
         #region Properties
@@ -276,6 +281,8 @@ namespace ShockRouter
             // Add output peak level meter DSP and event handler
             outputLevelMeter = new DSP_PeakLevelMeter(mixerHandle, 1);
             outputLevelMeter.Notification += new EventHandler(OutputLevelMeterNotification);
+            // Setup remote response
+            remote.RemoteSourceChange += new EventHandler(RemoteSourceChange);
         }
 
         /// <summary>
@@ -373,6 +380,16 @@ namespace ShockRouter
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets source to the one requested by a remote user
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Event arguments</param>
+        private void RemoteSourceChange(object sender, EventArgs e)
+        {
+            ChangeSource(remote.requestedSource);
         }
 
         #region Studio Source
