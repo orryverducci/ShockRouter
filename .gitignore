@@ -5,6 +5,12 @@
 bass*.dll
 
 #################
+## NetworkComms
+#################
+
+NetworkComms*.dll
+
+#################
 ## Visual Studio
 #################
 

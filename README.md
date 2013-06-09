@@ -1,6 +1,6 @@
 ShockRouter
 ===========
-ShockRouter is an audio routing application, intended for use by student radio stations to switch between sources (e.g. studio, outside broadcasts) to be broadcast. It also contains silence detection and DSP insert functionality.
+ShockRouter is an audio routing application, intended for use by student radio stations to switch between sources (e.g. studio, outside broadcasts) to be broadcast. It also contains silence detection, DSP insert and metadata syndication functionality.
 
 ShockRouter is developed by [Orry Verducci](http://www.orryverducci.co.uk/) primarily for use by [Shock Radio](http://www.shockradio.co.uk/).
 
@@ -12,6 +12,7 @@ Prerequisites
 -------------
 * BASS and BASSmix, placed in the x86 and x64 folders, available from http://www.un4seen.com/.
 * BASS.NET, available from http://bass.radio42.com/.
+* NetworkComms.Net, available from http://www.networkcomms.net/.
 
 License
 -------
