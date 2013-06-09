@@ -28,6 +28,19 @@ namespace RouterService
             Logger.InitialiseLogging();
             // Write started log
             Logger.WriteLogEntry("ShockRouter Started", EventLogEntryType.Information);
+            // Setup router
+            try
+            {
+                router = new AudioRouter();
+            }
+            catch (ApplicationException e) // If router fails to start
+            {
+                // Write log entry
+                Logger.WriteLogEntry("Unable to start audio router. Error: " + e.Message, EventLogEntryType.Error);
+                // Stop service
+                ServiceBase sb = new ServiceBase();
+                sb.Stop();
+            }
         }
 
         protected override void OnStop()
