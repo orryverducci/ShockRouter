@@ -29,7 +29,14 @@ namespace RouterService
             // Initialise BASS
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
             Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
-            bassWasapi = new BassWasapiHandler(-1, true, 44100, 2, 0, 0);
+            try
+            {
+                bassWasapi = new BassWasapiHandler(-1, true, 44100, 2, 0, 0);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ApplicationException("Unable to initialise device");
+            }
             bassWasapi.Init();
         }
 
