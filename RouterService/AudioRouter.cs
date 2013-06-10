@@ -14,7 +14,12 @@ namespace RouterService
         /// <summary>
         /// BASS WASAPI instance for output
         /// </summary>
-        BassWasapiHandler bassWasapi;
+        private BassWasapiHandler bassWasapi;
+
+        /// <summary>
+        /// The router inputs
+        /// </summary>
+        private List<IInput> inputs = new List<IInput>();
         #endregion
 
         #region Constructor and Destructor
@@ -38,6 +43,10 @@ namespace RouterService
                 throw new ApplicationException("Unable to initialise device");
             }
             bassWasapi.Init();
+            // Initialise default input
+            AddInput("-2");
+            // Start output
+            bassWasapi.Start();
         }
 
         /// <summary>
@@ -46,6 +55,18 @@ namespace RouterService
         ~AudioRouter()
         {
             Bass.FreeMe(); // Free BASS
+        }
+        #endregion
+
+        #region Inputs
+        public void AddInput(string source)
+        {
+            IInput input = new DeviceInput();
+            input.Source = source;
+            input.Start();
+            int outputChannel = input.OutputChannel;
+            inputs.Add(input);
+            bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
         }
         #endregion
     }

@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="AudioRouter.cs" />
     <Compile Include="Datacaster.cs" />
+    <Compile Include="Inputs\DeviceInput.cs" />
+    <Compile Include="Inputs\IInput.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -89,6 +91,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Bass\basswasapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bass\bassmix.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
