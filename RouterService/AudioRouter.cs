@@ -10,6 +10,13 @@ namespace RouterService
 {
     class AudioRouter
     {
+        #region Private Fields
+        /// <summary>
+        /// BASS WASAPI instance for output
+        /// </summary>
+        BassWasapiHandler bassWasapi;
+        #endregion
+
         #region Constructor and Destructor
         public AudioRouter()
         {
@@ -20,11 +27,10 @@ namespace RouterService
             Bass.LoadMe("Bass");
             BassWasapi.LoadMe("Bass");
             // Initialise BASS
-            if (!BassWasapi.BASS_WASAPI_Init(-1, 44100, 2, BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0, 0, null, IntPtr.Zero)) // If unable to initialise audio output
-            {
-                // Throw exception
-                throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString());
-            }
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
+            Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
+            bassWasapi = new BassWasapiHandler(-1, true, 44100, 2, 0, 0);
+            bassWasapi.Init();
         }
 
         /// <summary>
