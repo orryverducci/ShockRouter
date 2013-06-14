@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,11 +33,18 @@ namespace RouterService
         public void Start()
         {
             // Initialise input
-            bassWasapi = new BassWasapiHandler(Int32.Parse(Source), true, 44100, 2, 0, 0);
-            bassWasapi.Init();
-            bassWasapi.Start();
-            // Set input to full duplex
-            bassWasapi.SetFullDuplex(0, BASSFlag.BASS_STREAM_DECODE, false);
+            try
+            {
+                bassWasapi = new BassWasapiHandler(Int32.Parse(Source), true, 44100, 2, 0, 0);
+                bassWasapi.Init();
+                bassWasapi.Start();
+                // Set input to full duplex
+                bassWasapi.SetFullDuplex(0, BASSFlag.BASS_STREAM_DECODE, false);
+            }
+            catch (ArgumentException e) // If unable to initialise
+            {
+                Logger.WriteLogEntry("Unable to initialise input device for " + Name + "(Device " + Source + ")", EventLogEntryType.Warning);
+            }
         }
     }
 }

@@ -70,10 +70,13 @@ namespace RouterService
             input.Start();
             // Get output handle
             int outputChannel = input.OutputChannel;
-            // Add input to list of inputs
-            inputs.Add(input);
-            // Add input to output
-            bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
+            if (outputChannel != 0) // If input initialised successfully
+            {
+                // Add input to list of inputs
+                inputs.Add(input);
+                // Add input to output
+                bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
+            }
         }
         #endregion
     }
