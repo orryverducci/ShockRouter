@@ -33,10 +33,11 @@ namespace RouterService
             BassWasapi.LoadMe("Bass");
             // Initialise BASS
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
             try
             {
-                bassWasapi = new BassWasapiHandler(-1, true, 44100, 2, 0, 0);
+                bassWasapi = new BassWasapiHandler(0, true, 44100, 2, 0, 0);
             }
             catch (ArgumentException e)
             {
@@ -61,11 +62,17 @@ namespace RouterService
         #region Inputs
         public void AddInput(string source)
         {
+            // Create input
             IInput input = new DeviceInput();
+            // Set source
             input.Source = source;
+            // Start input
             input.Start();
+            // Get output handle
             int outputChannel = input.OutputChannel;
+            // Add input to list of inputs
             inputs.Add(input);
+            // Add input to output
             bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
         }
         #endregion

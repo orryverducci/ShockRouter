@@ -13,20 +13,30 @@ namespace RouterService
         #region Properties
         public string Name { get; set; }
         public string Source { get; set; }
-        public int OutputChannel { get; protected set; }
+        public int OutputChannel
+        {
+            get
+            {
+                return bassWasapi.OutputChannel;
+            }
+        }
         #endregion
         
         #region Private Fields
+        /// <summary>
+        /// BASS WASAPI instance for the input device
+        /// </summary>
         private BassWasapiHandler bassWasapi;
         #endregion
 
         public void Start()
         {
+            // Initialise input
             bassWasapi = new BassWasapiHandler(Int32.Parse(Source), true, 44100, 2, 0, 0);
             bassWasapi.Init();
             bassWasapi.Start();
+            // Set input to full duplex
             bassWasapi.SetFullDuplex(0, BASSFlag.BASS_STREAM_DECODE, false);
-            OutputChannel = bassWasapi.OutputChannel;
         }
     }
 }

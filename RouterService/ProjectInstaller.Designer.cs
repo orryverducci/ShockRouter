@@ -42,7 +42,6 @@
             this.serviceInstaller.Description = "Audio Mixing and Routing";
             this.serviceInstaller.DisplayName = "ShockRouter";
             this.serviceInstaller.ServiceName = "ShockRouter";
-            this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 
