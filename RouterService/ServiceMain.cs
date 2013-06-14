@@ -38,8 +38,7 @@ namespace RouterService
                 // Write log entry
                 Logger.WriteLogEntry("Unable to start audio router. Error: " + e.Message, EventLogEntryType.Error);
                 // Stop service
-                ServiceBase sb = new ServiceBase();
-                sb.Stop();
+                Environment.Exit(1);
             }
         }
 
