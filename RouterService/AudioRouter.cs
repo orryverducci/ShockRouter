@@ -60,6 +60,10 @@ namespace RouterService
         #endregion
 
         #region Inputs
+        /// <summary>
+        /// Adds the specified input to the available inputs
+        /// </summary>
+        /// <param name="source">The source ID or address to add</param>
         public void AddInput(string source)
         {
             // Create input
