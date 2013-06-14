@@ -18,7 +18,14 @@ namespace RouterService
         {
             get
             {
-                return bassWasapi.OutputChannel;
+                if (bassWasapi != null)
+                {
+                    return bassWasapi.OutputChannel;
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
         #endregion

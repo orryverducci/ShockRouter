@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Mix;
 using Un4seen.BassWasapi;
 
 namespace RouterService
@@ -30,6 +31,7 @@ namespace RouterService
             BassNet.Registration("orry@orryverducci.co.uk", "2X24373423243720");
             // Load BASS libraries
             Bass.LoadMe("Bass");
+            BassMix.LoadMe("Bass");
             BassWasapi.LoadMe("Bass");
             // Initialise BASS
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
@@ -72,10 +74,10 @@ namespace RouterService
             input.Source = source;
             // Start input
             input.Start();
-            // Get output handle
-            int outputChannel = input.OutputChannel;
-            if (outputChannel != 0) // If input initialised successfully
+            if (input.OutputChannel != 0) // If input initialised successfully
             {
+                // Get output handle
+                int outputChannel = input.OutputChannel;
                 // Add input to list of inputs
                 inputs.Add(input);
                 // Add input to output
