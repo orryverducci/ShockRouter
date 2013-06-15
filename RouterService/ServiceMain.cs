@@ -40,10 +40,14 @@ namespace RouterService
                 // Stop service
                 Environment.Exit(1);
             }
+            // Setup network communication
+            Communication.Initialise();
         }
 
         protected override void OnStop()
         {
+            // Shut down network communication
+            Communication.ShutDown();
         }
     }
 }
