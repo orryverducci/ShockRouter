@@ -16,23 +16,13 @@ using System.Windows.Shapes;
 namespace RouterFrontend
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for InputsPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class InputsPage : Page
     {
-        public MainWindow()
+        public InputsPage()
         {
             InitializeComponent();
-        }
-
-        private void sourceButton_Click(object sender, RoutedEventArgs e)
-        {
-            contentFrame.Navigate(new SourcesPage());
-        }
-
-        private void inputsButton_Click(object sender, RoutedEventArgs e)
-        {
-            contentFrame.Navigate(new InputsPage());
         }
     }
 }
