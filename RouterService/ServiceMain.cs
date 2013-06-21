@@ -40,10 +40,14 @@ namespace RouterService
                 // Stop service
                 Environment.Exit(1);
             }
+            // Start the web server on port 7000
+            WebServer.Initialise(7000);
         }
 
         protected override void OnStop()
         {
+            // Stop the web server
+            WebServer.ShutDown();
         }
     }
 }
