@@ -67,8 +67,33 @@ namespace RouterService
             HttpListenerContext listenerContext = context as HttpListenerContext;
             try
             {
-                string response = "";
-                byte[] buffer = Encoding.UTF8.GetBytes(response);
+                // Parse the URL
+                string[] path = listenerContext.Request.RawUrl.Split('/');
+                IWebResponse response;
+                // Choose a response
+                if (path.Length > 2)
+                {
+                    switch (path[1])
+                    {
+                        default:
+                            response = new Response404();
+                            break;
+                    }
+                }
+                else
+                {
+                    response = new Response404();
+                }
+                // Get response content
+                if (!response.GetResponse(path)) // If response fails
+                {
+                    // Return server error
+                    response = new Response500();
+                }
+                // Send response
+                byte[] buffer = Encoding.UTF8.GetBytes(response.Response);
+                listenerContext.Response.ContentType = response.ContentType;
+                listenerContext.Response.StatusCode = response.Status;
                 listenerContext.Response.ContentLength64 = buffer.Length;
                 listenerContext.Response.OutputStream.Write(buffer, 0, buffer.Length);
             }
