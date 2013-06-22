@@ -89,6 +89,9 @@ namespace RouterService
                 IWebResponse response;
                 switch (appRequested)
                 {
+                    case "assets":
+                        response = new ResponseAssets();
+                        break;
                     default:
                         response = new Response404();
                         break;

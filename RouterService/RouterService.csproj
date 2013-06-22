@@ -75,6 +75,7 @@
     <Compile Include="WebServer\Response500.cs" />
     <Compile Include="WebServer\IWebResponse.cs" />
     <Compile Include="WebServer\Response404.cs" />
+    <Compile Include="WebServer\ResponseAssets.cs" />
     <Compile Include="WebServer\WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +101,25 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Bass\bassmix.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="webroot\css\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="webroot\img\glyphicons-halflings-white.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="webroot\img\glyphicons-halflings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="webroot\js\bootstrap.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
