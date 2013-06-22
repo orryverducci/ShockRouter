@@ -25,8 +25,9 @@ namespace RouterService
             listener.Prefixes.Add("http://*:" + port.ToString() + "/");
             // Start server
             listener.Start();
-            // Listen for requests
-            ThreadPool.QueueUserWorkItem(new WaitCallback(ListenerHandler));
+            // Listen for requests on a new thread
+            Thread listenerThread = new Thread(new ThreadStart(RequestListener));
+            listenerThread.Start();
         }
 
         /// <summary>
@@ -41,14 +42,13 @@ namespace RouterService
         /// <summary>
         /// Listens for requests from the HTTP service
         /// </summary>
-        /// <param name="stateInfo">The thread state</param>
-        static private void ListenerHandler(object stateInfo)
+        static private void RequestListener()
         {
             try
             {
                 while (listener.IsListening) // As long as the server is active and listening for connections
                 {
-                    // Process request on a new thread
+                    // Process request, when one is received, on a new thread
                     ThreadPool.QueueUserWorkItem(new WaitCallback(RequestHandler), listener.GetContext());
                 }
             }
