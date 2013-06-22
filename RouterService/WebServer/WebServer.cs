@@ -64,25 +64,34 @@ namespace RouterService
         static private void RequestHandler(object context)
         {
             // Get the listener context
-            HttpListenerContext listenerContext = context as HttpListenerContext;
+            HttpListenerContext listenerContext = (HttpListenerContext)context;
             try
             {
                 // Parse the URL
-                string[] path = listenerContext.Request.RawUrl.Split('/');
-                IWebResponse response;
-                // Choose a response
-                if (path.Length > 2)
+                string[] path = listenerContext.Request.Url.Segments;
+                string appRequested;
+                if (path.Length > 1) // If a page has been chosen
                 {
-                    switch (path[1])
+                    if (path[1].EndsWith("/"))
                     {
-                        default:
-                            response = new Response404();
-                            break;
+                        appRequested = path[1].Substring(0, path[1].Length - 1);
+                    }
+                    else
+                    {
+                        appRequested = path[1];
                     }
                 }
                 else
                 {
-                    response = new Response404();
+                    appRequested = "home";
+                }
+                // Choose a response
+                IWebResponse response;
+                switch (appRequested)
+                {
+                    default:
+                        response = new Response404();
+                        break;
                 }
                 // Get response content
                 if (!response.GetResponse(path)) // If response fails
