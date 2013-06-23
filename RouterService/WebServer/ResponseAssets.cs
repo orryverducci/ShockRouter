@@ -51,6 +51,7 @@ namespace RouterService
 
         public bool GetResponse(string[] path)
         {
+            bool success;
             // Compile path to string
             string fullPath = String.Empty;
             foreach (string segment in path)
@@ -103,21 +104,21 @@ namespace RouterService
                     // Read file and return it as a response
                     TextReader textReader = new StreamReader(localPath);
                     Response = textReader.ReadToEnd();
+                    // Return successful result
+                    success = true;
                 }
                 else // Else return 404
                 {
                     Status = 404;
-                    ContentType = "text/html";
-                    Response = "404 Not Found";
+                    success = false;
                 }
             }
             else // Else return 403 Forbidden
             {
                 Status = 403;
-                ContentType = "text/html";
-                Response = "403 Forbidden";
+                success = false;
             }
-            return true;
+            return success;
         }
 
     }

@@ -99,8 +99,20 @@ namespace RouterService
                 // Get response content
                 if (!response.GetResponse(path)) // If response fails
                 {
-                    // Return server error
-                    response = new Response500();
+                    // Return error depending on code
+                    switch (response.Status)
+                    {
+                        case 403:
+                            response = new Response403();
+                            break;
+                        case 404:
+                            response = new Response404();
+                            break;
+                        default:
+                            response = new Response500();
+                            break;
+                    }
+                    response.GetResponse(path);
                 }
                 // Send response
                 byte[] buffer = Encoding.UTF8.GetBytes(response.Response);
