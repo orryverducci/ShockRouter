@@ -94,6 +94,9 @@ namespace RouterService
                     case "assets":
                         response = new ResponseAssets();
                         break;
+                    case "home":
+                        response = new ResponseHome();
+                        break;
                     default:
                         response = new Response404();
                         break;
