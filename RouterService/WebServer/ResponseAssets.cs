@@ -109,8 +109,16 @@ namespace RouterService
                 }
                 else // Else return 404
                 {
-                    Status = 404;
-                    success = false;
+                    if (Directory.Exists(localPath)) // If a valid directory
+                    {
+                        Status = 403;
+                        success = false;
+                    }
+                    else
+                    {
+                        Status = 404;
+                        success = false;
+                    }
                 }
             }
             else // Else return 403 Forbidden
