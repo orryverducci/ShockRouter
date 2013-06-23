@@ -57,7 +57,7 @@ namespace RouterService
                 Response += textReader.ReadToEnd();
             }
             // Output footer
-            if (File.Exists(headerPath)) // If header exists
+            if (File.Exists(footerPath)) // If header exists
             {
                 // Read file and output it as part of response
                 TextReader textReader = new StreamReader(footerPath);

@@ -1,0 +1,12 @@
+body {
+    padding-top: 60px;
+}
+
+.nav-stacked {
+    margin-top: 18px;
+}
+
+.nav-stacked li i {
+    float: right;
+    margin-top: 2px;
+}
