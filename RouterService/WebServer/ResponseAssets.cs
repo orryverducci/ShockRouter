@@ -71,6 +71,7 @@ namespace RouterService
                     switch (Path.GetExtension(localPath))
                     {
                         case ".html":
+                        case ".htm":
                             ContentType = "text/html";
                             break;
                         case ".css":
@@ -79,8 +80,21 @@ namespace RouterService
                         case ".js":
                             ContentType = "text/javascript";
                             break;
+                        case ".xml":
+                            ContentType = "text/xml";
+                            break;
+                        case ".jpg":
+                        case ".jpeg":
+                            ContentType = "image/jpeg";
+                            break;
                         case ".png":
                             ContentType = "image/png";
+                            break;
+                        case ".gif":
+                            ContentType = "image/gif";
+                            break;
+                        case ".ico":
+                            ContentType = "image/x-icon";
                             break;
                         default:
                             ContentType = "application/octet-stream";
