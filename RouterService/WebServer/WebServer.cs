@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -52,8 +53,9 @@ namespace RouterService
                     ThreadPool.QueueUserWorkItem(new WaitCallback(RequestHandler), listener.GetContext());
                 }
             }
-            catch // Suppress any exceptions
+            catch (Exception e) // Suppress any exceptions
             {
+                Logger.WriteLogEntry("Server error: " + e.Message, EventLogEntryType.Error);
             }
         }
 
@@ -121,8 +123,9 @@ namespace RouterService
                 listenerContext.Response.ContentLength64 = buffer.Length;
                 listenerContext.Response.OutputStream.Write(buffer, 0, buffer.Length);
             }
-            catch // Suppress any exceptions
+            catch (Exception e) // Suppress any exceptions
             {
+                Logger.WriteLogEntry("Server error: " + e.Message, EventLogEntryType.Error);
             } 
             finally // Close the stream after processing
             {
