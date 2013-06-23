@@ -13,8 +13,7 @@ namespace RouterService
     public partial class ServiceMain : ServiceBase
     {
         #region Private fields
-        private AudioRouter router;
-        private Datacaster datacaster;
+        private Core core;
         #endregion
 
         public ServiceMain()
@@ -31,23 +30,19 @@ namespace RouterService
             // Setup router
             try
             {
-                router = new AudioRouter();
+                core = new Core();
             }
             catch (ApplicationException e) // If router fails to start
             {
                 // Write log entry
-                Logger.WriteLogEntry("Unable to start audio router. Error: " + e.Message, EventLogEntryType.Error);
+                Logger.WriteLogEntry("Unable to start router. Error: " + e.Message, EventLogEntryType.Error);
                 // Stop service
                 Environment.Exit(1);
             }
-            // Start the web server on port 7000
-            WebServer.Initialise(7000);
         }
 
         protected override void OnStop()
         {
-            // Stop the web server
-            WebServer.ShutDown();
         }
     }
 }

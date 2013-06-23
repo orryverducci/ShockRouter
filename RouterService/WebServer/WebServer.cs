@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace RouterService
 {
-    static class WebServer
+    class WebServer
     {
         /// <summary>
         /// The HttpListener for the server
         /// </summary>
-        static private HttpListener listener = new HttpListener();
+        private HttpListener listener = new HttpListener();
 
         /// <summary>
         /// Starts the web server
         /// </summary>
         /// <param name="port">The port to listen on</param>
-        static public void Initialise(int port)
+        public WebServer(int port)
         {
             // Setup server
             listener.Prefixes.Add("http://*:" + port.ToString() + "/");
@@ -34,7 +34,7 @@ namespace RouterService
         /// <summary>
         /// Stops the web server
         /// </summary>
-        static public void ShutDown()
+        ~WebServer()
         {
             listener.Stop();
             listener.Close();
@@ -43,7 +43,7 @@ namespace RouterService
         /// <summary>
         /// Listens for requests from the HTTP service
         /// </summary>
-        static private void RequestListener()
+        private void RequestListener()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace RouterService
         /// Handles requests from clients
         /// </summary>
         /// <param name="context">The HTTPListenerContext for the request</param>
-        static private void RequestHandler(object context)
+        private void RequestHandler(object context)
         {
             // Get the listener context
             HttpListenerContext listenerContext = (HttpListenerContext)context;
