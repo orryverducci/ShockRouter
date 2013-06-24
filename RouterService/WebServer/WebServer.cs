@@ -97,6 +97,9 @@ namespace RouterService
                     case "home":
                         response = new ResponseHome();
                         break;
+                    case "inputs":
+                        response = new ResponseInputs();
+                        break;
                     default:
                         response = new Response404();
                         break;
