@@ -41,7 +41,7 @@ namespace RouterService
             {
                 bassWasapi = new BassWasapiHandler(0, true, 44100, 2, 0, 0);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 throw new ApplicationException("Unable to initialise device");
             }
