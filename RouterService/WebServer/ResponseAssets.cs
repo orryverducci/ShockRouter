@@ -9,11 +9,11 @@ namespace RouterService
 {
     class ResponseAssets : IWebResponse
     {
-        private string response;
+        private byte[] response;
         private int status;
         private string contentType;
 
-        public string Response
+        public byte[] Response
         {
             get
             {
@@ -102,8 +102,12 @@ namespace RouterService
                             break;
                     }
                     // Read file and return it as a response
-                    TextReader textReader = new StreamReader(localPath);
-                    Response = textReader.ReadToEnd();
+                    FileInfo fileInfo = new FileInfo(localPath);
+                    FileStream fileStream = new FileStream(localPath, FileMode.Open, FileAccess.Read);
+                    BinaryReader binaryReader = new BinaryReader(fileStream);
+                    Response = binaryReader.ReadBytes((int)fileInfo.Length);
+                    binaryReader.Close();
+                    fileStream.Close();
                     // Return successful result
                     success = true;
                 }

@@ -9,9 +9,9 @@ namespace RouterService
 {
     class ResponseHome : IWebResponse
     {
-        private string response;
+        private byte[] response;
 
-        public string Response
+        public byte[] Response
         {
             get
             {
@@ -48,21 +48,23 @@ namespace RouterService
             string footerPath =
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
                 "\\webroot\\footer.html";
-            Response = String.Empty;
+            string responseContent = String.Empty;
             // Output header
             if (File.Exists(headerPath)) // If header exists
             {
                 // Read file and output it as part of response
                 TextReader textReader = new StreamReader(headerPath);
-                Response += textReader.ReadToEnd();
+                responseContent += textReader.ReadToEnd();
             }
             // Output footer
             if (File.Exists(footerPath)) // If header exists
             {
                 // Read file and output it as part of response
                 TextReader textReader = new StreamReader(footerPath);
-                Response += textReader.ReadToEnd();
+                responseContent += textReader.ReadToEnd();
             }
+            // Output final results
+            Response = Encoding.UTF8.GetBytes(responseContent);
             // Return successful result
             return true;
         }

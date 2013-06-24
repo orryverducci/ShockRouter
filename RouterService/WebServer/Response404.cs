@@ -8,9 +8,9 @@ namespace RouterService
 {
     class Response404 : IWebResponse
     {
-        private string response;
+        private byte[] response;
 
-        public string Response
+        public byte[] Response
         {
             get
             {
@@ -40,7 +40,8 @@ namespace RouterService
 
         public bool GetResponse(string[] path)
         {
-            Response = "404 Not Found";
+            string responseContent = "404 Not Found";
+            Response = Encoding.UTF8.GetBytes(responseContent);
             return true;
         }
     }

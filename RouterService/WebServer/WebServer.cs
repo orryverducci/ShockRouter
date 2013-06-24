@@ -120,11 +120,10 @@ namespace RouterService
                     response.GetResponse(path);
                 }
                 // Send response
-                byte[] buffer = Encoding.UTF8.GetBytes(response.Response);
                 listenerContext.Response.ContentType = response.ContentType;
                 listenerContext.Response.StatusCode = response.Status;
-                listenerContext.Response.ContentLength64 = buffer.Length;
-                listenerContext.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                listenerContext.Response.ContentLength64 = response.Response.Length;
+                listenerContext.Response.OutputStream.Write(response.Response, 0, response.Response.Length);
             }
             catch (Exception e) // Suppress any exceptions
             {

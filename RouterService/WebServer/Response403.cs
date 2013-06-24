@@ -8,9 +8,9 @@ namespace RouterService
 {
     class Response403 : IWebResponse
     {
-        private string response;
+        private byte[] response;
 
-        public string Response
+        public byte[] Response
         {
             get
             {
@@ -40,7 +40,8 @@ namespace RouterService
 
         public bool GetResponse(string[] path)
         {
-            Response = "403 Forbidden";
+            string responseContent = "403 Forbidden";
+            Response = Encoding.UTF8.GetBytes(responseContent);
             return true;
         }
     }

@@ -8,9 +8,9 @@ namespace RouterService
 {
     class Response500 : IWebResponse
     {
-        private string response;
+        private byte[] response;
 
-        public string Response
+        public byte[] Response
         {
             get
             {
@@ -40,7 +40,8 @@ namespace RouterService
 
         public bool GetResponse(string[] path)
         {
-            Response = "500 Internal Server Error";
+            string responseContent = "500 Internal Server Error";
+            Response = Encoding.UTF8.GetBytes(responseContent);
             return true;
         }
     }

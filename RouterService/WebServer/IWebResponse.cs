@@ -11,7 +11,7 @@ namespace RouterService
         /// <summary>
         /// The reponse
         /// </summary>
-        string Response { get; }
+        byte[] Response { get; }
         /// <summary>
         /// The reponse HTTP status code
         /// </summary>
