@@ -74,12 +74,14 @@ namespace RouterService
         /// <summary>
         /// Adds the specified input to the available inputs
         /// </summary>
+        /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID or address to add</param>
-        private void AddInput(string source)
+        private void AddInput(string name, string source)
         {
             // Create input
             IInput input = new DeviceInput();
             // Set source
+            input.Name = name;
             input.Source = source;
             // Start input
             input.Start();
