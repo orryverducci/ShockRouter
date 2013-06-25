@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -49,7 +50,7 @@ namespace RouterService
             }
         }
 
-        public bool GetResponse(string[] path)
+        public bool GetResponse(string[] path, NameValueCollection queries)
         {
             bool success;
             // Compile path to string

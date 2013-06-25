@@ -113,7 +113,7 @@ namespace RouterService
                         break;
                 }
                 // Get response content
-                if (!response.GetResponse(path)) // If response fails
+                if (!response.GetResponse(path, listenerContext.Request.QueryString)) // If response fails
                 {
                     // Return error depending on code
                     switch (response.Status)
@@ -128,7 +128,7 @@ namespace RouterService
                             response = new Response500();
                             break;
                     }
-                    response.GetResponse(path);
+                    response.GetResponse(path, listenerContext.Request.QueryString);
                 }
                 // Send response
                 listenerContext.Response.ContentType = response.ContentType;

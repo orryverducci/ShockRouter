@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,6 @@ namespace RouterService
         /// <summary>
         /// Get the response. Returns true if successful
         /// </summary>
-        bool GetResponse(string[] path);
+        bool GetResponse(string[] path, NameValueCollection queries);
     }
 }

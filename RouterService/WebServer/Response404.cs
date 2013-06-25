@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace RouterService
             }
         }
 
-        public bool GetResponse(string[] path)
+        public bool GetResponse(string[] path, NameValueCollection queries)
         {
             string responseContent = "404 Not Found";
             Response = Encoding.UTF8.GetBytes(responseContent);

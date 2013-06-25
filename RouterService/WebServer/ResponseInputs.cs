@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -53,7 +54,7 @@ namespace RouterService
             audioRouter = router;
         }
 
-        public bool GetResponse(string[] path)
+        public bool GetResponse(string[] path, NameValueCollection queries)
         {
             bool success;
             if (path.Length > 2) // If a subpage has been requested
