@@ -82,6 +82,9 @@ namespace RouterService
                 case "index":
                     pageContent = IndexPage();
                     break;
+                case "add":
+                    pageContent = AddPage();
+                    break;
                 default:
                     validPage = false;
                     break;
@@ -147,6 +150,28 @@ namespace RouterService
             }
             // Close table of inputs
             page += "</tbody></table>";
+            // Return page content
+            return page;
+        }
+
+        private string AddPage()
+        {
+            // Setup page content
+            string page = String.Empty;
+            // Add page title
+            page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
+            // Open form
+            page += "<form class=\"form-horizontal\">";
+            // Name item
+            page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" placeholder=\"Name\"></div></div>";
+            // Devices
+            page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select class=\"input-xxlarge\">";
+            page += "<option>Device</option>";
+            page += "</select></div></div>";
+            // Submit button
+            page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+            // Close form
+            page += "</form>";
             // Return page content
             return page;
         }
