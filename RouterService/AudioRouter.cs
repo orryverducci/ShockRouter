@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -110,6 +111,11 @@ namespace RouterService
                 {
                     inputDevices.Add(device);
                 }
+            }
+            // Output message if there is no available devices
+            if (inputDevices.Count == 0)
+            {
+                Logger.WriteLogEntry("No input devices are currently available", EventLogEntryType.Information);
             }
             // Return devices
             return inputDevices;
