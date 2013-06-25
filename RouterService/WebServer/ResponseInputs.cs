@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Un4seen.BassWasapi;
 
 namespace RouterService
 {
@@ -166,7 +167,10 @@ namespace RouterService
             page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" placeholder=\"Name\"></div></div>";
             // Devices
             page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select class=\"input-xxlarge\">";
-            page += "<option>Device</option>";
+            foreach (BASS_WASAPI_DEVICEINFO device in audioRouter.GetInputs())
+            {
+                page += "<option>" + device.name + "</option>";
+            }
             page += "</select></div></div>";
             // Submit button
             page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";

@@ -92,6 +92,28 @@ namespace RouterService
                 bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
             }
         }
+
+        /// <summary>
+        /// Get the currently available input devices
+        /// </summary>
+        /// <returns>A list of BASS_WASAPI_DEVICEINFO for each available device</returns>
+        public List<BASS_WASAPI_DEVICEINFO> GetInputs()
+        {
+            // Setup list
+            List<BASS_WASAPI_DEVICEINFO> inputDevices = new List<BASS_WASAPI_DEVICEINFO>();
+            // Retrieve devices
+            BASS_WASAPI_DEVICEINFO[] devices = BassWasapi.BASS_WASAPI_GetDeviceInfos();
+            // Add valid input devices to list
+            foreach (BASS_WASAPI_DEVICEINFO device in devices)
+            {
+                if (device.SupportsRecording && !device.IsLoopback && device.IsEnabled)
+                {
+                    inputDevices.Add(device);
+                }
+            }
+            // Return devices
+            return inputDevices;
+        }
         #endregion
     }
 }
