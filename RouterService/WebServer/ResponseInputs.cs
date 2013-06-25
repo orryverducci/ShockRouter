@@ -175,16 +175,16 @@ namespace RouterService
                 // Add page title
                 page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
                 // Open form
-                page += "<form class=\"form-horizontal\">";
+                page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
                 // Name item
                 page +=
-                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" placeholder=\"Name\"></div></div>";
+                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
                 // List of devices
                 page +=
-                    "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select class=\"input-xxlarge\">";
+                    "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
                 foreach (BASS_WASAPI_DEVICEINFO device in audioRouter.GetInputs())
                 {
-                    page += "<option>" + device.name + "</option>";
+                    page += "<option value=\"" + device.id + "\">" + device.name + "</option>";
                 }
                 page += "</select></div></div>";
                 // Submit button
