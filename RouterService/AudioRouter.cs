@@ -56,8 +56,6 @@ namespace RouterService
                 throw new ApplicationException("Unable to initialise device");
             }
             bassWasapi.Init();
-            // Initialise default input
-            AddInput("-2");
             // Start output
             bassWasapi.Start();
         }
