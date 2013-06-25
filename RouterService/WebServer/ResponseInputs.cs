@@ -157,25 +157,37 @@ namespace RouterService
 
         private string AddPage()
         {
+            // Get devices
+            List<BASS_WASAPI_DEVICEINFO> devices = audioRouter.GetInputs();
             // Setup page content
             string page = String.Empty;
-            // Add page title
-            page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
-            // Open form
-            page += "<form class=\"form-horizontal\">";
-            // Name item
-            page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" placeholder=\"Name\"></div></div>";
-            // Devices
-            page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select class=\"input-xxlarge\">";
-            foreach (BASS_WASAPI_DEVICEINFO device in audioRouter.GetInputs())
+            if (devices.Count > 0) // If there is devices available
             {
-                page += "<option>" + device.name + "</option>";
+                // Add page title
+                page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
+                // Open form
+                page += "<form class=\"form-horizontal\">";
+                // Name item
+                page +=
+                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" placeholder=\"Name\"></div></div>";
+                // List of devices
+                page +=
+                    "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select class=\"input-xxlarge\">";
+                foreach (BASS_WASAPI_DEVICEINFO device in audioRouter.GetInputs())
+                {
+                    page += "<option>" + device.name + "</option>";
+                }
+                page += "</select></div></div>";
+                // Submit button
+                page +=
+                    "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+                // Close form
+                page += "</form>";
             }
-            page += "</select></div></div>";
-            // Submit button
-            page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
-            // Close form
-            page += "</form>";
+            else // Else if no devices are available
+            {
+                page += "<p>No devices are currently available</p>";
+            }
             // Return page content
             return page;
         }
