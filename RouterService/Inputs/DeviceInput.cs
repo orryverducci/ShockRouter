@@ -48,7 +48,7 @@ namespace RouterService
                 // Set input to full duplex
                 bassWasapi.SetFullDuplex(0, BASSFlag.BASS_STREAM_DECODE, false);
             }
-            catch (ArgumentException e) // If unable to initialise
+            catch (ArgumentException) // If unable to initialise
             {
                 Logger.WriteLogEntry("Unable to initialise input device for " + Name + "(Device " + Source + ")", EventLogEntryType.Warning);
             }
