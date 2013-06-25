@@ -76,7 +76,7 @@ namespace RouterService
         /// </summary>
         /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID or address to add</param>
-        private void AddInput(string name, string source)
+        public void AddInput(string name, string source)
         {
             // Create input
             IInput input = new DeviceInput();

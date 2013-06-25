@@ -59,11 +59,11 @@ namespace RouterService
             bool success;
             if (path.Length > 2) // If a subpage has been requested
             {
-                success = BuildPage(path[2]);
+                success = BuildPage(path[2], queries);
             }
             else // Else if homepage requested
             {
-                success = BuildPage("index");
+                success = BuildPage("index", queries);
             }
             // Output final results
             Response = Encoding.UTF8.GetBytes(responseContent);
@@ -71,7 +71,7 @@ namespace RouterService
             return success;
         }
 
-        private bool BuildPage(string page)
+        private bool BuildPage(string page, NameValueCollection queries)
         {
             bool validPage = true;
             if (page.EndsWith("/"))
@@ -85,7 +85,7 @@ namespace RouterService
                     pageContent = IndexPage();
                     break;
                 case "add":
-                    pageContent = AddPage();
+                    pageContent = AddPage(queries);
                     break;
                 default:
                     validPage = false;
@@ -156,8 +156,16 @@ namespace RouterService
             return page;
         }
 
-        private string AddPage()
+        private string AddPage(NameValueCollection queries)
         {
+            // Check for queries adding a device ID
+            foreach (string query in queries.AllKeys)
+            {
+                if (query.StartsWith("id="))
+                {
+                    audioRouter.AddInput("", query.Substring(3));
+                }
+            }
             // Get devices
             List<BASS_WASAPI_DEVICEINFO> devices = audioRouter.GetInputs();
             // Setup page content
