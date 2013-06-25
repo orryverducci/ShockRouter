@@ -23,6 +23,16 @@ namespace RouterService
         private List<IInput> inputs = new List<IInput>();
         #endregion
 
+        #region Properties
+        public List<IInput> Inputs
+        {
+            get
+            {
+                return inputs;
+            }
+        }
+        #endregion
+
         #region Constructor and Destructor
         public AudioRouter()
         {

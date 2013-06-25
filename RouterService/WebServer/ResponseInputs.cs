@@ -9,6 +9,7 @@ namespace RouterService
 {
     class ResponseInputs : IWebResponse
     {
+        private AudioRouter audioRouter;
         private byte[] response;
         private string responseContent = String.Empty;
         private int status;
@@ -44,6 +45,11 @@ namespace RouterService
             {
                 return "text/html";
             }
+        }
+
+        public ResponseInputs(AudioRouter router)
+        {
+            audioRouter = router;
         }
 
         public bool GetResponse(string[] path)
@@ -99,7 +105,7 @@ namespace RouterService
                     responseContent += textReader.ReadToEnd();
                 }
                 // Output page content
-                responseContent += "<div class=\"page-header\"><h1>Inputs</h1></div>";
+                responseContent += pageContent;
                 // Output footer
                 if (File.Exists(footerPath)) // If header exists
                 {
@@ -117,7 +123,32 @@ namespace RouterService
 
         private string IndexPage()
         {
-            return "";
+            // Setup page content
+            string page = String.Empty;
+            // Add page title
+            page += "<div class=\"page-header\"><h1>Inputs</h1></div>";
+            // Add button to add input
+            page += "<div class=\"btn-group\"><a href=\"/inputs/add/\" class=\"btn\">Add Input</a></div>";
+            // Open table of inputs
+            page += "<table class=\"table\"><thead><tr><th>Name</th><th>Type</th><th>Options</th></tr></thead><tbody>";
+            // List inputs
+            foreach (IInput input in audioRouter.Inputs)
+            {
+                // Open row
+                page += "<tr>";
+                // Display name
+                page += "<td>" + input.Name + "</td>";
+                // Display type
+                page += "<td>Not yet implemented</td>";
+                // Display options
+                page += "<div class=\"btn-group\"><a href=\"/inputs/edit/" + input.OutputChannel.ToString() + "/\" class=\"btn\">Change</a><a href=\"/inputs/delete/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-danger\">Delete</a></div>";
+                // Close row
+                page += "</tr>";
+            }
+            // Close table of inputs
+            page += "</tbody></table>";
+            // Return page content
+            return page;
         }
     }
 }

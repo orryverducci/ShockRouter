@@ -17,11 +17,19 @@ namespace RouterService
         private HttpListener listener = new HttpListener();
 
         /// <summary>
+        /// The audio router to retrieve status information from
+        /// </summary>
+        private AudioRouter audioRouter;
+
+        /// <summary>
         /// Starts the web server
         /// </summary>
         /// <param name="port">The port to listen on</param>
-        public WebServer(int port)
+        /// <param name="router">The audio router the server should be linked to</param>
+        public WebServer(int port, AudioRouter router)
         {
+            // Link audio router to server
+            audioRouter = router;
             // Setup server
             listener.Prefixes.Add("http://*:" + port.ToString() + "/");
             // Start server
@@ -98,7 +106,7 @@ namespace RouterService
                         response = new ResponseHome();
                         break;
                     case "inputs":
-                        response = new ResponseInputs();
+                        response = new ResponseInputs(audioRouter);
                         break;
                     default:
                         response = new Response404();

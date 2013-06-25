@@ -27,7 +27,7 @@ namespace RouterService
                 throw new ApplicationException("Unable to start audio - " + e.Message);
             }
             // Start the web server on port 7000
-            webServer = new WebServer(7000);
+            webServer = new WebServer(7000, router);
         }
     }
 }
