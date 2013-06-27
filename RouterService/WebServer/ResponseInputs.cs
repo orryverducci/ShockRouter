@@ -87,6 +87,9 @@ namespace RouterService
                 case "add":
                     pageContent = AddPage(queries, path);
                     break;
+                case "edit":
+                    pageContent = EditPage(queries, path);
+                    break;
                 default:
                     validPage = false;
                     break;
@@ -240,6 +243,41 @@ namespace RouterService
             else // Else if subpages have been requested, return not found error
             {
                 Status = 404;
+            }
+            // Return page content
+            return page;
+        }
+
+        private string EditPage(NameValueCollection queries, string[] path)
+        {
+            string page = String.Empty;
+            if (path.Length > 4) // If a subpage has been requested, return not found
+            {
+                Status = 404;
+            }
+            else if (path.Length < 4) // If no device has been parsed, return error
+            {
+                Status = 500;
+            }
+            else // Else display edit page
+            {
+                // Return success
+                Status = 200;
+                // Add page title
+                page += "<div class=\"page-header\"><h1>Change Input</h1></div>";
+                // Open form
+                page += "<form class=\"form-horizontal\" action=\"/inputs/edit/\" method=\"get\">";
+                // Name item
+                page +=
+                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
+                // Device notice
+                page +=
+                    "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this device has to be deleted and readded.</i></div></div>";
+                // Submit button
+                page +=
+                    "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                // Close form
+                page += "</form>";
             }
             // Return page content
             return page;
