@@ -100,18 +100,28 @@ namespace RouterService
         /// Get the currently available input devices
         /// </summary>
         /// <returns>A list of BASS_WASAPI_DEVICEINFO for each available device</returns>
-        public List<BASS_WASAPI_DEVICEINFO> GetInputs()
+        public List<DeviceInfo> GetInputs()
         {
             // Setup list
-            List<BASS_WASAPI_DEVICEINFO> inputDevices = new List<BASS_WASAPI_DEVICEINFO>();
+            List<DeviceInfo> inputDevices = new List<DeviceInfo>();
             // Retrieve devices
-            BASS_WASAPI_DEVICEINFO[] devices = BassWasapi.BASS_WASAPI_GetDeviceInfos();
-            // Add valid input devices to list
-            foreach (BASS_WASAPI_DEVICEINFO device in devices)
+            bool continueLoop = true;
+            for (int i = 0; continueLoop; i++)
             {
-                if (device.SupportsRecording && !device.IsLoopback && device.IsEnabled)
+                try
                 {
-                    inputDevices.Add(device);
+                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                    if (device.IsInput && !device.IsLoopback && device.IsEnabled)
+                    {
+                        DeviceInfo deviceInfo = new DeviceInfo();
+                        deviceInfo.Name = device.name;
+                        deviceInfo.ID = i;
+                        inputDevices.Add(deviceInfo);
+                    }
+                }
+                catch (Exception)
+                {
+                    continueLoop = false;
                 }
             }
             // Output message if there is no available devices

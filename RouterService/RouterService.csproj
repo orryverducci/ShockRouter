@@ -56,6 +56,7 @@
     <Compile Include="AudioRouter.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Datacaster.cs" />
+    <Compile Include="DeviceInfo.cs" />
     <Compile Include="Inputs\DeviceInput.cs" />
     <Compile Include="Inputs\IInput.cs" />
     <Compile Include="Logger.cs" />

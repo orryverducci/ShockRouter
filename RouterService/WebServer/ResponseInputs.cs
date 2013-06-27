@@ -167,7 +167,7 @@ namespace RouterService
                 }
             }
             // Get devices
-            List<BASS_WASAPI_DEVICEINFO> devices = audioRouter.GetInputs();
+            List<DeviceInfo> devices = audioRouter.GetInputs();
             // Setup page content
             string page = String.Empty;
             if (devices.Count > 0) // If there is devices available
@@ -182,9 +182,9 @@ namespace RouterService
                 // List of devices
                 page +=
                     "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
-                foreach (BASS_WASAPI_DEVICEINFO device in audioRouter.GetInputs())
+                foreach (DeviceInfo device in devices)
                 {
-                    page += "<option value=\"" + device.id + "\">" + device.name + "</option>";
+                    page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
                 }
                 page += "</select></div></div>";
                 // Submit button
