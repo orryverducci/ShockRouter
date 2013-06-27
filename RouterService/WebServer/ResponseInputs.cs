@@ -93,30 +93,35 @@ namespace RouterService
             }
             if (validPage) // If a valid page, return it
             {
-                // Set status to successful
-                Status = 200;
-                // Setup header and footer
-                string headerPath =
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
-                    "\\webroot\\header.html";
-                string footerPath =
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
-                    "\\webroot\\footer.html";
-                // Output header
-                if (File.Exists(headerPath)) // If header exists
+                if (Status == 200) // If page was successful
                 {
-                    // Read file and output it as part of response
-                    TextReader textReader = new StreamReader(headerPath);
-                    responseContent += textReader.ReadToEnd();
+                    // Setup header and footer
+                    string headerPath =
+                        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
+                        "\\webroot\\header.html";
+                    string footerPath =
+                        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
+                        "\\webroot\\footer.html";
+                    // Output header
+                    if (File.Exists(headerPath)) // If header exists
+                    {
+                        // Read file and output it as part of response
+                        TextReader textReader = new StreamReader(headerPath);
+                        responseContent += textReader.ReadToEnd();
+                    }
+                    // Output page content
+                    responseContent += pageContent;
+                    // Output footer
+                    if (File.Exists(footerPath)) // If header exists
+                    {
+                        // Read file and output it as part of response
+                        TextReader textReader = new StreamReader(footerPath);
+                        responseContent += textReader.ReadToEnd();
+                    }
                 }
-                // Output page content
-                responseContent += pageContent;
-                // Output footer
-                if (File.Exists(footerPath)) // If header exists
+                else // Else return error
                 {
-                    // Read file and output it as part of response
-                    TextReader textReader = new StreamReader(footerPath);
-                    responseContent += textReader.ReadToEnd();
+                    validPage = false;
                 }
             }
             else // Else if not a valid page, return an error
@@ -128,6 +133,8 @@ namespace RouterService
 
         private string IndexPage()
         {
+            // Set status to successful
+            Status = 200;
             // Setup page content
             string page = String.Empty;
             // Add page title
@@ -158,44 +165,69 @@ namespace RouterService
 
         private string AddPage(NameValueCollection queries)
         {
-            // Check for queries adding a device ID
-            foreach (string query in queries.AllKeys)
-            {
-                if (query.StartsWith("id="))
-                {
-                    audioRouter.AddInput("", query.Substring(3));
-                }
-            }
-            // Get devices
-            List<DeviceInfo> devices = audioRouter.GetInputs();
-            // Setup page content
+            bool addQueriesSet = false;
+            string addID = null;
+            string addName = null;
             string page = String.Empty;
-            if (devices.Count > 0) // If there is devices available
+            // Check for queries adding a device ID
+            for (int i = 0; i < queries.Count; i++ )
             {
-                // Add page title
-                page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
-                // Open form
-                page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
-                // Name item
-                page +=
-                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
-                // List of devices
-                page +=
-                    "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
-                foreach (DeviceInfo device in devices)
+                if (queries.GetKey(i) == "id")
                 {
-                    page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                    addQueriesSet = true;
+                    addID = queries.Get(i);
                 }
-                page += "</select></div></div>";
-                // Submit button
-                page +=
-                    "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
-                // Close form
-                page += "</form>";
+                else if (queries.GetKey(i) == "name")
+                {
+                    addQueriesSet = true;
+                    addName = queries.Get(i);
+                }
             }
-            else // Else if no devices are available
+            if (addQueriesSet) // If a query adding a device has been sent
             {
-                page += "<p>No devices are currently available</p>";
+                if (addID != null && addName != null) // If both queries are set
+                {
+                    audioRouter.AddInput(addName, addID);
+                    Status = 301; // Return redirect code
+                }
+                else // Else return server error
+                {
+                    Status = 500;
+                }
+            }
+            else // Else send page to add a device
+            {
+                // Set status to successful
+                Status = 200;
+                // Get devices
+                List<DeviceInfo> devices = audioRouter.GetInputs();
+                if (devices.Count > 0) // If there is devices available
+                {
+                    // Add page title
+                    page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
+                    // Open form
+                    page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
+                    // Name item
+                    page +=
+                        "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
+                    // List of devices
+                    page +=
+                        "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
+                    foreach (DeviceInfo device in devices)
+                    {
+                        page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                    }
+                    page += "</select></div></div>";
+                    // Submit button
+                    page +=
+                        "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+                    // Close form
+                    page += "</form>";
+                }
+                else // Else if no devices are available
+                {
+                    page += "<p>No devices are currently available</p>";
+                }
             }
             // Return page content
             return page;

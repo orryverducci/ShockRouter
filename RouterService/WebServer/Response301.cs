@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RouterService
 {
-    class Response301 : IWebResponse
+    class Response500 : IWebResponse
     {
         private byte[] response;
 
@@ -27,7 +27,7 @@ namespace RouterService
         {
             get
             {
-                return 301;
+                return 500;
             }
         }
 
@@ -41,7 +41,7 @@ namespace RouterService
 
         public bool GetResponse(string[] path, NameValueCollection queries)
         {
-            string responseContent = String.Empty;
+            string responseContent = "500 Internal Server Error";
             Response = Encoding.UTF8.GetBytes(responseContent);
             return true;
         }
