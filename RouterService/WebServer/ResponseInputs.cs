@@ -157,6 +157,11 @@ namespace RouterService
                 // Close row
                 page += "</tr>";
             }
+            // Display message if there is no inputs
+            if (audioRouter.Inputs.Count == 0)
+            {
+                page += "<td colspan=\"3\">No inputs have been added</td>";
+            }
             // Close table of inputs
             page += "</tbody></table>";
             // Return page content
