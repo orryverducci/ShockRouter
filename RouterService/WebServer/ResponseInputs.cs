@@ -59,11 +59,11 @@ namespace RouterService
             bool success;
             if (path.Length > 2) // If a subpage has been requested
             {
-                success = BuildPage(path[2], queries);
+                success = BuildPage(path[2], queries, path);
             }
             else // Else if homepage requested
             {
-                success = BuildPage("index", queries);
+                success = BuildPage("index", queries, path);
             }
             // Output final results
             Response = Encoding.UTF8.GetBytes(responseContent);
@@ -71,7 +71,7 @@ namespace RouterService
             return success;
         }
 
-        private bool BuildPage(string page, NameValueCollection queries)
+        private bool BuildPage(string page, NameValueCollection queries, string[] path)
         {
             bool validPage = true;
             if (page.EndsWith("/"))
@@ -85,7 +85,7 @@ namespace RouterService
                     pageContent = IndexPage();
                     break;
                 case "add":
-                    pageContent = AddPage(queries);
+                    pageContent = AddPage(queries, path);
                     break;
                 default:
                     validPage = false;
@@ -168,71 +168,78 @@ namespace RouterService
             return page;
         }
 
-        private string AddPage(NameValueCollection queries)
+        private string AddPage(NameValueCollection queries, string[] path)
         {
-            bool addQueriesSet = false;
-            string addID = null;
-            string addName = null;
             string page = String.Empty;
-            // Check for queries adding a device ID
-            for (int i = 0; i < queries.Count; i++ )
+            if (path.Length < 4) // If add index page requested
             {
-                if (queries.GetKey(i) == "id")
+                bool addQueriesSet = false;
+                string addID = null;
+                string addName = null;
+                // Check for queries adding a device ID
+                for (int i = 0; i < queries.Count; i++)
                 {
-                    addQueriesSet = true;
-                    addID = queries.Get(i);
-                }
-                else if (queries.GetKey(i) == "name")
-                {
-                    addQueriesSet = true;
-                    addName = queries.Get(i);
-                }
-            }
-            if (addQueriesSet) // If a query adding a device has been sent
-            {
-                if (addID != null && addName != null) // If both queries are set
-                {
-                    audioRouter.AddInput(addName, addID);
-                    Status = 301; // Return redirect code
-                }
-                else // Else return server error
-                {
-                    Status = 500;
-                }
-            }
-            else // Else send page to add a device
-            {
-                // Set status to successful
-                Status = 200;
-                // Get devices
-                List<DeviceInfo> devices = audioRouter.GetInputs();
-                if (devices.Count > 0) // If there is devices available
-                {
-                    // Add page title
-                    page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
-                    // Open form
-                    page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
-                    // Name item
-                    page +=
-                        "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
-                    // List of devices
-                    page +=
-                        "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
-                    foreach (DeviceInfo device in devices)
+                    if (queries.GetKey(i) == "id")
                     {
-                        page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                        addQueriesSet = true;
+                        addID = queries.Get(i);
                     }
-                    page += "</select></div></div>";
-                    // Submit button
-                    page +=
-                        "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
-                    // Close form
-                    page += "</form>";
+                    else if (queries.GetKey(i) == "name")
+                    {
+                        addQueriesSet = true;
+                        addName = queries.Get(i);
+                    }
                 }
-                else // Else if no devices are available
+                if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    page += "<p>No devices are currently available</p>";
+                    if (addID != null && addName != null) // If both queries are set
+                    {
+                        audioRouter.AddInput(addName, addID);
+                        Status = 301; // Return redirect code
+                    }
+                    else // Else return server error
+                    {
+                        Status = 500;
+                    }
                 }
+                else // Else send page to add a device
+                {
+                    // Set status to successful
+                    Status = 200;
+                    // Get devices
+                    List<DeviceInfo> devices = audioRouter.GetInputs();
+                    if (devices.Count > 0) // If there is devices available
+                    {
+                        // Add page title
+                        page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
+                        // Open form
+                        page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
+                        // Name item
+                        page +=
+                            "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
+                        // List of devices
+                        page +=
+                            "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
+                        foreach (DeviceInfo device in devices)
+                        {
+                            page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                        }
+                        page += "</select></div></div>";
+                        // Submit button
+                        page +=
+                            "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+                        // Close form
+                        page += "</form>";
+                    }
+                    else // Else if no devices are available
+                    {
+                        page += "<p>No devices are currently available</p>";
+                    }
+                }
+            }
+            else // Else if subpages have been requested, return not found error
+            {
+                Status = 404;
             }
             // Return page content
             return page;
