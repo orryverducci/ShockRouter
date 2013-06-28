@@ -24,5 +24,9 @@ namespace RouterService
         /// Start the input
         /// </summary>
         void Start();
+        /// <summary>
+        /// Stop the input
+        /// </summary>
+        void Stop();
     }
 }

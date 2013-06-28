@@ -156,6 +156,7 @@ namespace RouterService
             IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
             if (input != null)
             {
+                input.Stop();
                 inputs.Remove(input);
             }
         }

@@ -53,5 +53,10 @@ namespace RouterService
                 Logger.WriteLogEntry("Unable to initialise input device for " + Name + "(Device " + Source + ")", EventLogEntryType.Warning);
             }
         }
+
+        public void Stop()
+        {
+            bassWasapi.Stop();
+        }
     }
 }
