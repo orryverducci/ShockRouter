@@ -261,23 +261,45 @@ namespace RouterService
             }
             else // Else display edit page
             {
-                // Return success
-                Status = 200;
-                // Add page title
-                page += "<div class=\"page-header\"><h1>Change Input</h1></div>";
-                // Open form
-                page += "<form class=\"form-horizontal\" action=\"/inputs/edit/\" method=\"get\">";
-                // Name item
-                page +=
-                    "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
-                // Device notice
-                page +=
-                    "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this device has to be deleted and readded.</i></div></div>";
-                // Submit button
-                page +=
-                    "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
-                // Close form
-                page += "</form>";
+                // Get input
+                int inputChannelHandle;
+                if (path[3].EndsWith("/"))
+                {
+                    inputChannelHandle = Int32.Parse(path[3].Substring(0, path[3].Length - 1));
+                }
+                else
+                {
+                    inputChannelHandle = Int32.Parse(path[3]);
+                }
+                IInput input =
+                    audioRouter.Inputs.Find(specifiedInput => specifiedInput.OutputChannel == inputChannelHandle);
+                if (input != null) // If input is found, return edit page
+                {
+                    // Return success
+                    Status = 200;
+                    // Add page title
+                    page += "<div class=\"page-header\"><h1>Change Input</h1></div>";
+                    // Open form
+                    page += "<form class=\"form-horizontal\" action=\"/inputs/edit/\" method=\"get\">";
+                    // Name item
+                    page +=
+                        "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" +
+                        input.Name + "\"></input></div></div>";
+                    // Device notice
+                    page +=
+                        "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this device has to be deleted and readded.</i></div></div>";
+                    // ID Field
+                    page += "<input type=\"hidden\" name=\"id\" value=\"" + inputChannelHandle.ToString() + "\">";
+                    // Submit button
+                    page +=
+                        "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                    // Close form
+                    page += "</form>";
+                }
+                else // Else if input is not found, return an error
+                {
+                    Status = 500;
+                }
             }
             // Return page content
             return page;
