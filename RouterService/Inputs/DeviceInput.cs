@@ -42,7 +42,7 @@ namespace RouterService
             // Initialise input
             try
             {
-                bassWasapi = new BassWasapiHandler(Int32.Parse(Source), true, 44100, 2, 0, 0);
+                bassWasapi = new BassWasapiHandler(Int32.Parse(Source), false, 44100, 2, 0, 0);
                 bassWasapi.Init();
                 bassWasapi.Start();
                 // Set input to full duplex
