@@ -90,6 +90,9 @@ namespace RouterService
                 case "edit":
                     pageContent = EditPage(queries, path);
                     break;
+                case "delete":
+                    pageContent = DeletePage(path);
+                    break;
                 default:
                     validPage = false;
                     break;
@@ -334,6 +337,34 @@ namespace RouterService
                 }
             }
             // Return page content
+            return page;
+        }
+
+        private string DeletePage(string[] path)
+        {
+            string page = String.Empty;
+            if (path.Length > 4) // If a subpage has been requested, return not found
+            {
+                Status = 404;
+            }
+            else if (path.Length < 4) // If no device has been parsed return error
+            {
+                Status = 500;
+            }
+            else // Else process deletion
+            {
+                int inputChannelHandle;
+                if (path[3].EndsWith("/"))
+                {
+                    inputChannelHandle = Int32.Parse(path[3].Substring(0, path[3].Length - 1));
+                }
+                else
+                {
+                    inputChannelHandle = Int32.Parse(path[3]);
+                }
+                audioRouter.DeleteInput(inputChannelHandle);
+                Status = 301;
+            }
             return page;
         }
     }

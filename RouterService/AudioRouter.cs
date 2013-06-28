@@ -146,6 +146,19 @@ namespace RouterService
                 input.Name = name;
             }
         }
+
+        /// <summary>
+        /// Delete the specified input
+        /// </summary>
+        /// <param name="id">The ID of the input to delete</param>
+        public void DeleteInput(int id)
+        {
+            IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
+            if (input != null)
+            {
+                inputs.Remove(input);
+            }
+        }
         #endregion
     }
 }
