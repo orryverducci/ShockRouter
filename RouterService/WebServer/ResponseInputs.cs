@@ -255,9 +255,41 @@ namespace RouterService
             {
                 Status = 404;
             }
-            else if (path.Length < 4) // If no device has been parsed, return error
+            else if (path.Length < 4) // If no device has been parsed, process queries or return
             {
-                Status = 500;
+                bool editQueriesSet = false;
+                string editID = null;
+                string editName = null;
+                // Check for queries editing a device
+                for (int i = 0; i < queries.Count; i++)
+                {
+                    if (queries.GetKey(i) == "id")
+                    {
+                        editQueriesSet = true;
+                        editID = queries.Get(i);
+                    }
+                    else if (queries.GetKey(i) == "name")
+                    {
+                        editQueriesSet = true;
+                        editName = queries.Get(i);
+                    }
+                }
+                if (editQueriesSet) // If queries received, edit device
+                {
+                    if (editID != null && editName != null) // If both queries are set
+                    {
+                        audioRouter.EditInput(editName, Int32.Parse(editID));
+                        Status = 301;
+                    }
+                    else // Else return error
+                    {
+                        Status = 500;
+                    }
+                }
+                else // If not, return error
+                {
+                    Status = 500;
+                }
             }
             else // Else display edit page
             {

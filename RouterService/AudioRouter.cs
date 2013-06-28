@@ -132,6 +132,20 @@ namespace RouterService
             // Return devices
             return inputDevices;
         }
+
+        /// <summary>
+        /// Edit the specified input
+        /// </summary>
+        /// <param name="name">New name of the input</param>
+        /// <param name="id">The ID of the input to edit</param>
+        public void EditInput(string name, int id)
+        {
+            IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
+            if (input != null)
+            {
+                input.Name = name;
+            }
+        }
         #endregion
     }
 }
