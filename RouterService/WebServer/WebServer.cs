@@ -103,7 +103,7 @@ namespace RouterService
                         response = new ResponseAssets();
                         break;
                     case "home":
-                        response = new ResponseHome();
+                        response = new ResponseHome(audioRouter);
                         break;
                     case "inputs":
                         response = new ResponseInputs(audioRouter);

@@ -10,6 +10,7 @@ namespace RouterService
 {
     class ResponseHome : IWebResponse
     {
+        private AudioRouter audioRouter;
         private byte[] response;
 
         public byte[] Response
@@ -40,8 +41,14 @@ namespace RouterService
             }
         }
 
+        public ResponseHome(AudioRouter router)
+        {
+            audioRouter = router;
+        }
+
         public bool GetResponse(string[] path, NameValueCollection queries)
         {
+            string responseContent = String.Empty;
             // Setup header and footer
             string headerPath =
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
@@ -49,13 +56,19 @@ namespace RouterService
             string footerPath =
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
                 "\\webroot\\footer.html";
-            string responseContent = String.Empty;
             // Output header
             if (File.Exists(headerPath)) // If header exists
             {
                 // Read file and output it as part of response
                 TextReader textReader = new StreamReader(headerPath);
                 responseContent += textReader.ReadToEnd();
+            }
+            // Add page title
+            responseContent += "<div class=\"page-header\"><h1>Sources</h1></div>";
+            // Source buttons
+            foreach (IInput input in audioRouter.Inputs)
+            {
+                responseContent = "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large\">" + input.Name + "</a>";
             }
             // Output footer
             if (File.Exists(footerPath)) // If header exists
