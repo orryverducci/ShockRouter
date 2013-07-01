@@ -65,7 +65,7 @@ namespace RouterService
             // Start output
             bassWasapi.Start();
             // Create Mixer
-            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP); // Create mixer
+            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP | BASSFlag.BASS_STREAM_DECODE); // Create mixer
             if (mixerHandle == 0) // If unable to initialise mixer
             {
                 // Throw exception
