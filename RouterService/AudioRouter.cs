@@ -19,6 +19,11 @@ namespace RouterService
         private BassWasapiHandler bassWasapi;
 
         /// <summary>
+        /// Handle for the audio mixer
+        /// </summary>
+        private int mixerHandle;
+
+        /// <summary>
         /// The router inputs
         /// </summary>
         private List<IInput> inputs = new List<IInput>();
@@ -59,6 +64,14 @@ namespace RouterService
             bassWasapi.Init();
             // Start output
             bassWasapi.Start();
+            // Create Mixer
+            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP); // Create mixer
+            if (mixerHandle == 0) // If unable to initialise mixer
+            {
+                // Throw exception
+                throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
+            }
+            bassWasapi.AddOutputSource(mixerHandle, BASSFlag.BASS_DEFAULT); // Add mixer to output
         }
 
         /// <summary>
@@ -91,8 +104,11 @@ namespace RouterService
                 int outputChannel = input.OutputChannel;
                 // Add input to list of inputs
                 inputs.Add(input);
-                // Add input to output
-                bassWasapi.AddOutputSource(outputChannel, BASSFlag.BASS_DEFAULT);
+                // Add input to mixer
+                if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, outputChannel, BASSFlag.BASS_DEFAULT)) // If unable to add to mixer
+                {
+                    Logger.WriteLogEntry("Unable to add input to mixer - " + Bass.BASS_ErrorGetCode().ToString(), EventLogEntryType.Error);
+                }
             }
         }
 
