@@ -55,7 +55,7 @@ namespace RouterService
             Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
             try
             {
-                bassWasapi = new BassWasapiHandler(0, true, 44100, 2, 0, 0);
+                bassWasapi = new BassWasapiHandler(GetDefaultOutput(), true, 44100, 2, 0, 0);
             }
             catch (ArgumentException)
             {
@@ -174,6 +174,76 @@ namespace RouterService
             {
                 input.Stop();
                 inputs.Remove(input);
+            }
+        }
+        #endregion
+
+        #region Outputs
+        /// <summary>
+        /// Get the currently available output devices
+        /// </summary>
+        /// <returns>A list of BASS_WASAPI_DEVICEINFO for each available device</returns>
+        public List<DeviceInfo> GetOutputs()
+        {
+            // Setup list
+            List<DeviceInfo> outputDevices = new List<DeviceInfo>();
+            // Retrieve devices
+            bool continueLoop = true;
+            for (int i = 0; continueLoop; i++)
+            {
+                try
+                {
+                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                    if (!device.IsInput && device.IsEnabled)
+                    {
+                        DeviceInfo deviceInfo = new DeviceInfo();
+                        deviceInfo.Name = device.name;
+                        deviceInfo.ID = i;
+                        outputDevices.Add(deviceInfo);
+                    }
+                }
+                catch (Exception)
+                {
+                    continueLoop = false;
+                }
+            }
+            // Output message if there is no available devices
+            if (outputDevices.Count == 0)
+            {
+                Logger.WriteLogEntry("No output devices are currently available", EventLogEntryType.Information);
+            }
+            // Return devices
+            return outputDevices;
+        }
+
+        public int GetDefaultOutput()
+        {
+            // Retrieve devices
+            bool continueLoop = true;
+            int? id = null;
+            for (int i = 0; continueLoop; i++)
+            {
+                try
+                {
+                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
+                    if (!device.IsInput && device.IsDefault)
+                    {
+                        id = i;
+                        continueLoop = false;
+                    }
+                }
+                catch (Exception)
+                {
+                    continueLoop = false;
+                }
+            }
+            if (id != null)
+            {
+                return (int)id;
+            }
+            else
+            {
+                return 0;
             }
         }
         #endregion
