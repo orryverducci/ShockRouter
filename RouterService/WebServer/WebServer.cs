@@ -118,8 +118,8 @@ namespace RouterService
                     // Return error depending on code
                     switch (response.Status)
                     {
-                        case 301:
-                            response = new Response301();
+                        case 303:
+                            response = new Response303();
                             break;
                         case 403:
                             response = new Response403();
@@ -136,9 +136,10 @@ namespace RouterService
                 // Send response
                 listenerContext.Response.ContentType = response.ContentType;
                 listenerContext.Response.StatusCode = response.Status;
-                if (response.Status == 301) // If a redirect status
+                if (response.Status == 303) // If a redirect status
                 {
                     listenerContext.Response.AppendHeader("location", "/"); // Add header to redirect to index
+                    listenerContext.Response.AppendHeader("Cache-Control", "no-cache, no-store"); // Prevent caching of response
                 }
                 listenerContext.Response.ContentLength64 = response.Response.Length;
                 listenerContext.Response.OutputStream.Write(response.Response, 0, response.Response.Length);

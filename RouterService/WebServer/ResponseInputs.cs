@@ -201,7 +201,7 @@ namespace RouterService
                     if (addID != null && addName != null) // If both queries are set
                     {
                         audioRouter.AddInput(addName, addID);
-                        Status = 301; // Return redirect code
+                        Status = 303; // Return redirect code
                     }
                     else // Else return server error
                     {
@@ -282,7 +282,7 @@ namespace RouterService
                     if (editID != null && editName != null) // If both queries are set
                     {
                         audioRouter.EditInput(editName, Int32.Parse(editID));
-                        Status = 301;
+                        Status = 303;
                     }
                     else // Else return error
                     {
@@ -363,7 +363,7 @@ namespace RouterService
                     inputChannelHandle = Int32.Parse(path[3]);
                 }
                 audioRouter.DeleteInput(inputChannelHandle);
-                Status = 301;
+                Status = 303;
             }
             return page;
         }
