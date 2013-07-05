@@ -97,18 +97,22 @@ namespace RouterService
             input.Name = name;
             input.Source = source;
             // Start input
-            input.Start();
-            if (input.OutputChannel != 0) // If input initialised successfully
+            try
             {
+                input.Start();
                 // Get output handle
                 int outputChannel = input.OutputChannel;
                 // Add input to list of inputs
                 inputs.Add(input);
                 // Add input to mixer
-                if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, outputChannel, BASSFlag.BASS_DEFAULT)) // If unable to add to mixer
+                if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, outputChannel, BASSFlag.BASS_STREAM_AUTOFREE)) // If unable to add to mixer
                 {
                     Logger.WriteLogEntry("Unable to add input to mixer - " + Bass.BASS_ErrorGetCode().ToString(), EventLogEntryType.Error);
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLogEntry("Unable to add input: " + e.Message, EventLogEntryType.Error);
             }
         }
 
@@ -172,6 +176,7 @@ namespace RouterService
             IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
             if (input != null)
             {
+                BassMix.BASS_Mixer_ChannelRemove(input.OutputChannel);
                 input.Stop();
                 inputs.Remove(input);
             }

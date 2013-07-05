@@ -14,49 +14,44 @@ namespace RouterService
         #region Properties
         public string Name { get; set; }
         public string Source { get; set; }
-        public int OutputChannel
-        {
-            get
-            {
-                if (bassWasapi != null)
-                {
-                    return bassWasapi.OutputChannel;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+        public int OutputChannel { get; private set; }
         #endregion
         
         #region Private Fields
-        /// <summary>
-        /// BASS WASAPI instance for the input device
-        /// </summary>
-        private BassWasapiHandler bassWasapi;
+        private WASAPIPROC inputCallback;
         #endregion
 
         public void Start()
         {
-            // Initialise input
-            try
+            inputCallback = new WASAPIPROC(InputCallback);
+            OutputChannel = Bass.BASS_StreamCreatePush(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, IntPtr.Zero);
+            if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, inputCallback, IntPtr.Zero)) // If device does not initialise successfully
             {
-                bassWasapi = new BassWasapiHandler(Int32.Parse(Source), false, 44100, 2, 0, 0);
-                bassWasapi.Init();
-                bassWasapi.Start();
-                // Set input to full duplex
-                bassWasapi.SetFullDuplex(0, BASSFlag.BASS_STREAM_DECODE, false);
+                throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
-            catch (ArgumentException) // If unable to initialise
+            if (OutputChannel == default(int)) // If does not start recording successfully
             {
-                Logger.WriteLogEntry("Unable to initialise input device for " + Name + "(Device " + Source + ")", EventLogEntryType.Warning);
+                throw new ArgumentException("Unable to create input stream"); // Throw exception with error
             }
+            BassWasapi.BASS_WASAPI_Start();
+        }
+
+        private int InputCallback(IntPtr buffer, int length, IntPtr user)
+        {
+            Bass.BASS_StreamPutData(OutputChannel, buffer, length);
+            return 1;
         }
 
         public void Stop()
         {
-            bassWasapi.Stop();
+            // Free device
+            BassWasapi.BASS_WASAPI_SetDevice(Int32.Parse(Source));
+            BassWasapi.BASS_WASAPI_Free();
+            // Clear callback
+            inputCallback = null;
+            // Clear stream
+            Bass.BASS_StreamFree(OutputChannel);
+            OutputChannel = default(int);
         }
     }
 }
