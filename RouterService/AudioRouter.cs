@@ -14,9 +14,9 @@ namespace RouterService
     {
         #region Private Fields
         /// <summary>
-        /// BASS WASAPI instance for output
+        /// Device for uncompressed output
         /// </summary>
-        private BassWasapiHandler bassWasapi;
+        private UncompressedOutput uncompressedOutput;
 
         /// <summary>
         /// Handle for the audio mixer
@@ -53,25 +53,16 @@ namespace RouterService
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
-            try
-            {
-                bassWasapi = new BassWasapiHandler(GetDefaultOutput(), true, 44100, 2, 0, 0);
-            }
-            catch (ArgumentException)
-            {
-                throw new ApplicationException("Unable to initialise device");
-            }
-            bassWasapi.Init();
-            // Start output
-            bassWasapi.Start();
             // Create Mixer
             mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP | BASSFlag.BASS_STREAM_DECODE); // Create mixer
-            if (mixerHandle == 0) // If unable to initialise mixer
+            if (mixerHandle == default(int)) // If unable to initialise mixer
             {
                 // Throw exception
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
-            bassWasapi.AddOutputSource(mixerHandle, BASSFlag.BASS_DEFAULT); // Add mixer to output
+            // Start output
+            uncompressedOutput = new UncompressedOutput(mixerHandle, GetDefaultOutput());
+            uncompressedOutput.Start();
         }
 
         /// <summary>
@@ -79,6 +70,7 @@ namespace RouterService
         /// </summary>
         ~AudioRouter()
         {
+            uncompressedOutput.Stop();
             Bass.FreeMe(); // Free BASS
         }
         #endregion

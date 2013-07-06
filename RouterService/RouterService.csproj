@@ -60,6 +60,7 @@
     <Compile Include="Inputs\DeviceInput.cs" />
     <Compile Include="Inputs\IInput.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="OutputDevices\UncompressedOutput.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
