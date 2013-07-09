@@ -108,6 +108,9 @@ namespace RouterService
                     case "inputs":
                         response = new ResponseInputs(audioRouter);
                         break;
+                    case "outputs":
+                        response = new ResponseOutputs(audioRouter);
+                        break;
                     default:
                         response = new Response404();
                         break;

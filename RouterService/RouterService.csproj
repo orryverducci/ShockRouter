@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebServer\ResponseOutputs.cs" />
     <Compile Include="WebServer\Response500.cs" />
     <Compile Include="WebServer\ResponseInputs.cs" />
     <Compile Include="WebServer\ResponseHome.cs" />
