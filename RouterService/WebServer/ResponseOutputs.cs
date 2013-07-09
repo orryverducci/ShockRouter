@@ -62,6 +62,7 @@ namespace RouterService
                 Status = 200;
                 string responseContent = String.Empty;
                 List<DeviceInfo> devices = audioRouter.GetOutputs();
+                int currentDevice = audioRouter.CurrentUncompressedOutput;
                 // Setup header and footer
                 string headerPath =
                     Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
@@ -87,7 +88,14 @@ namespace RouterService
                     "<div class=\"control-group\"><label class=\"control-label\" for=\"uncompressedOutput\">Uncompressed Output Device</label><div class=\"controls\"><select id=\"uncompressedOutput\" name=\"id\" class=\"input-xxlarge\">";
                 foreach (DeviceInfo device in devices)
                 {
-                    responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                    if (device.ID == currentDevice) // If current device, select it on page load
+                    {
+                        responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
+                    }
+                    else
+                    {
+                        responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                    }
                 }
                 responseContent += "</select></div></div>";
                 // Submit button

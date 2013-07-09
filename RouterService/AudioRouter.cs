@@ -29,16 +29,6 @@ namespace RouterService
         private List<IInput> inputs = new List<IInput>();
         #endregion
 
-        #region Properties
-        public List<IInput> Inputs
-        {
-            get
-            {
-                return inputs;
-            }
-        }
-        #endregion
-
         #region Constructor and Destructor
         public AudioRouter()
         {
@@ -76,6 +66,14 @@ namespace RouterService
         #endregion
 
         #region Inputs
+        public List<IInput> Inputs
+        {
+            get
+            {
+                return inputs;
+            }
+        }
+
         /// <summary>
         /// Adds the specified input to the available inputs
         /// </summary>
@@ -241,6 +239,17 @@ namespace RouterService
             else
             {
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// The ID of the current uncompressed output device
+        /// </summary>
+        public int CurrentUncompressedOutput
+        {
+            get
+            {
+                return uncompressedOutput.DeviceID;
             }
         }
         #endregion

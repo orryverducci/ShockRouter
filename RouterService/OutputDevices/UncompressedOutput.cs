@@ -37,6 +37,14 @@ namespace RouterService
             device = deviceID;
         }
 
+        public int DeviceID
+        {
+            get
+            {
+                return device;
+            }
+        }
+
         /// <summary>
         /// Start output
         /// </summary>
