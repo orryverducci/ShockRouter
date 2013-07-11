@@ -252,6 +252,17 @@ namespace RouterService
                 return uncompressedOutput.DeviceID;
             }
         }
+
+        /// <summary>
+        /// Change the uncompressd output device
+        /// </summary>
+        /// <param name="id">ID of the output device to use</param>
+        public void ChangeUncompressedOutput(int id)
+        {
+            uncompressedOutput.Stop();
+            uncompressedOutput = new UncompressedOutput(mixerHandle, id);
+            uncompressedOutput.Start();
+        }
         #endregion
     }
 }

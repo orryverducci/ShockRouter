@@ -59,59 +59,98 @@ namespace RouterService
             }
             else // Else return output page
             {
-                Status = 200;
-                string responseContent = String.Empty;
-                List<DeviceInfo> devices = audioRouter.GetOutputs();
-                int currentDevice = audioRouter.CurrentUncompressedOutput;
-                // Setup header and footer
-                string headerPath =
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
-                    "\\webroot\\header.html";
-                string footerPath =
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
-                    "\\webroot\\footer.html";
-                // Output header
-                if (File.Exists(headerPath)) // If header exists
+                bool addQueriesSet = false;
+                string changeID = null;
+                string changeType = null;
+                // Check for queries chanding a device ID
+                for (int i = 0; i < queries.Count; i++)
                 {
-                    // Read file and output it as part of response
-                    TextReader textReader = new StreamReader(headerPath);
-                    responseContent += textReader.ReadToEnd();
-                }
-                // Add page title
-                responseContent += "<div class=\"page-header\"><h1>Outputs</h1></div>";
-                // Open uncompressed output form
-                responseContent += "<form class=\"form-horizontal\" action=\"/outputs/\" method=\"get\">";
-                // Change type
-                responseContent += "<input type=\"hidden\" name=\"change\" value=\"uncompressed\">";
-                // List of devices
-                responseContent +=
-                    "<div class=\"control-group\"><label class=\"control-label\" for=\"uncompressedOutput\">Uncompressed Output Device</label><div class=\"controls\"><select id=\"uncompressedOutput\" name=\"id\" class=\"input-xxlarge\">";
-                foreach (DeviceInfo device in devices)
-                {
-                    if (device.ID == currentDevice) // If current device, select it on page load
+                    if (queries.GetKey(i) == "id")
                     {
-                        responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
+                        addQueriesSet = true;
+                        changeID = queries.Get(i);
                     }
-                    else
+                    else if (queries.GetKey(i) == "change")
                     {
-                        responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                        addQueriesSet = true;
+                        changeType = queries.Get(i);
                     }
                 }
-                responseContent += "</select></div></div>";
-                // Submit button
-                responseContent +=
-                    "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
-                // Close uncompressed output form form
-                responseContent += "</form>";
-                // Output footer
-                if (File.Exists(footerPath)) // If header exists
+                if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    // Read file and output it as part of response
-                    TextReader textReader = new StreamReader(footerPath);
-                    responseContent += textReader.ReadToEnd();
+                    if (changeID != null && changeType != null) // If both queries are set
+                    {
+                        if (changeType == "uncompressed")
+                        {
+                            audioRouter.ChangeUncompressedOutput(Int32.Parse(changeID));
+                            Status = 303;
+                        }
+                        else
+                        {
+                            Status = 500;
+                        }
+                    }
+                    else // Else return server error
+                    {
+                        Status = 500;
+                    }
                 }
-                // Output final results
-                Response = Encoding.UTF8.GetBytes(responseContent);
+                else
+                {
+                    Status = 200;
+                    string responseContent = String.Empty;
+                    List<DeviceInfo> devices = audioRouter.GetOutputs();
+                    int currentDevice = audioRouter.CurrentUncompressedOutput;
+                    // Setup header and footer
+                    string headerPath =
+                        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
+                        "\\webroot\\header.html";
+                    string footerPath =
+                        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
+                        "\\webroot\\footer.html";
+                    // Output header
+                    if (File.Exists(headerPath)) // If header exists
+                    {
+                        // Read file and output it as part of response
+                        TextReader textReader = new StreamReader(headerPath);
+                        responseContent += textReader.ReadToEnd();
+                    }
+                    // Add page title
+                    responseContent += "<div class=\"page-header\"><h1>Outputs</h1></div>";
+                    // Open uncompressed output form
+                    responseContent += "<form class=\"form-horizontal\" action=\"/outputs/\" method=\"get\">";
+                    // Change type
+                    responseContent += "<input type=\"hidden\" name=\"change\" value=\"uncompressed\">";
+                    // List of devices
+                    responseContent +=
+                        "<div class=\"control-group\"><label class=\"control-label\" for=\"uncompressedOutput\">Uncompressed Output Device</label><div class=\"controls\"><select id=\"uncompressedOutput\" name=\"id\" class=\"input-xxlarge\">";
+                    foreach (DeviceInfo device in devices)
+                    {
+                        if (device.ID == currentDevice) // If current device, select it on page load
+                        {
+                            responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
+                        }
+                        else
+                        {
+                            responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                        }
+                    }
+                    responseContent += "</select></div></div>";
+                    // Submit button
+                    responseContent +=
+                        "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                    // Close uncompressed output form form
+                    responseContent += "</form>";
+                    // Output footer
+                    if (File.Exists(footerPath)) // If header exists
+                    {
+                        // Read file and output it as part of response
+                        TextReader textReader = new StreamReader(footerPath);
+                        responseContent += textReader.ReadToEnd();
+                    }
+                    // Output final results
+                    Response = Encoding.UTF8.GetBytes(responseContent);
+                }
             }
             // Return successful result
             return true;
