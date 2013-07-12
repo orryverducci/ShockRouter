@@ -50,8 +50,13 @@ namespace RouterService
                 // Throw exception
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
-            // Start output
+            // Create output
             uncompressedOutput = new UncompressedOutput(mixerHandle, GetDefaultOutput());
+            // Clear buffer
+            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
+            float[] buffer = new float[length];
+            Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
+            // Start output
             uncompressedOutput.Start();
         }
 
@@ -259,8 +264,15 @@ namespace RouterService
         /// <param name="id">ID of the output device to use</param>
         public void ChangeUncompressedOutput(int id)
         {
+            // Stop old output device
             uncompressedOutput.Stop();
+            // Setup new output device
             uncompressedOutput = new UncompressedOutput(mixerHandle, id);
+            // Clear buffer
+            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
+            float[] buffer = new float[length];
+            Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
+            // Start new device
             uncompressedOutput.Start();
         }
         #endregion
