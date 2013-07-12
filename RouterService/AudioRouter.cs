@@ -16,7 +16,7 @@ namespace RouterService
         /// <summary>
         /// Device for uncompressed output
         /// </summary>
-        private UncompressedOutput uncompressedOutput;
+        private Output output;
 
         /// <summary>
         /// Handle for the audio mixer
@@ -51,13 +51,13 @@ namespace RouterService
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
             // Create output
-            uncompressedOutput = new UncompressedOutput(mixerHandle, GetDefaultOutput());
+            output = new Output(mixerHandle, GetDefaultOutput());
             // Clear buffer
             int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
             float[] buffer = new float[length];
             Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
             // Start output
-            uncompressedOutput.Start();
+            output.Start();
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace RouterService
         /// </summary>
         ~AudioRouter()
         {
-            uncompressedOutput.Stop();
+            output.Stop();
             Bass.FreeMe(); // Free BASS
         }
         #endregion
@@ -254,7 +254,7 @@ namespace RouterService
         {
             get
             {
-                return uncompressedOutput.DeviceID;
+                return output.DeviceID;
             }
         }
 
@@ -262,18 +262,18 @@ namespace RouterService
         /// Change the uncompressd output device
         /// </summary>
         /// <param name="id">ID of the output device to use</param>
-        public void ChangeUncompressedOutput(int id)
+        public void ChangeOutput(int id)
         {
             // Stop old output device
-            uncompressedOutput.Stop();
+            output.Stop();
             // Setup new output device
-            uncompressedOutput = new UncompressedOutput(mixerHandle, id);
+            output = new Output(mixerHandle, id);
             // Clear buffer
             int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
             float[] buffer = new float[length];
             Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
             // Start new device
-            uncompressedOutput.Start();
+            output.Start();
         }
         #endregion
     }

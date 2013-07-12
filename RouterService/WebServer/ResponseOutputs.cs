@@ -61,7 +61,6 @@ namespace RouterService
             {
                 bool addQueriesSet = false;
                 string changeID = null;
-                string changeType = null;
                 // Check for queries chanding a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -70,25 +69,13 @@ namespace RouterService
                         addQueriesSet = true;
                         changeID = queries.Get(i);
                     }
-                    else if (queries.GetKey(i) == "change")
-                    {
-                        addQueriesSet = true;
-                        changeType = queries.Get(i);
-                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeID != null && changeType != null) // If both queries are set
+                    if (changeID != null) // If both queries are set
                     {
-                        if (changeType == "uncompressed")
-                        {
-                            audioRouter.ChangeUncompressedOutput(Int32.Parse(changeID));
-                            Status = 303;
-                        }
-                        else
-                        {
-                            Status = 500;
-                        }
+                        audioRouter.ChangeOutput(Int32.Parse(changeID));
+                        Status = 303;
                     }
                     else // Else return server error
                     {
@@ -119,11 +106,9 @@ namespace RouterService
                     responseContent += "<div class=\"page-header\"><h1>Outputs</h1></div>";
                     // Open uncompressed output form
                     responseContent += "<form class=\"form-horizontal\" action=\"/outputs/\" method=\"get\">";
-                    // Change type
-                    responseContent += "<input type=\"hidden\" name=\"change\" value=\"uncompressed\">";
                     // List of devices
                     responseContent +=
-                        "<div class=\"control-group\"><label class=\"control-label\" for=\"uncompressedOutput\">Uncompressed Output Device</label><div class=\"controls\"><select id=\"uncompressedOutput\" name=\"id\" class=\"input-xxlarge\">";
+                        "<div class=\"control-group\"><label class=\"control-label\" for=\"output\">Output Device</label><div class=\"controls\"><select id=\"output\" name=\"id\" class=\"input-xxlarge\">";
                     foreach (DeviceInfo device in devices)
                     {
                         if (device.ID == currentDevice) // If current device, select it on page load
