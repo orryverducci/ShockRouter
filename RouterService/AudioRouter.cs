@@ -27,6 +27,11 @@ namespace RouterService
         /// The router inputs
         /// </summary>
         private List<IInput> inputs = new List<IInput>();
+
+        /// <summary>
+        /// The handle of the current input
+        /// </summary>
+        private int currentInput;
         #endregion
 
         #region Constructor and Destructor
@@ -80,6 +85,28 @@ namespace RouterService
         }
 
         /// <summary>
+        /// The ID of the current input
+        /// </summary>
+        public int CurrentInput
+        {
+            get
+            {
+                return currentInput;
+            }
+            set
+            {
+                if (value != default(int)) // If input is not being deleted
+                {
+                    // Fade out old input
+                    Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+                    // Fade in new input
+                    Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+                }
+                currentInput = value;
+            }
+        }
+
+        /// <summary>
         /// Adds the specified input to the available inputs
         /// </summary>
         /// <param name="name">Name of the input</param>
@@ -97,12 +124,19 @@ namespace RouterService
                 input.Start();
                 // Get output handle
                 int outputChannel = input.OutputChannel;
+                // Mute input
+                Bass.BASS_ChannelSetAttribute(outputChannel, BASSAttribute.BASS_ATTRIB_VOL, 0);
                 // Add input to list of inputs
                 inputs.Add(input);
                 // Add input to mixer
                 if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, outputChannel, BASSFlag.BASS_STREAM_AUTOFREE)) // If unable to add to mixer
                 {
                     Logger.WriteLogEntry("Unable to add input to mixer - " + Bass.BASS_ErrorGetCode().ToString(), EventLogEntryType.Error);
+                }
+                // Set as current input if it is the first one
+                if (CurrentInput == default(int))
+                {
+                    CurrentInput = input.OutputChannel;
                 }
             }
             catch (Exception e)
@@ -171,6 +205,10 @@ namespace RouterService
             IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
             if (input != null)
             {
+                if (input.OutputChannel == CurrentInput) // If the input being deleted is the current input, set current input to nothing
+                {
+                    CurrentInput = default(int);
+                }
                 BassMix.BASS_Mixer_ChannelRemove(input.OutputChannel);
                 input.Stop();
                 inputs.Remove(input);

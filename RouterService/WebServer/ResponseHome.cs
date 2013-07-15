@@ -68,7 +68,14 @@ namespace RouterService
             // Source buttons
             foreach (IInput input in audioRouter.Inputs)
             {
-                responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large\">" + input.Name + "</a>";
+                if (input.OutputChannel == audioRouter.CurrentInput) // If it is the current input, display button with highlight class
+                {
+                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large btn-primary\">" + input.Name + "</a>";
+                }
+                else // Otherwise display button
+                {
+                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large\">" + input.Name + "</a>";
+                }
             }
             // Output footer
             if (File.Exists(footerPath)) // If header exists
