@@ -118,12 +118,11 @@ namespace RouterService
             IInput input = new DeviceInput();
             // Set source
             input.Name = name;
-            input.Source = source;
             input.StudioNumber = studio;
             // Start input
             try
             {
-                input.Start();
+                input.Start(source);
                 // Get output handle
                 int outputChannel = input.OutputChannel;
                 // Mute input

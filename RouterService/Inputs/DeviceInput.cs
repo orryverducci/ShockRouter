@@ -13,7 +13,7 @@ namespace RouterService
     {
         #region Properties
         public string Name { get; set; }
-        public string Source { get; set; }
+        public string Source { get; private set; }
         public int OutputChannel { get; private set; }
         public int StudioNumber { get; set; }
         #endregion
@@ -22,8 +22,9 @@ namespace RouterService
         private WASAPIPROC inputCallback;
         #endregion
 
-        public void Start()
+        public void Start(string source)
         {
+            Source = source;
             inputCallback = new WASAPIPROC(InputCallback);
             OutputChannel = Bass.BASS_StreamCreatePush(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, IntPtr.Zero);
             if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, inputCallback, IntPtr.Zero)) // If device does not initialise successfully

@@ -15,7 +15,7 @@ namespace RouterService
         /// <summary>
         /// The input source. For a device, this is the device ID. For a stream or file, this is the URL or path.
         /// </summary>
-        string Source { get; set; }
+        string Source { get; }
         /// <summary>
         /// The output channel handle
         /// </summary>
@@ -27,7 +27,7 @@ namespace RouterService
         /// <summary>
         /// Start the input
         /// </summary>
-        void Start();
+        void Start(string source);
         /// <summary>
         /// Stop the input
         /// </summary>
