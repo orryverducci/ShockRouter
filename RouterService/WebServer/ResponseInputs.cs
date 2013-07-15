@@ -182,6 +182,7 @@ namespace RouterService
                 bool addQueriesSet = false;
                 string addID = null;
                 string addName = null;
+                string addStudio = null;
                 // Check for queries adding a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -195,12 +196,17 @@ namespace RouterService
                         addQueriesSet = true;
                         addName = queries.Get(i);
                     }
+                    else if (queries.GetKey(i) == "studio")
+                    {
+                        addQueriesSet = true;
+                        addStudio = queries.Get(i);
+                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (addID != null && addName != null) // If both queries are set
+                    if (addID != null && addName != null && addStudio != null) // If all the queries are set
                     {
-                        audioRouter.AddInput(addName, addID);
+                        audioRouter.AddInput(addName, addID, Int32.Parse(addStudio));
                         Status = 303; // Return redirect code
                     }
                     else // Else return server error
@@ -229,6 +235,15 @@ namespace RouterService
                         foreach (DeviceInfo device in devices)
                         {
                             page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                        }
+                        page += "</select></div></div>";
+                        // Studio number
+                        page +=
+                            "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                        page += "<option value=\"0\" selected>None</option>";
+                        for (int i = 1; i < 11; i++)
+                        {
+                            page += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
                         }
                         page += "</select></div></div>";
                         // Submit button
@@ -263,6 +278,7 @@ namespace RouterService
                 bool editQueriesSet = false;
                 string editID = null;
                 string editName = null;
+                string editStudio = null;
                 // Check for queries editing a device
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -276,12 +292,17 @@ namespace RouterService
                         editQueriesSet = true;
                         editName = queries.Get(i);
                     }
+                    else if (queries.GetKey(i) == "studio")
+                    {
+                        editQueriesSet = true;
+                        editStudio = queries.Get(i);
+                    }
                 }
                 if (editQueriesSet) // If queries received, edit device
                 {
-                    if (editID != null && editName != null) // If both queries are set
+                    if (editID != null && editName != null) // If all queries are set
                     {
-                        audioRouter.EditInput(editName, Int32.Parse(editID));
+                        audioRouter.EditInput(editName, Int32.Parse(editID), Int32.Parse(editStudio));
                         Status = 303;
                     }
                     else // Else return error
@@ -320,6 +341,29 @@ namespace RouterService
                     page +=
                         "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" +
                         input.Name + "\"></input></div></div>";
+                    // Studio number
+                    page +=
+                        "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                    if (input.StudioNumber == 0)
+                    {
+                        page += "<option value=\"0\" selected>None</option>";
+                    }
+                    else
+                    {
+                        page += "<option value=\"0\" selected>None</option>";
+                    }
+                    for (int i = 1; i < 11; i++)
+                    {
+                        if (input.StudioNumber == i)
+                        {
+                            page += "<option value=\"" + i.ToString() + "\" selected>" + i.ToString() + "</option>";
+                        }
+                        else
+                        {
+                            page += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
+                        }
+                    }
+                    page += "</select></div></div>";
                     // Device notice
                     page +=
                         "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this device has to be deleted and readded.</i></div></div>";

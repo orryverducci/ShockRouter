@@ -21,6 +21,10 @@ namespace RouterService
         /// </summary>
         int OutputChannel { get; }
         /// <summary>
+        /// The number of the studio (only relevent for device inputs)
+        /// </summary>
+        int StudioNumber { get; set; }
+        /// <summary>
         /// Start the input
         /// </summary>
         void Start();

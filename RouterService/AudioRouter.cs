@@ -111,13 +111,15 @@ namespace RouterService
         /// </summary>
         /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID or address to add</param>
-        public void AddInput(string name, string source)
+        /// <param name="studio">The studio number to add</param>
+        public void AddInput(string name, string source, int studio)
         {
             // Create input
             IInput input = new DeviceInput();
             // Set source
             input.Name = name;
             input.Source = source;
+            input.StudioNumber = studio;
             // Start input
             try
             {
@@ -187,12 +189,14 @@ namespace RouterService
         /// </summary>
         /// <param name="name">New name of the input</param>
         /// <param name="id">The ID of the input to edit</param>
-        public void EditInput(string name, int id)
+        /// <param name="studio">The studio number of the input to edit</param>
+        public void EditInput(string name, int id, int studio)
         {
             IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == id);
             if (input != null)
             {
                 input.Name = name;
+                input.StudioNumber = studio;
             }
         }
 

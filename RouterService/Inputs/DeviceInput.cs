@@ -15,6 +15,7 @@ namespace RouterService
         public string Name { get; set; }
         public string Source { get; set; }
         public int OutputChannel { get; private set; }
+        public int StudioNumber { get; set; }
         #endregion
         
         #region Private Fields
