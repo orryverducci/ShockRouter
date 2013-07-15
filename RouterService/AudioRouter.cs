@@ -290,9 +290,9 @@ namespace RouterService
         }
 
         /// <summary>
-        /// The ID of the current uncompressed output device
+        /// The ID of the current output device
         /// </summary>
-        public int CurrentUncompressedOutput
+        public int CurrentOutput
         {
             get
             {

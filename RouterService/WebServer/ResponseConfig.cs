@@ -87,7 +87,7 @@ namespace RouterService
                     Status = 200;
                     string responseContent = String.Empty;
                     List<DeviceInfo> devices = audioRouter.GetOutputs();
-                    int currentDevice = audioRouter.CurrentUncompressedOutput;
+                    int currentDevice = audioRouter.CurrentOutput;
                     // Setup header and footer
                     string headerPath =
                         Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) +
