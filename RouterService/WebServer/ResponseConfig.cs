@@ -61,6 +61,7 @@ namespace RouterService
             {
                 bool addQueriesSet = false;
                 string changeID = null;
+                string changeIP = null;
                 // Check for queries chanding a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -69,12 +70,18 @@ namespace RouterService
                         addQueriesSet = true;
                         changeID = queries.Get(i);
                     }
+                    if (queries.GetKey(i) == "clockip")
+                    {
+                        addQueriesSet = true;
+                        changeIP = queries.Get(i);
+                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeID != null) // If both queries are set
+                    if (changeID != null && changeIP != null) // If all queries are set
                     {
                         audioRouter.ChangeOutput(Int32.Parse(changeID));
+                        audioRouter.ClockIP = changeIP;
                         Status = 303;
                     }
                     else // Else return server error
@@ -105,7 +112,7 @@ namespace RouterService
                     // Add page title
                     responseContent += "<div class=\"page-header\"><h1>Configuration</h1></div>";
                     // Open uncompressed output form
-                    responseContent += "<form class=\"form-horizontal\" action=\"/outputs/\" method=\"get\">";
+                    responseContent += "<form class=\"form-horizontal\" action=\"/config/\" method=\"get\">";
                     // List of devices
                     responseContent +=
                         "<div class=\"control-group\"><label class=\"control-label\" for=\"output\">Output Device</label><div class=\"controls\"><select id=\"output\" name=\"id\" class=\"input-xxlarge\">";
@@ -121,6 +128,9 @@ namespace RouterService
                         }
                     }
                     responseContent += "</select></div></div>";
+                    // Name item
+                    responseContent +=
+                        "<div class=\"control-group\"><label class=\"control-label \" for=\"clockIP\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"clockIP\" name=\"clockip\" placeholder=\"0.0.0.0\" value=\"" + audioRouter.ClockIP + "\"></div></div>";
                     // Submit button
                     responseContent +=
                         "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using NetworkCommsDotNet;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.BassWasapi;
@@ -103,6 +105,7 @@ namespace RouterService
                     Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
                 }
                 currentInput = value;
+                SendChangeToClocks();
             }
         }
 
@@ -315,6 +318,31 @@ namespace RouterService
             Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
             // Start new device
             output.Start();
+        }
+        #endregion
+
+        #region Networking
+        public string ClockIP { get; set; }
+
+        private void SendChangeToClocks()
+        {
+            // Find input
+            IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == CurrentInput);
+            // Get studio number from input
+            int studioNumber;
+            if (input != null) // If the input was found, retrieve input studio number
+            {
+                studioNumber = input.StudioNumber;
+            }
+            else // If input was not found (input has been deleted), return studio number as 0
+            {
+                studioNumber = 0;
+            }
+            // Send to clocks
+            if (ClockIP != default(string)) // Send if an IP is set
+            {
+                NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO " + studioNumber.ToString());
+            }
         }
         #endregion
     }
