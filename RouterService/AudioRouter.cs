@@ -341,7 +341,7 @@ namespace RouterService
             // Send to clocks
             if (ClockIP != default(string)) // Send if an IP is set
             {
-                NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO " + studioNumber.ToString());
+                NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO - " + studioNumber.ToString());
             }
         }
         #endregion
