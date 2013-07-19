@@ -13,6 +13,10 @@ namespace RouterService
         /// </summary>
         string Name { get; set; }
         /// <summary>
+        /// The type of input
+        /// </summary>
+        string Type { get; }
+        /// <summary>
         /// The input source. For a device, this is the device ID. For a stream or file, this is the URL or path.
         /// </summary>
         string Source { get; }

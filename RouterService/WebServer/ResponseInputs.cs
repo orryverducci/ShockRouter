@@ -157,7 +157,7 @@ namespace RouterService
                 // Display name
                 page += "<td>" + input.Name + "</td>";
                 // Display type
-                page += "<td>Not yet implemented</td>";
+                page += "<td>" + input.Type + "</td>";
                 // Display options
                 page += "<td><div class=\"btn-group\"><a href=\"/inputs/edit/" + input.OutputChannel.ToString() + "/\" class=\"btn\">Change</a><a href=\"/inputs/delete/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-danger\">Delete</a></div></td>";
                 // Close row

@@ -13,6 +13,13 @@ namespace RouterService
     {
         #region Properties
         public string Name { get; set; }
+        public string Type
+        {
+            get
+            {
+                return "Device";
+            }
+        }
         public string Source { get; private set; }
         public int OutputChannel { get; private set; }
         public int StudioNumber { get; set; }
