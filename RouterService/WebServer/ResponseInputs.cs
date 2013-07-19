@@ -146,7 +146,7 @@ namespace RouterService
             // Add page title
             page += "<div class=\"page-header\"><h1>Inputs</h1></div>";
             // Add button to add input
-            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li></ul></div>";
+            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li><li><a href=\"/inputs/add/file/\">File</a></li></ul></div>";
             // Open table of inputs
             page += "<table class=\"table\"><thead><tr><th>Name</th><th>Type</th><th>Options</th></tr></thead><tbody>";
             // List inputs
@@ -180,6 +180,7 @@ namespace RouterService
             if (path.Length < 4) // If add index page requested
             {
                 bool addQueriesSet = false;
+                string addType = null;
                 string addID = null;
                 string addName = null;
                 string addStudio = null;
@@ -201,12 +202,24 @@ namespace RouterService
                         addQueriesSet = true;
                         addStudio = queries.Get(i);
                     }
+                    else if (queries.GetKey(i) == "type")
+                    {
+                        addQueriesSet = true;
+                        addType = queries.Get(i);
+                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (addID != null && addName != null && addStudio != null) // If all the queries are set
+                    if (addID != null && addName != null && ((addType == "device" && addStudio != null) || addType == "file")) // If all the requried queries are set
                     {
-                        audioRouter.AddInput(addName, addID, Int32.Parse(addStudio));
+                        if (addType == "device")
+                        {
+                            audioRouter.AddInputDevice(addName, addID, Int32.Parse(addStudio));
+                        }
+                        else if (addType == "file")
+                        {
+                            audioRouter.AddInputFile(addName, addID);
+                        }
                         Status = 303; // Return redirect code
                     }
                     else // Else return server error
@@ -227,48 +240,58 @@ namespace RouterService
                 {
                     inputType = inputType.Substring(0, inputType.Length - 1);
                 }
-                if (inputType == "device") // If a valid input type
+                if (inputType == "device" || inputType == "file") // If a valid input type
                 {
                     // Set status to successful
                     Status = 200;
-                    // Get devices
-                    List<DeviceInfo> devices = audioRouter.GetInputs();
-                    if (devices.Count > 0) // If there is devices available
+                    // Add page title
+                    page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
+                    // Open form
+                    page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
+                    // Name item
+                    page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
+                    // Device specific options
+                    if (inputType == "device")
                     {
-                        // Add page title
-                        page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
-                        // Open form
-                        page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
-                        // Name item
-                        page +=
-                            "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
-                        // List of devices
-                        page +=
-                            "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
-                        foreach (DeviceInfo device in devices)
+                        List<DeviceInfo> devices = audioRouter.GetInputs();
+                        if (devices.Count > 0) // If there is devices available
                         {
-                            page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                            // List of devices
+                            page +=
+                                "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
+                            foreach (DeviceInfo device in devices)
+                            {
+                                page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                            }
+                            page += "</select></div></div>";
                         }
-                        page += "</select></div></div>";
+                        else // Else if no devices are available
+                        {
+                            page += "<p>No devices are currently available</p>";
+                        }
                         // Studio number
-                        page +=
-                            "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                        page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
                         page += "<option value=\"0\" selected>None</option>";
                         for (int i = 1; i < 11; i++)
                         {
                             page += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
                         }
                         page += "</select></div></div>";
-                        // Submit button
-                        page +=
-                            "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
-                        // Close form
-                        page += "</form>";
+                        // Type Field
+                        page += "<input type=\"hidden\" name=\"type\" value=\"device\">";
                     }
-                    else // Else if no devices are available
+                    // File specific options
+                    else if (inputType == "file")
                     {
-                        page += "<p>No devices are currently available</p>";
+                        // Filename item
+                        page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputFilename\">Filename</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputFilename\" name=\"id\" placeholder=\"Filename\"></div></div>";
+                        // Type Field
+                        page += "<input type=\"hidden\" name=\"type\" value=\"file\">";
                     }
+                    // Submit button
+                    page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+                    // Close form
+                    page += "</form>";
                 }
                 else // Else return not found error
                 {
@@ -344,8 +367,7 @@ namespace RouterService
                 {
                     inputChannelHandle = Int32.Parse(path[3]);
                 }
-                IInput input =
-                    audioRouter.Inputs.Find(specifiedInput => specifiedInput.OutputChannel == inputChannelHandle);
+                IInput input = audioRouter.Inputs.Find(specifiedInput => specifiedInput.OutputChannel == inputChannelHandle);
                 if (input != null) // If input is found, return edit page
                 {
                     // Return success
@@ -355,12 +377,9 @@ namespace RouterService
                     // Open form
                     page += "<form class=\"form-horizontal\" action=\"/inputs/edit/\" method=\"get\">";
                     // Name item
-                    page +=
-                        "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" +
-                        input.Name + "\"></input></div></div>";
+                    page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" + input.Name + "\"></input></div></div>";
                     // Studio number
-                    page +=
-                        "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                    page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
                     if (input.StudioNumber == 0)
                     {
                         page += "<option value=\"0\" selected>None</option>";
@@ -382,13 +401,11 @@ namespace RouterService
                     }
                     page += "</select></div></div>";
                     // Device notice
-                    page +=
-                        "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this device has to be deleted and readded.</i></div></div>";
+                    page += "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this input has to be deleted and readded.</i></div></div>";
                     // ID Field
                     page += "<input type=\"hidden\" name=\"id\" value=\"" + inputChannelHandle.ToString() + "\">";
                     // Submit button
-                    page +=
-                        "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                    page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
                     // Close form
                     page += "</form>";
                 }

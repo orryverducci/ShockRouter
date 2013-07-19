@@ -110,15 +110,37 @@ namespace RouterService
         }
 
         /// <summary>
-        /// Adds the specified input to the available inputs
+        /// Adds the specified input device to the available inputs
         /// </summary>
         /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID or address to add</param>
         /// <param name="studio">The studio number to add</param>
-        public void AddInput(string name, string source, int studio)
+        public void AddInputDevice(string name, string source, int studio)
         {
-            // Create input
             IInput input = new DeviceInput();
+            AddInput(input, name, source, studio);
+        }
+
+        /// <summary>
+        /// Adds the specified input device to the available inputs
+        /// </summary>
+        /// <param name="name">Name of the input</param>
+        /// <param name="source">The source ID or address to add</param>
+        public void AddInputFile(string name, string source)
+        {
+            IInput input = new FileInput();
+            AddInput(input, name, source, 0);
+        }
+
+        /// <summary>
+        /// Adds the specified input to the available inputs
+        /// </summary>
+        /// <param name="input">The input device object</param>
+        /// <param name="name">Name of the input</param>
+        /// <param name="source">The source ID or address to add</param>
+        /// <param name="studio">The studio number to add</param>
+        private void AddInput(IInput input, string name, string source, int studio)
+        {
             // Set source
             input.Name = name;
             input.StudioNumber = studio;
