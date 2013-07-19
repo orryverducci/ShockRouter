@@ -100,7 +100,7 @@ namespace RouterService
                 if (value != default(int)) // If input is not being deleted
                 {
                     // Fade out old input
-                    Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+                    Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
                     // Fade in new input
                     Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
                 }
