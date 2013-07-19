@@ -105,6 +105,9 @@ namespace RouterService
                     case "home":
                         response = new ResponseHome(audioRouter);
                         break;
+                    case "source":
+                        response = new ResponseSource(audioRouter);
+                        break;
                     case "inputs":
                         response = new ResponseInputs(audioRouter);
                         break;
