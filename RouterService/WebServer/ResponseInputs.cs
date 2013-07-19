@@ -146,7 +146,7 @@ namespace RouterService
             // Add page title
             page += "<div class=\"page-header\"><h1>Inputs</h1></div>";
             // Add button to add input
-            page += "<div class=\"btn-group\"><a href=\"/inputs/add/\" class=\"btn\">Add Input</a></div>";
+            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li></ul></div>";
             // Open table of inputs
             page += "<table class=\"table\"><thead><tr><th>Name</th><th>Type</th><th>Options</th></tr></thead><tbody>";
             // List inputs
@@ -214,7 +214,20 @@ namespace RouterService
                         Status = 500;
                     }
                 }
-                else // Else send page to add a device
+                else // Else return server error
+                {
+                    Status = 500;
+                }
+            }
+            else if (path.Length < 5) // Else if input types have been requested
+            {
+                // Get input type to add
+                string inputType = path[3];
+                if (inputType.EndsWith("/"))
+                {
+                    inputType = inputType.Substring(0, inputType.Length - 1);
+                }
+                if (inputType == "device") // If a valid input type
                 {
                     // Set status to successful
                     Status = 200;
@@ -257,8 +270,12 @@ namespace RouterService
                         page += "<p>No devices are currently available</p>";
                     }
                 }
+                else // Else return not found error
+                {
+                    Status = 404;
+                }
             }
-            else // Else if subpages have been requested, return not found error
+            else // Else if further subpages have been requested, return not found error
             {
                 Status = 404;
             }
