@@ -350,6 +350,10 @@ namespace RouterService
                         editStudio = queries.Get(i);
                     }
                 }
+                if (editStudio == null)
+                {
+                    editStudio = "0";
+                }
                 if (editQueriesSet) // If queries received, edit device
                 {
                     if (editID != null && editName != null) // If all queries are set
@@ -391,27 +395,30 @@ namespace RouterService
                     // Name item
                     page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" + input.Name + "\"></input></div></div>";
                     // Studio number
-                    page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
-                    if (input.StudioNumber == 0)
+                    if (input.Type == "Device")
                     {
-                        page += "<option value=\"0\" selected>None</option>";
-                    }
-                    else
-                    {
-                        page += "<option value=\"0\" selected>None</option>";
-                    }
-                    for (int i = 1; i < 11; i++)
-                    {
-                        if (input.StudioNumber == i)
+                        page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                        if (input.StudioNumber == 0)
                         {
-                            page += "<option value=\"" + i.ToString() + "\" selected>" + i.ToString() + "</option>";
+                            page += "<option value=\"0\" selected>None</option>";
                         }
                         else
                         {
-                            page += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
+                            page += "<option value=\"0\" selected>None</option>";
                         }
+                        for (int i = 1; i < 11; i++)
+                        {
+                            if (input.StudioNumber == i)
+                            {
+                                page += "<option value=\"" + i.ToString() + "\" selected>" + i.ToString() + "</option>";
+                            }
+                            else
+                            {
+                                page += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
+                            }
+                        }
+                        page += "</select></div></div>";
                     }
-                    page += "</select></div></div>";
                     // Device notice
                     page += "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this input has to be deleted and readded.</i></div></div>";
                     // ID Field
