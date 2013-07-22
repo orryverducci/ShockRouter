@@ -146,7 +146,7 @@ namespace RouterService
             // Add page title
             page += "<div class=\"page-header\"><h1>Inputs</h1></div>";
             // Add button to add input
-            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li><li><a href=\"/inputs/add/file/\">File</a></li></ul></div>";
+            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li><li><a href=\"/inputs/add/file/\">File</a></li><li><a href=\"/inputs/add/stream/\">Online Stream</a></li></ul></div>";
             // Open table of inputs
             page += "<table class=\"table\"><thead><tr><th>Name</th><th>Type</th><th>Options</th></tr></thead><tbody>";
             // List inputs
@@ -210,7 +210,7 @@ namespace RouterService
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (addID != null && addName != null && ((addType == "device" && addStudio != null) || addType == "file")) // If all the requried queries are set
+                    if (addID != null && addName != null && ((addType == "device" && addStudio != null) || addType == "file" || addType=="stream")) // If all the requried queries are set
                     {
                         if (addType == "device")
                         {
@@ -219,6 +219,10 @@ namespace RouterService
                         else if (addType == "file")
                         {
                             audioRouter.AddInputFile(addName, addID);
+                        }
+                        else if (addType == "stream")
+                        {
+                            audioRouter.AddInputStream(addName, addID);
                         }
                         Status = 303; // Return redirect code
                     }
@@ -240,7 +244,7 @@ namespace RouterService
                 {
                     inputType = inputType.Substring(0, inputType.Length - 1);
                 }
-                if (inputType == "device" || inputType == "file") // If a valid input type
+                if (inputType == "device" || inputType == "file" || inputType == "stream") // If a valid input type
                 {
                     // Set status to successful
                     Status = 200;
@@ -287,6 +291,14 @@ namespace RouterService
                         page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputFilename\">Filename</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputFilename\" name=\"id\" placeholder=\"Filename\"></div></div>";
                         // Type Field
                         page += "<input type=\"hidden\" name=\"type\" value=\"file\">";
+                    }
+                    // Stream specific options
+                    else if (inputType == "stream")
+                    {
+                        // Filename item
+                        page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputURL\">Stream URL</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputURL\" name=\"id\" placeholder=\"URL\"></div></div>";
+                        // Type Field
+                        page += "<input type=\"hidden\" name=\"type\" value=\"stream\">";
                     }
                     // Submit button
                     page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";

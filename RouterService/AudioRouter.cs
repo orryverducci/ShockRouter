@@ -126,13 +126,24 @@ namespace RouterService
         }
 
         /// <summary>
-        /// Adds the specified input device to the available inputs
+        /// Adds the specified input file to the available inputs
         /// </summary>
         /// <param name="name">Name of the input</param>
-        /// <param name="source">The source ID or address to add</param>
+        /// <param name="source">The source ID to add</param>
         public void AddInputFile(string name, string source)
         {
             IInput input = new FileInput();
+            AddInput(input, name, source, 0);
+        }
+
+        /// <summary>
+        /// Adds the specified input stream to the available inputs
+        /// </summary>
+        /// <param name="name">Name of the input</param>
+        /// <param name="source">The stream URL to add</param>
+        public void AddInputStream(string name, string source)
+        {
+            IInput input = new StreamInput();
             AddInput(input, name, source, 0);
         }
 
