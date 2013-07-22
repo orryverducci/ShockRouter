@@ -36,5 +36,9 @@ namespace RouterService
         /// Stop the input
         /// </summary>
         void Stop();
+        /// <summary>
+        /// Tell the input it has been put on air
+        /// </summary>
+        void PutOnAir();
     }
 }

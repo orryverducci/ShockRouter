@@ -62,5 +62,7 @@ namespace RouterService
             Bass.BASS_StreamFree(OutputChannel);
             OutputChannel = default(int);
         }
+
+        public void PutOnAir() { }
     }
 }

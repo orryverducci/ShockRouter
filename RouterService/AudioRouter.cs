@@ -99,10 +99,14 @@ namespace RouterService
             {
                 if (value != default(int)) // If input is not being deleted
                 {
+                    // Find new input and tell it that it has been put on air
+                    IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == value);
+                    input.PutOnAir();
                     // Fade out old input
                     Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
                     // Fade in new input
                     Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
+                    
                 }
                 currentInput = value;
                 SendChangeToClocks();

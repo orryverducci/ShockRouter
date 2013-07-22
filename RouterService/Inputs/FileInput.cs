@@ -29,22 +29,26 @@ namespace RouterService
         {
             Source = source;
             OutputChannel = Bass.BASS_StreamCreateFile(source, 0, 0, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_SAMPLE_LOOP);
-            if (OutputChannel == default(int)) // If does not start recording successfully
+            if (OutputChannel == default(int)) // If does not create successfully
             {
                 throw new ArgumentException("Unable to create input stream"); // Throw exception with error
             }
-            // Start playing
             Bass.BASS_ChannelPlay(OutputChannel, true);
         }
 
         public void Stop()
         {
-            // Stop playback
             // Stop playing
             Bass.BASS_ChannelStop(OutputChannel);
             // Clear stream
             Bass.BASS_StreamFree(OutputChannel);
             OutputChannel = default(int);
+        }
+
+        public void PutOnAir()
+        {
+            // Restart file
+            Bass.BASS_ChannelSetPosition(OutputChannel, 0);
         }
     }
 }
