@@ -404,7 +404,7 @@ namespace RouterService
                         }
                         else
                         {
-                            page += "<option value=\"0\" selected>None</option>";
+                            page += "<option value=\"0\">None</option>";
                         }
                         for (int i = 1; i < 11; i++)
                         {
