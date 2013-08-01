@@ -51,7 +51,7 @@ namespace RouterService
         public void Start()
         {
             outputCallback = new WASAPIPROC(OutputCallback);
-            if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, outputCallback, IntPtr.Zero)) // If device does not initialise successfully
+            if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_SHARED, 0.009f, 0.003f, outputCallback, IntPtr.Zero)) // If device does not initialise successfully
             {
                 throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
