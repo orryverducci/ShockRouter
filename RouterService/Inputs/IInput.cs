@@ -31,6 +31,7 @@ namespace RouterService
         /// <summary>
         /// Start the input
         /// </summary>
+        /// <param name="source">The ID or address of the source to start</param>
         void Start(string source);
         /// <summary>
         /// Stop the input
