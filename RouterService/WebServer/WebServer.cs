@@ -63,7 +63,7 @@ namespace RouterService
             }
             catch (Exception e) // Suppress any exceptions
             {
-                Logger.WriteLogEntry("Server error: " + e.Message, EventLogEntryType.Error);
+                Logger.WriteLogEntry("Server error: " + e.Message + e.StackTrace, EventLogEntryType.Error);
             }
         }
 
@@ -152,7 +152,7 @@ namespace RouterService
             }
             catch (Exception e) // Suppress any exceptions
             {
-                Logger.WriteLogEntry("Server error: " + e.Message, EventLogEntryType.Error);
+                Logger.WriteLogEntry("Server error: " + e.Message + e.StackTrace, EventLogEntryType.Error);
             } 
             finally // Close the stream after processing
             {
