@@ -257,7 +257,7 @@ namespace RouterService
                     // Device specific options
                     if (inputType == "device")
                     {
-                        List<DeviceInfo> devices = audioRouter.GetInputs();
+                        List<DeviceInfo> devices = audioRouter.GetInputs(false);
                         if (devices.Count > 0) // If there is devices available
                         {
                             // List of devices
