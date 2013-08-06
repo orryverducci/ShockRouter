@@ -111,6 +111,9 @@ namespace RouterService
                     case "inputs":
                         response = new ResponseInputs(audioRouter);
                         break;
+                    case "streams":
+                        response = new ResponseStreams(audioRouter);
+                        break;
                     case "config":
                         response = new ResponseConfig(audioRouter);
                         break;
