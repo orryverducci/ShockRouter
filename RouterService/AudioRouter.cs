@@ -49,11 +49,6 @@ namespace RouterService
         /// DSP to mute the audio
         /// </summary>
         private DSPPROC muteDSP = new DSPPROC(MuteAudio);
-
-        /// <summary>
-        /// The router streams
-        /// </summary>
-        private List<Stream> streams = new List<Stream>();
         #endregion
 
         #region Constructor and Destructor
@@ -484,14 +479,6 @@ namespace RouterService
                 {
                     data[i] = 0;
                 }
-            }
-        }
-
-        public List<Stream> Streams
-        {
-            get
-            {
-                return streams;
             }
         }
         #endregion
