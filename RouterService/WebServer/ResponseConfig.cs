@@ -53,6 +53,7 @@ namespace RouterService
 
         public bool GetResponse(string[] path, NameValueCollection queries)
         {
+            string responseContent = String.Empty;
             if (path.Length > 2) // If a subpage has been requested, return not found error
             {
                 Status = 404;
@@ -92,8 +93,6 @@ namespace RouterService
                 else
                 {
                     Status = 200;
-                    string responseContent = String.Empty;
-                    int currentDevice = audioRouter.CurrentOutput;
                     // Setup header and footer
                     string headerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\header.html";
                     string footerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\footer.html";
