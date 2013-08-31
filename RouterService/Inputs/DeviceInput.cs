@@ -31,28 +31,12 @@ namespace RouterService
 
         public void Start(string source)
         {
-            Start(source, true);
-        }
-
-        public void Start(string source, bool exclusive)
-        {
             Source = source;
             inputCallback = new WASAPIPROC(InputCallback);
             OutputChannel = Bass.BASS_StreamCreatePush(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, IntPtr.Zero);
-            BASSWASAPIInit initFlags;
-            if (exclusive)
+            if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, inputCallback, IntPtr.Zero)) // If device does not initialise successfully
             {
-                initFlags = BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE;
-            }
-            else
-            {
-                initFlags = BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_SHARED;
-            }
-            if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, initFlags, 0.009f, 0.003f, inputCallback, IntPtr.Zero)) // If device does not initialise successfully
-            {
-                string error = Bass.BASS_ErrorGetCode().ToString();
-                Bass.BASS_StreamFree(OutputChannel);
-                throw new ArgumentException("Unable to initalise channel - " + error); // Throw exception with error
+                throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
             if (OutputChannel == default(int)) // If does not start recording successfully
             {

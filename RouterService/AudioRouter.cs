@@ -34,21 +34,6 @@ namespace RouterService
         /// The handle of the current input
         /// </summary>
         private int currentInput;
-
-        /// <summary>
-        /// The input used for the streams
-        /// </summary>
-        private DeviceInput streamInput;
-
-        /// <summary>
-        /// The ID of the device used for the streams
-        /// </summary>
-        private int streamDevice;
-
-        /// <summary>
-        /// DSP to mute the audio
-        /// </summary>
-        private DSPPROC muteDSP = new DSPPROC(MuteAudio);
         #endregion
 
         #region Constructor and Destructor
@@ -66,16 +51,20 @@ namespace RouterService
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
             // Create Mixer
-            BASS_WASAPI_DEVICEINFO deviceInfo = BassWasapi.BASS_WASAPI_GetDeviceInfo(GetDefaultOutput());
-            int sampleRate = deviceInfo.mixfreq;
-            mixerHandle = BassMix.BASS_Mixer_StreamCreate(sampleRate, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP | BASSFlag.BASS_STREAM_DECODE); // Create mixer
+            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP | BASSFlag.BASS_STREAM_DECODE); // Create mixer
             if (mixerHandle == default(int)) // If unable to initialise mixer
             {
                 // Throw exception
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
             // Create output
-            ChangeOutput(GetDefaultOutput());
+            output = new Output(mixerHandle, GetDefaultOutput());
+            // Clear buffer
+            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
+            float[] buffer = new float[length];
+            Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
+            // Start output
+            output.Start();
         }
 
         /// <summary>
@@ -201,8 +190,7 @@ namespace RouterService
         /// Get the currently available input devices
         /// </summary>
         /// <returns>A list of BASS_WASAPI_DEVICEINFO for each available device</returns>
-        /// <param name="showLoopback">Return loopback devices as well as inputs</param>
-        public List<DeviceInfo> GetInputs(bool showLoopback)
+        public List<DeviceInfo> GetInputs()
         {
             // Setup list
             List<DeviceInfo> inputDevices = new List<DeviceInfo>();
@@ -213,17 +201,10 @@ namespace RouterService
                 try
                 {
                     BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
-                    if (device.IsInput && ((showLoopback && device.IsLoopback) || !device.IsLoopback) && device.IsEnabled)
+                    if (device.IsInput && !device.IsLoopback && device.IsEnabled)
                     {
                         DeviceInfo deviceInfo = new DeviceInfo();
-                        if (!device.IsLoopback)
-                        {
-                            deviceInfo.Name = device.name;
-                        }
-                        else
-                        {
-                            deviceInfo.Name = "Loopback: " + device.name;
-                        }
+                        deviceInfo.Name = device.name;
                         deviceInfo.ID = i;
                         inputDevices.Add(deviceInfo);
                     }
@@ -364,11 +345,8 @@ namespace RouterService
         /// <param name="id">ID of the output device to use</param>
         public void ChangeOutput(int id)
         {
-            // Stop old output device if there is one
-            if (output != null)
-            {
-                output.Stop();
-            }
+            // Stop old output device
+            output.Stop();
             // Setup new output device
             output = new Output(mixerHandle, id);
             // Clear buffer
@@ -405,80 +383,6 @@ namespace RouterService
                     NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO - " + studioNumber.ToString());
                 }
                 catch { } // Do nothing on exception
-            }
-        }
-        #endregion
-
-        #region Streams
-        public int StreamInputDevice
-        {
-            get
-            {
-                if (streamInput != null) // If a stream input has been set, return device ID
-                {
-                    return streamDevice;
-                }
-                else // Else return 0
-                {
-                    return 0;
-                }
-            }
-            set
-            {
-                // Clear existing input if there is one
-                if (streamInput != null)
-                {
-                    streamInput.Stop();
-                }
-                // Setup new input
-                if (value != 0) // If being set to a device ID
-                {
-                    // Create input
-                    streamInput = new DeviceInput();
-                    // Start input
-                    try
-                    {
-                        streamInput.Start(value.ToString(), false);
-                        int streamHandle = streamInput.OutputChannel;
-                        streamDevice = value;
-                        // Add DSP to mute the stream input before reaching the mixer
-                        Bass.BASS_ChannelSetDSP(streamHandle, muteDSP, IntPtr.Zero, 1);
-                        // Add stream input to mixer to ensure continuous playback of samples
-                        if (!BassMix.BASS_Mixer_StreamAddChannel(mixerHandle, streamHandle, BASSFlag.BASS_STREAM_AUTOFREE)) // If unable to add to mixer
-                        {
-                            Logger.WriteLogEntry("Unable to add input to mixer - " + Bass.BASS_ErrorGetCode().ToString(), EventLogEntryType.Error);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WriteLogEntry("Unable to set stream input: " + e.Message, EventLogEntryType.Error);
-                        streamInput = null;
-                    }
-                }
-                else // Else clear stream input
-                {
-                    streamInput = null;
-                }
-            }
-        }
-
-        static private void MuteAudio(int handle, int channel, IntPtr buffer, int length, IntPtr user)
-        {
-            // If nothing to process, return function
-            if (length == 0 || buffer == IntPtr.Zero)
-            {
-                return;
-            }
-            // length is in bytes, so convert to 32 bit floats
-            int floatLength = length / 4;
-            // Process audio
-            unsafe
-            {
-                float* data = (float*)buffer;
-                for (int i = 0; i < floatLength; i++)
-                {
-                    data[i] = 0;
-                }
             }
         }
         #endregion

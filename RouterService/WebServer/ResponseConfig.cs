@@ -53,7 +53,6 @@ namespace RouterService
 
         public bool GetResponse(string[] path, NameValueCollection queries)
         {
-            string responseContent = String.Empty;
             if (path.Length > 2) // If a subpage has been requested, return not found error
             {
                 Status = 404;
@@ -61,21 +60,15 @@ namespace RouterService
             else // Else return output page
             {
                 bool addQueriesSet = false;
-                string changeOutputID = null;
-                string changeInputID = null;
+                string changeID = null;
                 string changeIP = null;
                 // Check for queries changing a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
-                    if (queries.GetKey(i) == "outputid")
+                    if (queries.GetKey(i) == "id")
                     {
                         addQueriesSet = true;
-                        changeOutputID = queries.Get(i);
-                    }
-                    if (queries.GetKey(i) == "inputid")
-                    {
-                        addQueriesSet = true;
-                        changeInputID = queries.Get(i);
+                        changeID = queries.Get(i);
                     }
                     if (queries.GetKey(i) == "clockip")
                     {
@@ -85,10 +78,9 @@ namespace RouterService
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeOutputID != null && changeInputID != null && changeIP != null) // If all queries are set
+                    if (changeID != null && changeIP != null) // If all queries are set
                     {
-                        audioRouter.ChangeOutput(Int32.Parse(changeOutputID));
-                        audioRouter.StreamInputDevice = Int32.Parse(changeInputID);
+                        audioRouter.ChangeOutput(Int32.Parse(changeID));
                         audioRouter.ClockIP = changeIP;
                         Status = 303;
                     }
@@ -100,6 +92,8 @@ namespace RouterService
                 else
                 {
                     Status = 200;
+                    string responseContent = String.Empty;
+                    int currentDevice = audioRouter.CurrentOutput;
                     // Setup header and footer
                     string headerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\header.html";
                     string footerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\footer.html";
@@ -119,28 +113,6 @@ namespace RouterService
                     foreach (DeviceInfo device in audioRouter.GetOutputs())
                     {
                         if (device.ID == audioRouter.CurrentOutput) // If current device, select it on page load
-                        {
-                            responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
-                        }
-                        else
-                        {
-                            responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
-                        }
-                    }
-                    responseContent += "</select></div></div>";
-                    // Stream input item
-                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"input\">Stream Input</label><div class=\"col-lg-10\"><select id=\"input\" name=\"inputid\" class=\"form-control\">";
-                    if (audioRouter.StreamInputDevice == 0)
-                    {
-                        responseContent += "<option value=\"0\" selected>None</option>";
-                    }
-                    else
-                    {
-                        responseContent += "<option value=\"0\">None</option>";
-                    }
-                    foreach (DeviceInfo device in audioRouter.GetInputs(true))
-                    {
-                        if (device.ID == audioRouter.StreamInputDevice) // If current device, select it on page load
                         {
                             responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
                         }
