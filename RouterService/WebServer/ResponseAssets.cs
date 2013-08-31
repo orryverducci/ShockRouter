@@ -98,6 +98,15 @@ namespace RouterService
                         case ".ico":
                             ContentType = "image/x-icon";
                             break;
+                        case ".eot":
+                            ContentType = "application/vnd.ms-fontobject";
+                            break;
+                        case ".svg":
+                            ContentType = "image/svg+xml";
+                            break;
+                        case ".woff":
+                            ContentType = "application/font-woff";
+                            break;
                         default:
                             ContentType = "application/octet-stream";
                             break;

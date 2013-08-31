@@ -146,7 +146,7 @@ namespace RouterService
             // Add page title
             page += "<div class=\"page-header\"><h1>Inputs</h1></div>";
             // Add button to add input
-            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li><li><a href=\"/inputs/add/file/\">File</a></li><li><a href=\"/inputs/add/stream/\">Online Stream</a></li></ul></div>";
+            page += "<div class=\"btn-group\"><a href=\"#\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\">Add Input <span class=\"caret\"></span></a><ul class=\"dropdown-menu\"><li><a href=\"/inputs/add/device/\">Device</a></li><li><a href=\"/inputs/add/file/\">File</a></li><li><a href=\"/inputs/add/stream/\">Online Stream</a></li></ul></div>";
             // Open table of inputs
             page += "<table class=\"table\"><thead><tr><th>Name</th><th>Type</th><th>Options</th></tr></thead><tbody>";
             // List inputs
@@ -159,7 +159,7 @@ namespace RouterService
                 // Display type
                 page += "<td>" + input.Type + "</td>";
                 // Display options
-                page += "<td><div class=\"btn-group\"><a href=\"/inputs/edit/" + input.OutputChannel.ToString() + "/\" class=\"btn\">Change</a><a href=\"/inputs/delete/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-danger\">Delete</a></div></td>";
+                page += "<td><div class=\"btn-group\"><a href=\"/inputs/edit/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-default btn-xs\">Change</a><a href=\"/inputs/delete/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-danger btn-xs\">Delete</a></div></td>";
                 // Close row
                 page += "</tr>";
             }
@@ -251,9 +251,9 @@ namespace RouterService
                     // Add page title
                     page += "<div class=\"page-header\"><h1>Add Input</h1></div>";
                     // Open form
-                    page += "<form class=\"form-horizontal\" action=\"/inputs/add/\" method=\"get\">";
+                    page += "<form class=\"form-horizontal\" role=\"form\" action=\"/inputs/add/\" method=\"get\">";
                     // Name item
-                    page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
+                    page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputName\">Name</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\"></div></div>";
                     // Device specific options
                     if (inputType == "device")
                     {
@@ -262,7 +262,7 @@ namespace RouterService
                         {
                             // List of devices
                             page +=
-                                "<div class=\"control-group\"><label class=\"control-label\" for=\"inputDevice\">Device</label><div class=\"controls\"><select id=\"inputDevice\" name=\"id\" class=\"input-xxlarge\">";
+                                "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputDevice\">Device</label><div class=\"col-lg-10\"><select id=\"inputDevice\" name=\"id\" class=\"form-control\">";
                             foreach (DeviceInfo device in devices)
                             {
                                 page += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
@@ -274,7 +274,7 @@ namespace RouterService
                             page += "<p>No devices are currently available</p>";
                         }
                         // Studio number
-                        page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                        page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputStudio\">Studio Number</label><div class=\"col-lg-10\"><select id=\"inputStudio\" name=\"studio\" class=\"form-control\">";
                         page += "<option value=\"0\" selected>None</option>";
                         for (int i = 1; i < 11; i++)
                         {
@@ -288,7 +288,7 @@ namespace RouterService
                     else if (inputType == "file")
                     {
                         // Filename item
-                        page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputFilename\">Filename</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputFilename\" name=\"id\" placeholder=\"Filename\"></div></div>";
+                        page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputFilename\">Filename</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"inputFilename\" name=\"id\" placeholder=\"Filename\"></div></div>";
                         // Type Field
                         page += "<input type=\"hidden\" name=\"type\" value=\"file\">";
                     }
@@ -296,12 +296,12 @@ namespace RouterService
                     else if (inputType == "stream")
                     {
                         // Filename item
-                        page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputURL\">Stream URL</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputURL\" name=\"id\" placeholder=\"URL\"></div></div>";
+                        page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputURL\">Stream URL</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"inputURL\" name=\"id\" placeholder=\"URL\"></div></div>";
                         // Type Field
                         page += "<input type=\"hidden\" name=\"type\" value=\"stream\">";
                     }
                     // Submit button
-                    page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
+                    page += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><button type=\"submit\" class=\"btn\">Add</button></div></div>";
                     // Close form
                     page += "</form>";
                 }
@@ -391,13 +391,13 @@ namespace RouterService
                     // Add page title
                     page += "<div class=\"page-header\"><h1>Change Input</h1></div>";
                     // Open form
-                    page += "<form class=\"form-horizontal\" action=\"/inputs/edit/\" method=\"get\">";
+                    page += "<form class=\"form-horizontal\" role=\"form\" action=\"/inputs/edit/\" method=\"get\">";
                     // Name item
-                    page += "<div class=\"control-group\"><label class=\"control-label \" for=\"inputName\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" + input.Name + "\"></input></div></div>";
+                    page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputName\">Name</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"inputName\" name=\"name\" placeholder=\"Name\" value=\"" + input.Name + "\"></input></div></div>";
                     // Studio number
                     if (input.Type == "Device")
                     {
-                        page += "<div class=\"control-group\"><label class=\"control-label\" for=\"inputStudio\">Studio Number</label><div class=\"controls\"><select id=\"inputStudio\" name=\"studio\" class=\"input-xxlarge\">";
+                        page += "<div class=\"form-group\"><label class=\"col-lg-2\" for=\"inputStudio\">Studio Number</label><div class=\"col-lg-10\"><select id=\"inputStudio\" name=\"studio\" class=\"form-control\">";
                         if (input.StudioNumber == 0)
                         {
                             page += "<option value=\"0\" selected>None</option>";
@@ -420,11 +420,11 @@ namespace RouterService
                         page += "</select></div></div>";
                     }
                     // Device notice
-                    page += "<div class=\"control-group\"><div class=\"controls\"><i>To change the input, this input has to be deleted and readded.</i></div></div>";
+                    page += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><i>To change the input, this input has to be deleted and readded.</i></div></div>";
                     // ID Field
                     page += "<input type=\"hidden\" name=\"id\" value=\"" + inputChannelHandle.ToString() + "\">";
                     // Submit button
-                    page += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                    page += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
                     // Close form
                     page += "</form>";
                 }

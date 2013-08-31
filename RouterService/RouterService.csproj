@@ -125,14 +125,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="webroot\img\glyphicons-halflings-white.png">
+    <None Include="webroot\fonts\glyphicons-halflings-regular.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="webroot\img\glyphicons-halflings.png">
+    <None Include="webroot\fonts\glyphicons-halflings-regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="webroot\fonts\glyphicons-halflings-regular.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="webroot\header.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -161,6 +162,11 @@
     <None Include="webroot\footer.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="webroot\fonts\glyphicons-halflings-regular.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

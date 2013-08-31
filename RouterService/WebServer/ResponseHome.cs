@@ -70,11 +70,11 @@ namespace RouterService
             {
                 if (input.OutputChannel == audioRouter.CurrentInput) // If it is the current input, display button with highlight class
                 {
-                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large btn-primary\">" + input.Name + "</a>";
+                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-lg btn-primary\">" + input.Name + "</a>";
                 }
                 else // Otherwise display button
                 {
-                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-large\">" + input.Name + "</a>";
+                    responseContent += "<a href=\"/source/" + input.OutputChannel.ToString() + "/\" class=\"btn btn-lg btn-default\">" + input.Name + "</a>";
                 }
             }
             // Output footer

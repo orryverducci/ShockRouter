@@ -113,9 +113,9 @@ namespace RouterService
                     // Add page title
                     responseContent += "<div class=\"page-header\"><h1>Configuration</h1></div>";
                     // Open form
-                    responseContent += "<form class=\"form-horizontal\" action=\"/config/\" method=\"get\">";
+                    responseContent += "<form class=\"form-horizontal\" role=\"form\" action=\"/config/\" method=\"get\">";
                     // List of devices
-                    responseContent += "<div class=\"control-group\"><label class=\"control-label\" for=\"output\">Output Device</label><div class=\"controls\"><select id=\"output\" name=\"outputid\" class=\"input-xxlarge\">";
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"output\">Output Device</label><div class=\"col-lg-10\"><select id=\"output\" name=\"outputid\" class=\"form-control\">";
                     foreach (DeviceInfo device in audioRouter.GetOutputs())
                     {
                         if (device.ID == audioRouter.CurrentOutput) // If current device, select it on page load
@@ -129,7 +129,7 @@ namespace RouterService
                     }
                     responseContent += "</select></div></div>";
                     // Stream input item
-                    responseContent += "<div class=\"control-group\"><label class=\"control-label\" for=\"input\">Stream Input</label><div class=\"controls\"><select id=\"input\" name=\"inputid\" class=\"input-xxlarge\">";
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"input\">Stream Input</label><div class=\"col-lg-10\"><select id=\"input\" name=\"inputid\" class=\"form-control\">";
                     if (audioRouter.StreamInputDevice == 0)
                     {
                         responseContent += "<option value=\"0\" selected>None</option>";
@@ -151,9 +151,9 @@ namespace RouterService
                     }
                     responseContent += "</select></div></div>";
                     // Clock IP item
-                    responseContent += "<div class=\"control-group\"><label class=\"control-label \" for=\"clockIP\">Name</label><div class=\"controls\"><input class=\"input-xxlarge\" type=\"text\" id=\"clockIP\" name=\"clockip\" placeholder=\"0.0.0.0\" value=\"" + audioRouter.ClockIP + "\"></div></div>";
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"clockIP\">Name</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"clockIP\" name=\"clockip\" placeholder=\"0.0.0.0\" value=\"" + audioRouter.ClockIP + "\"></div></div>";
                     // Submit button
-                    responseContent += "<div class=\"control-group\"><div class=\"controls\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
+                    responseContent += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
                     // Close uncompressed output form form
                     responseContent += "</form>";
                     // Output footer

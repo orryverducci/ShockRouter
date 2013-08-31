@@ -2,11 +2,10 @@ body {
     padding-top: 60px;
 }
 
-.nav-stacked {
-    margin-top: 18px;
+.list-group {
+    margin-top: 40px;
 }
 
-.nav-stacked li i {
-    float: right;
-    margin-top: 2px;
+.list-group-item {
+    padding: 10px 15px;
 }
