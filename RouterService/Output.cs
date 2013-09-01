@@ -85,6 +85,7 @@ namespace RouterService
                 {
                     throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
+                ClearBuffer();
                 BassWasapi.BASS_WASAPI_Start();
             }
             else if (type == OutputType.ASIO)
@@ -103,6 +104,7 @@ namespace RouterService
                 BassAsio.BASS_ASIO_ChannelSetFormat(false, 0, BASSASIOFormat.BASS_ASIO_FORMAT_FLOAT);
                 BassAsio.BASS_ASIO_ChannelSetRate(false, 0, (double)info.freq);
                 BassAsio.BASS_ASIO_SetRate((double)info.freq);
+                ClearBuffer();
                 BassAsio.BASS_ASIO_Start(0);
             }
         }
@@ -131,6 +133,14 @@ namespace RouterService
         private int WASAPICallback(IntPtr buffer, int length, IntPtr user)
         {
             return Bass.BASS_ChannelGetData(mixer, buffer, length);
+        }
+
+        private void ClearBuffer()
+        {
+            // Clear buffer
+            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixer, 1);
+            float[] buffer = new float[length];
+            Bass.BASS_ChannelGetData(mixer, buffer, length);
         }
 
         /// <summary>

@@ -61,10 +61,6 @@ namespace RouterService
             }
             // Create output
             output = new Output(mixerHandle, GetDefaultOutput(), Output.OutputType.WASAPI);
-            // Clear buffer
-            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
-            float[] buffer = new float[length];
-            Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
             // Start output
             output.Start();
         }
@@ -408,10 +404,6 @@ namespace RouterService
             output.Stop();
             // Setup new output device
             output = new Output(mixerHandle, outputDevice, outputType);
-            // Clear buffer
-            int length = (int)Bass.BASS_ChannelSeconds2Bytes(mixerHandle, 1);
-            float[] buffer = new float[length];
-            Bass.BASS_ChannelGetData(mixerHandle, buffer, length);
             // Start new device
             output.Start();
         }
