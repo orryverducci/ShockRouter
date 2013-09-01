@@ -43,6 +43,8 @@ namespace RouterService
 
         protected override void OnStop()
         {
+            core.Shutdown();
+            core = null;
         }
     }
 }

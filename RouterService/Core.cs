@@ -28,5 +28,13 @@ namespace RouterService
             // Start the web server on port 7000
             webServer = new WebServer(7000, router);
         }
+
+        public void Shutdown()
+        {
+            router.Shutdown();
+            webServer.Shutdown();
+            webServer = null;
+            router = null;
+        }
     }
 }

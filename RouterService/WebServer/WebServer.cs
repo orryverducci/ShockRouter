@@ -42,7 +42,7 @@ namespace RouterService
         /// <summary>
         /// Stops the web server
         /// </summary>
-        ~WebServer()
+        public void Shutdown()
         {
             listener.Stop();
             listener.Close();

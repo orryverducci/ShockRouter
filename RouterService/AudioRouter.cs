@@ -66,12 +66,18 @@ namespace RouterService
         }
 
         /// <summary>
-        /// Shuts down audio inputs and outputs
+        /// Shuts down audio inputs, outputs and networking
         /// </summary>
-        ~AudioRouter()
+        public void Shutdown()
         {
             output.Stop();
-            Bass.FreeMe(); // Free BASS
+            // Free BASS
+            BassAsio.FreeMe();
+            BassWasapi.FreeMe();
+            BassMix.FreeMe();
+            Bass.FreeMe();
+            // Stop NetworkComms.Net
+            NetworkComms.Shutdown();
         }
         #endregion
 
