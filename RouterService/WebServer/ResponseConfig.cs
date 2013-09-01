@@ -81,7 +81,7 @@ namespace RouterService
                 {
                     if (changeID != null && changeIP != null) // If all queries are set
                     {
-                        audioRouter.ChangeOutput(Int32.Parse(changeID));
+                        audioRouter.ChangeOutput(changeID);
                         audioRouter.ClockIP = changeIP;
                         Status = 303;
                     }
@@ -108,16 +108,27 @@ namespace RouterService
                     // Open form
                     responseContent += "<form class=\"form-horizontal\" role=\"form\" action=\"/config/\" method=\"get\">";
                     // List of devices
-                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"output\">Output Device</label><div class=\"col-lg-10\"><select id=\"output\" name=\"outputid\" class=\"form-control\">";
-                    foreach (DeviceInfo device in audioRouter.GetOutputs())
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"output\">Output Device</label><div class=\"col-lg-10\"><select id=\"output\" name=\"id\" class=\"form-control\">";
+                    foreach (DeviceInfo device in audioRouter.GetWASAPIOutputs())
                     {
-                        if (device.ID == audioRouter.CurrentOutput) // If current device, select it on page load
+                        if (("1-" + device.ID) == audioRouter.CurrentOutput) // If current device, select it on page load
                         {
-                            responseContent += "<option value=\"" + device.ID + "\" selected>" + device.Name + "</option>";
+                            responseContent += "<option value=\"1-" + device.ID + "\" selected>WASAPI: " + device.Name + "</option>";
                         }
                         else
                         {
-                            responseContent += "<option value=\"" + device.ID + "\">" + device.Name + "</option>";
+                            responseContent += "<option value=\"1-" + device.ID + "\">WASAPI: " + device.Name + "</option>";
+                        }
+                    }
+                    foreach (DeviceInfo device in audioRouter.GetASIOOutputs())
+                    {
+                        if (("2-" + device.ID) == audioRouter.CurrentOutput) // If current device, select it on page load
+                        {
+                            responseContent += "<option value=\"2-" + device.ID + "\" selected>ASIO: " + device.Name + "</option>";
+                        }
+                        else
+                        {
+                            responseContent += "<option value=\"2-" + device.ID + "\">ASIO: " + device.Name + "</option>";
                         }
                     }
                     responseContent += "</select></div></div>";
