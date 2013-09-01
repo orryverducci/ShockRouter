@@ -11,7 +11,6 @@ namespace RouterService
     {
         #region Private fields
         private AudioRouter router;
-        private Datacaster datacaster;
         private WebServer webServer;
         #endregion
 
