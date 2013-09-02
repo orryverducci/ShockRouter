@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <Product Id="*" Name="ShockRouter" Language="2057" Version="2.0.0.0" Manufacturer="Shock Radio" UpgradeCode="f5ba1870-4dd3-42ee-93f4-68df25a57d32">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+        <MajorUpgrade DowngradeErrorMessage="A newer version of ShockRouter is already installed." />
+        <MediaTemplate />
+        <Feature Id="ProductFeature" Title="ShockRouter" Level="1">
+            <ComponentGroupRef Id="BASS" />
+            <ComponentGroupRef Id="WebTemplates" />
+            <ComponentGroupRef Id="WebCSS" />
+            <ComponentGroupRef Id="WebFonts" />
+            <ComponentGroupRef Id="WebImg" />
+            <ComponentGroupRef Id="WebJS" />
+            <ComponentGroupRef Id="MainService" />
+        </Feature>
+        <UI />
+        <UIRef Id="WixUI_InstallDir" />
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+        <Condition Message="This application is only supported on Windows Vista, Windows Server 2008, or higher.">
+            <![CDATA[Installed OR (VersionNT >= 600)]]>
+        </Condition>
+        <Condition Message="This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.">
+            <![CDATA[Installed OR NETFRAMEWORK45]]>
+        </Condition>
+        <PropertyRef Id="NETFRAMEWORK45"/>
+        <Icon Id="icon" SourceFile="$(var.RouterService.TargetDir)webroot\img\favicon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="icon" />
+    </Product>
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="ShockRouter">
+                    <Directory Id="BASSFOLDER" Name="Bass" />
+                    <Directory Id="WEBROOTFOLDER" Name="webroot">
+                        <Directory Id="CSSFOLDER" Name="css" />
+                        <Directory Id="FONTSFOLDER" Name="fonts" />
+                        <Directory Id="IMGFOLDER" Name="img" />
+                        <Directory Id="JSFOLDER" Name="js" />
+                    </Directory>
+                </Directory>
+            </Directory>
+        </Directory>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="BASS" Directory="BASSFOLDER">
+            <Component Id="bass.dll">
+                <File Source="$(var.RouterService.TargetDir)Bass\bass.dll" />
+            </Component>
+            <Component Id="bassasio.dll">
+                <File Source="$(var.RouterService.TargetDir)Bass\bassasio.dll" />
+            </Component>
+            <Component Id="bassmix.dll">
+                <File Source="$(var.RouterService.TargetDir)Bass\bassmix.dll" />
+            </Component>
+            <Component Id="basswasapi.dll">
+                <File Source="$(var.RouterService.TargetDir)Bass\basswasapi.dll" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="WebTemplates" Directory="WEBROOTFOLDER">
+            <Component Id="header.html">
+                <File Source="$(var.RouterService.TargetDir)webroot\header.html" />
+            </Component>
+            <Component Id="footer.html">
+                <File Source="$(var.RouterService.TargetDir)webroot\footer.html" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="WebCSS" Directory="CSSFOLDER">
+            <Component Id="bootstrap.min.css">
+                <File Source="$(var.RouterService.TargetDir)webroot\css\bootstrap.min.css" />
+            </Component>
+            <Component Id="style.css">
+                <File Source="$(var.RouterService.TargetDir)webroot\css\style.css" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="WebFonts" Directory="FONTSFOLDER">
+            <Component Id="glyphicons_halflings_regular.eot">
+                <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.eot" />
+            </Component>
+            <Component Id="glyphicons_halflings_regular.svg">
+                <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.svg" />
+            </Component>
+            <Component Id="glyphicons_halflings_regular.ttf">
+                <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.ttf" />
+            </Component>
+            <Component Id="glyphicons_halflings_regular.woff">
+                <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.woff" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="WebImg" Directory="IMGFOLDER">
+            <Component Id="favicon.ico">
+                <File Source="$(var.RouterService.TargetDir)webroot\img\favicon.ico" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="WebJS" Directory="JSFOLDER">
+            <Component Id="bootstrap.min.js">
+                <File Source="$(var.RouterService.TargetDir)webroot\js\bootstrap.min.js" />
+            </Component>
+            <Component Id="jquery.min.js">
+                <File Source="$(var.RouterService.TargetDir)webroot\js\jquery.min.js" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="MainService" Directory="INSTALLFOLDER">
+            <Component Id="Bass.Net.dll">
+                <File Source="$(var.RouterService.TargetDir)Bass.Net.dll" />
+            </Component>
+            <Component Id="NetworkCommsDotNetComplete.dll">
+                <File Source="$(var.RouterService.TargetDir)NetworkCommsDotNetComplete.dll" />
+            </Component>
+            <Component Id="RouterService.exe">
+                <File Source="$(var.RouterService.TargetDir)RouterService.exe" />
+                <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="ShockRouter" DisplayName="ShockRouter" Description="Audio Mixing and Routing" Start="auto" Account="LocalSystem" ErrorControl="ignore" Interactive="no" />
+                <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="ShockRouter" Wait="yes" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

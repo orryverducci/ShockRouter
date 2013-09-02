@@ -9,16 +9,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouterService", "RouterService\RouterService.csproj", "{0CB11F3F-0B8E-4908-BB31-1037757F7A77}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Setup", "Setup\Setup.wixproj", "{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77} = {0CB11F3F-0B8E-4908-BB31-1037757F7A77}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0CB11F3F-0B8E-4908-BB31-1037757F7A77}.Release|x86.ActiveCfg = Release|Any CPU
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Debug|x86.ActiveCfg = Debug|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Debug|x86.Build.0 = Debug|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Release|Any CPU.ActiveCfg = Release|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Release|Mixed Platforms.Build.0 = Release|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Release|x86.ActiveCfg = Release|x86
+		{50CB6D66-27F4-4222-B1F1-8F712F4DD2EF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
