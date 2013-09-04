@@ -111,7 +111,7 @@
                 <File Source="$(var.RouterService.TargetDir)RouterService.exe" />
                 <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="ShockRouter" DisplayName="ShockRouter" Description="Audio Mixing and Routing" Start="auto" Account="LocalSystem" ErrorControl="ignore" Interactive="no" />
                 <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="ShockRouter" Wait="yes" />
-                <fire:FirewallException Id="UnblockPort" Name="ShockRouter (allow outside access)" Port="7000" Protocol="tcp" />
+                <fire:FirewallException Id="UnblockPort" Name="ShockRouter (allow outside access)" Scope="any" Port="7000" Protocol="tcp" />
             </Component>
         </ComponentGroup>
     </Fragment>
