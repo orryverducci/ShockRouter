@@ -399,7 +399,7 @@ namespace RouterService
         /// Change the uncompressd output device
         /// </summary>
         /// <param name="id">ID of the output device to use</param>
-        public void ChangeOutput(string id)
+        public void ChangeOutput(string id, int leftChannel, int rightChannel)
         {
             // Process input id
             Output.OutputType outputType;
@@ -416,7 +416,7 @@ namespace RouterService
             // Stop old output device
             output.Stop();
             // Setup new output device
-            output = new Output(mixerHandle, outputDevice, outputType);
+            output = new Output(mixerHandle, outputDevice, outputType, leftChannel, rightChannel);
             // Start new device
             try
             {

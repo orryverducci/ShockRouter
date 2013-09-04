@@ -62,6 +62,8 @@ namespace RouterService
             {
                 bool addQueriesSet = false;
                 string changeID = null;
+                int changeAsioLeft = null;
+                int changeAsioRight = null;
                 string changeIP = null;
                 // Check for queries changing a device ID
                 for (int i = 0; i < queries.Count; i++)
@@ -71,6 +73,16 @@ namespace RouterService
                         addQueriesSet = true;
                         changeID = queries.Get(i);
                     }
+                    if (queries.GetKey(i) == "asioleft")
+                    {
+                        addQueriesSet = true;
+                        changeAsioLeft = Int32.Parse(queries.Get(i));
+                    }
+                    if (queries.GetKey(i) == "asioright")
+                    {
+                        addQueriesSet = true;
+                        changeAsioRight = Int32.Parse(queries.Get(i));
+                    }
                     if (queries.GetKey(i) == "clockip")
                     {
                         addQueriesSet = true;
@@ -79,9 +91,9 @@ namespace RouterService
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeID != null && changeIP != null) // If all queries are set
+                    if (changeID != null && changeAsioLeft != null && changeAsioRight != null && changeIP != null) // If all queries are set
                     {
-                        audioRouter.ChangeOutput(changeID);
+                        audioRouter.ChangeOutput(changeID, changeAsioLeft, changeAsioRight);
                         audioRouter.ClockIP = changeIP;
                         Status = 303;
                     }
@@ -130,6 +142,22 @@ namespace RouterService
                         {
                             responseContent += "<option value=\"2-" + device.ID + "\">ASIO: " + device.Name + "</option>";
                         }
+                    }
+                    responseContent += "</select></div></div>";
+                    // ASIO Left Channel
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"leftChannel\">ASIO Left Ch</label><div class=\"col-lg-10\"><select id=\"leftChannel\" name=\"asioleft\" class=\"form-control\">";
+                    responseContent += "<option value=\"1\" selected>1</option>";
+                    for (int i = 2; i < 11; i++)
+                    {
+                        responseContent += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
+                    }
+                    responseContent += "</select></div></div>";
+                    // ASIO Right Channel
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"rightChannel\">ASIO Right Ch</label><div class=\"col-lg-10\"><select id=\"rightChannel\" name=\"rightleft\" class=\"form-control\">";
+                    responseContent += "<option value=\"1\" selected>1</option>";
+                    for (int i = 2; i < 11; i++)
+                    {
+                        responseContent += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
                     }
                     responseContent += "</select></div></div>";
                     // Clock IP item

@@ -28,6 +28,16 @@ namespace RouterService
         private OutputType type;
 
         /// <summary>
+        /// ASIO channel number to use for left speaker output
+        /// </summary>
+        private int asioLeftChannel;
+
+        /// <summary>
+        /// ASIO channel number to use for right speaker output
+        /// </summary>
+        private int asioRightChannel;
+
+        /// <summary>
         /// Callback to send output to device
         /// </summary>
         private ASIOPROC asioCallback;
@@ -49,12 +59,31 @@ namespace RouterService
         /// </summary>
         /// <param name="mixerHandle">The handle for the mixer channel</param>
         /// <param name="deviceID">The ID of the device to use</param>
-        /// <param name="type">The output type to use</param>
+        /// <param name="outputType">The output type to use</param>
         public Output(int mixerHandle, int deviceID, OutputType outputType)
         {
             mixer = mixerHandle;
             device = deviceID;
             type = outputType;
+            asioLeftChannel = 1;
+            asioRightChannel = 2;
+        }
+
+        /// <summary>
+        /// Create the output device for uncompressed output
+        /// </summary>
+        /// <param name="mixerHandle">The handle for the mixer channel</param>
+        /// <param name="deviceID">The ID of the device to use</param>
+        /// <param name="outputType">The output type to use</param>
+        /// <param name="leftChannel">ASIO channel to use for left speaker</param>
+        /// <param name="rightChannel">ASIO channel to use for the right speaker</param>
+        public Output(int mixerHandle, int deviceID, OutputType outputType, int leftChannel, int rightChannel)
+        {
+            mixer = mixerHandle;
+            device = deviceID;
+            type = outputType;
+            asioLeftChannel = leftChannel;
+            asioRightChannel = rightChannel;
         }
 
         public int DeviceID
@@ -96,11 +125,8 @@ namespace RouterService
                     throw new ApplicationException(BassAsio.BASS_ASIO_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(mixer);
-                BassAsio.BASS_ASIO_ChannelEnable(false, 0, asioCallback, new IntPtr(mixer));
-                for (int i = 1; i < info.chans; i++)
-                {
-                    BassAsio.BASS_ASIO_ChannelJoin(false, i, 0);
-                }
+                BassAsio.BASS_ASIO_ChannelEnable(false, asioLeftChannel - 1, asioCallback, new IntPtr(mixer));
+                BassAsio.BASS_ASIO_ChannelJoin(false, asioRightChannel - 1, asioLeftChannel - 1);
                 BassAsio.BASS_ASIO_ChannelSetFormat(false, 0, BASSASIOFormat.BASS_ASIO_FORMAT_FLOAT);
                 BassAsio.BASS_ASIO_ChannelSetRate(false, 0, (double)info.freq);
                 BassAsio.BASS_ASIO_SetRate((double)info.freq);
