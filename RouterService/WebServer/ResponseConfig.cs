@@ -62,8 +62,8 @@ namespace RouterService
             {
                 bool addQueriesSet = false;
                 string changeID = null;
-                int changeAsioLeft = null;
-                int changeAsioRight = null;
+                int changeAsioLeft = 0;
+                int changeAsioRight = 0;
                 string changeIP = null;
                 // Check for queries changing a device ID
                 for (int i = 0; i < queries.Count; i++)
@@ -91,7 +91,7 @@ namespace RouterService
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeID != null && changeAsioLeft != null && changeAsioRight != null && changeIP != null) // If all queries are set
+                    if (changeID != null && changeAsioLeft != 0 && changeAsioRight != 0 && changeIP != null) // If all queries are set
                     {
                         audioRouter.ChangeOutput(changeID, changeAsioLeft, changeAsioRight);
                         audioRouter.ClockIP = changeIP;
