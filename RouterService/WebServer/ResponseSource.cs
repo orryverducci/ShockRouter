@@ -74,6 +74,7 @@ namespace RouterService
                 Status = 404;
                 success = false;
             }
+            Response = Encoding.UTF8.GetBytes(String.Empty);
             return success;
         }
 
