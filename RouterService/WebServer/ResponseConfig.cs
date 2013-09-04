@@ -53,6 +53,7 @@ namespace RouterService
 
         public bool GetResponse(string[] path, NameValueCollection queries)
         {
+            bool success = false;
             string responseContent = String.Empty;
             if (path.Length > 2) // If a subpage has been requested, return not found error
             {
@@ -105,6 +106,7 @@ namespace RouterService
                 else
                 {
                     Status = 200;
+                    success = true;
                     // Setup header and footer
                     string headerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\header.html";
                     string footerPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\webroot\\footer.html";
@@ -178,7 +180,7 @@ namespace RouterService
             // Output final results
             Response = Encoding.UTF8.GetBytes(responseContent);
             // Return successful result
-            return true;
+            return success;
         }
     }
 }
