@@ -155,9 +155,10 @@ namespace RouterService
                     }
                     responseContent += "</select></div></div>";
                     // ASIO Right Channel
-                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"rightChannel\">ASIO Right Ch</label><div class=\"col-lg-10\"><select id=\"rightChannel\" name=\"rightleft\" class=\"form-control\">";
-                    responseContent += "<option value=\"1\" selected>1</option>";
-                    for (int i = 2; i < 11; i++)
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"rightChannel\">ASIO Right Ch</label><div class=\"col-lg-10\"><select id=\"rightChannel\" name=\"asioright\" class=\"form-control\">";
+                    responseContent += "<option value=\"1\">1</option>";
+                    responseContent += "<option value=\"2\" selected>2</option>";
+                    for (int i = 3; i < 11; i++)
                     {
                         responseContent += "<option value=\"" + i.ToString() + "\">" + i.ToString() + "</option>";
                     }
