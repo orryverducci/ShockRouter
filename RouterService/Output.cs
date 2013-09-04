@@ -83,7 +83,7 @@ namespace RouterService
                 wasapiCallback = new WASAPIPROC(WASAPICallback);
                 if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
                 {
-                    throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
+                    throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 ClearBuffer();
                 BassWasapi.BASS_WASAPI_Start();
@@ -93,7 +93,7 @@ namespace RouterService
                 asioCallback = new ASIOPROC(ASIOCallback);
                 if (!BassAsio.BASS_ASIO_Init(device, BASSASIOInit.BASS_ASIO_THREAD))
                 {
-                    throw new ArgumentException(BassAsio.BASS_ASIO_ErrorGetCode().ToString()); // Throw exception with error
+                    throw new ApplicationException(BassAsio.BASS_ASIO_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 BASS_CHANNELINFO info = Bass.BASS_ChannelGetInfo(mixer);
                 BassAsio.BASS_ASIO_ChannelEnable(false, 0, asioCallback, new IntPtr(mixer));

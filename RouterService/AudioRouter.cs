@@ -62,7 +62,14 @@ namespace RouterService
             // Create output
             output = new Output(mixerHandle, GetDefaultOutput(), Output.OutputType.WASAPI);
             // Start output
-            output.Start();
+            try
+            {
+                output.Start();
+            }
+            catch (ApplicationException e)
+            {
+                Logger.WriteLogEntry("Unable to start output: " + e.Message, EventLogEntryType.Error);
+            }
         }
 
         /// <summary>
@@ -411,7 +418,14 @@ namespace RouterService
             // Setup new output device
             output = new Output(mixerHandle, outputDevice, outputType);
             // Start new device
-            output.Start();
+            try
+            {
+                output.Start();
+            }
+            catch (ApplicationException e)
+            {
+                Logger.WriteLogEntry("Unable to start output: " + e.Message, EventLogEntryType.Error);
+            }
         }
         #endregion
 
