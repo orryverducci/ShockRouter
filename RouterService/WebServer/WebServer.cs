@@ -58,7 +58,11 @@ namespace RouterService
                 while (listener.IsListening) // As long as the server is active and listening for connections
                 {
                     // Process request, when one is received, on a new thread
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(RequestHandler), listener.GetContext());
+                    try
+                    {
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(RequestHandler), listener.GetContext());
+                    }
+                    catch (HttpListenerException) { }
                 }
             }
             catch (Exception e) // Suppress any exceptions
