@@ -3,7 +3,7 @@
     <Product Id="*" Name="ShockRouter" Language="2057" Version="2.0.0.0" Manufacturer="Shock Radio" UpgradeCode="f5ba1870-4dd3-42ee-93f4-68df25a57d32">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
         <MajorUpgrade DowngradeErrorMessage="A newer version of ShockRouter is already installed." />
-        <MediaTemplate />
+        <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
         <Feature Id="ProductFeature" Title="ShockRouter" Level="1">
             <ComponentGroupRef Id="BASS" />
             <ComponentGroupRef Id="WebTemplates" />
