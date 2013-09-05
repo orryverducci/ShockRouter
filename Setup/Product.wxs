@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
-    <Product Id="*" Name="ShockRouter" Language="2057" Version="2.0.0.0" Manufacturer="Shock Radio" UpgradeCode="f5ba1870-4dd3-42ee-93f4-68df25a57d32">
+    <Product Id="*" Name="ShockRouter" Language="2057" Version="2.0.0" Manufacturer="Shock Radio" UpgradeCode="f5ba1870-4dd3-42ee-93f4-68df25a57d32">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
         <MajorUpgrade DowngradeErrorMessage="A newer version of ShockRouter is already installed." />
         <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
