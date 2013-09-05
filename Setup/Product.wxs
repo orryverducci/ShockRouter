@@ -45,21 +45,21 @@
     <Fragment>
         <ComponentGroup Id="BASS" Directory="BASSFOLDER">
             <Component Id="bass.dll">
-                <File Source="$(var.RouterService.TargetDir)Bass\bass.dll" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bass.dll" />
             </Component>
             <Component Id="bassasio.dll">
-                <File Source="$(var.RouterService.TargetDir)Bass\bassasio.dll" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bassasio.dll" />
             </Component>
             <Component Id="bassmix.dll">
-                <File Source="$(var.RouterService.TargetDir)Bass\bassmix.dll" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bassmix.dll" />
             </Component>
             <Component Id="basswasapi.dll">
-                <File Source="$(var.RouterService.TargetDir)Bass\basswasapi.dll" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\basswasapi.dll" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="WebTemplates" Directory="WEBROOTFOLDER">
             <Component Id="header.html">
-                <File Source="$(var.RouterService.TargetDir)webroot\header.html" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)webroot\header.html" />
             </Component>
             <Component Id="footer.html">
                 <File Source="$(var.RouterService.TargetDir)webroot\footer.html" />
@@ -67,7 +67,7 @@
         </ComponentGroup>
         <ComponentGroup Id="WebCSS" Directory="CSSFOLDER">
             <Component Id="bootstrap.min.css">
-                <File Source="$(var.RouterService.TargetDir)webroot\css\bootstrap.min.css" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)webroot\css\bootstrap.min.css" />
             </Component>
             <Component Id="style.css">
                 <File Source="$(var.RouterService.TargetDir)webroot\css\style.css" />
@@ -84,12 +84,12 @@
                 <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.ttf" />
             </Component>
             <Component Id="glyphicons_halflings_regular.woff">
-                <File Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.woff" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)webroot\fonts\glyphicons-halflings-regular.woff" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="WebImg" Directory="IMGFOLDER">
             <Component Id="favicon.ico">
-                <File Source="$(var.RouterService.TargetDir)webroot\img\favicon.ico" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)webroot\img\favicon.ico" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="WebJS" Directory="JSFOLDER">
@@ -97,7 +97,7 @@
                 <File Source="$(var.RouterService.TargetDir)webroot\js\bootstrap.min.js" />
             </Component>
             <Component Id="jquery.min.js">
-                <File Source="$(var.RouterService.TargetDir)webroot\js\jquery.min.js" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)webroot\js\jquery.min.js" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="MainService" Directory="INSTALLFOLDER">
@@ -108,7 +108,7 @@
                 <File Source="$(var.RouterService.TargetDir)NetworkCommsDotNetComplete.dll" />
             </Component>
             <Component Id="RouterService.exe">
-                <File Source="$(var.RouterService.TargetDir)RouterService.exe" />
+                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)RouterService.exe" />
                 <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="ShockRouter" DisplayName="ShockRouter" Description="Audio Mixing and Routing" Start="auto" Account="LocalSystem" ErrorControl="ignore" Interactive="no" />
                 <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="ShockRouter" Wait="yes" />
                 <fire:FirewallException Id="UnblockPort" Name="ShockRouter (allow outside access)" Scope="any" Port="7000" Protocol="tcp" />
