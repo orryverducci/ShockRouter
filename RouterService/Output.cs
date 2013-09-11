@@ -109,8 +109,14 @@ namespace RouterService
         {
             if (type == OutputType.WASAPI)
             {
+                BASS_WASAPI_DEVICEINFO deviceInfo;
+                deviceInfo = BassWasapi.BASS_WASAPI_GetDeviceInfo(device);
+                if (deviceInfo == null)
+                {
+                    throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
+                }
                 wasapiCallback = new WASAPIPROC(WASAPICallback);
-                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, 0.009f, 0.003f, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
+                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, deviceInfo.defperiod * 4, deviceInfo.defperiod, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
                 {
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
@@ -131,7 +137,7 @@ namespace RouterService
                 BassAsio.BASS_ASIO_ChannelSetRate(false, 0, (double)info.freq);
                 BassAsio.BASS_ASIO_SetRate((double)info.freq);
                 ClearBuffer();
-                BassAsio.BASS_ASIO_Start(0);
+                BassAsio.BASS_ASIO_Start(441);
             }
         }
 
