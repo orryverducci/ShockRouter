@@ -59,6 +59,9 @@ namespace RouterService
                 // Throw exception
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
+            #if DEBUG
+            Logger.WriteLogEntry("DEBUG: Playback Buffer " + Bass.BASS_GetConfig(BASSConfig.BASS_CONFIG_BUFFER) + "s", System.Diagnostics.EventLogEntryType.Information);
+            #endif
             // Create output
             output = new Output(mixerHandle, GetDefaultOutput(), Output.OutputType.WASAPI);
             // Start output

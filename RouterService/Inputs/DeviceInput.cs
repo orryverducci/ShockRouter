@@ -43,6 +43,9 @@ namespace RouterService
             {
                 throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
+            #if DEBUG
+            Logger.WriteLogEntry("DEBUG: Input - Buffer " + (deviceInfo.defperiod * 4).ToString() + "s Period " + deviceInfo.defperiod.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
+            #endif
             OutputChannel = Bass.BASS_StreamCreatePush(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, IntPtr.Zero);
             if (OutputChannel == default(int)) // If does not start recording successfully
             {

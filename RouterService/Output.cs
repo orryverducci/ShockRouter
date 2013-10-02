@@ -120,6 +120,9 @@ namespace RouterService
                 {
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
+                #if DEBUG
+                Logger.WriteLogEntry("DEBUG: Output - Buffer " + (deviceInfo.defperiod * 4).ToString() + "s Period " + deviceInfo.defperiod.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
+                #endif
                 ClearBuffer();
                 BassWasapi.BASS_WASAPI_Start();
             }
