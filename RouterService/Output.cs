@@ -125,12 +125,12 @@ namespace RouterService
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 wasapiCallback = new WASAPIPROC(WASAPICallback);
-                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, bufferSize * 4, bufferSize, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
+                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, bufferSize * 6, bufferSize, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
                 {
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 #if DEBUG
-                Logger.WriteLogEntry("DEBUG: Output - Buffer " + (bufferSize * 4).ToString() + "s Period " + bufferSize.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
+                Logger.WriteLogEntry("DEBUG: Output - Buffer " + (bufferSize * 6).ToString() + "s Period " + bufferSize.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
                 #endif
                 ClearBuffer();
                 BassWasapi.BASS_WASAPI_Start();

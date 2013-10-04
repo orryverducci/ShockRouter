@@ -48,12 +48,12 @@ namespace RouterService
                 throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
             inputCallback = new WASAPIPROC(InputCallback);
-            if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, bufferSize * 4, bufferSize, inputCallback, IntPtr.Zero)) // If device does not initialise successfully
+            if (!BassWasapi.BASS_WASAPI_Init(Int32.Parse(Source), 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, bufferSize * 6, bufferSize, inputCallback, IntPtr.Zero)) // If device does not initialise successfully
             {
                 throw new ArgumentException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
             }
             #if DEBUG
-            Logger.WriteLogEntry("DEBUG: Input - Buffer " + (bufferSize * 4).ToString() + "s Period " + bufferSize.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
+            Logger.WriteLogEntry("DEBUG: Input - Buffer " + (bufferSize * 6).ToString() + "s Period " + bufferSize.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
             #endif
             OutputChannel = Bass.BASS_StreamCreatePush(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_STREAM_DECODE, IntPtr.Zero);
             if (OutputChannel == default(int)) // If does not start recording successfully
