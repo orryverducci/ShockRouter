@@ -111,17 +111,26 @@ namespace RouterService
             {
                 BASS_WASAPI_DEVICEINFO deviceInfo;
                 deviceInfo = BassWasapi.BASS_WASAPI_GetDeviceInfo(device);
+                float bufferSize;
+                if (deviceInfo.defperiod < 0.015)
+                {
+                    bufferSize = 0.015f;
+                }
+                else
+                {
+                    bufferSize = deviceInfo.defperiod;
+                }
                 if (deviceInfo == null)
                 {
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 wasapiCallback = new WASAPIPROC(WASAPICallback);
-                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, deviceInfo.defperiod * 4, deviceInfo.defperiod, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
+                if (!BassWasapi.BASS_WASAPI_Init(device, 44100, 2, BASSWASAPIInit.BASS_WASAPI_AUTOFORMAT | BASSWASAPIInit.BASS_WASAPI_EVENT | BASSWASAPIInit.BASS_WASAPI_EXCLUSIVE, bufferSize * 4, bufferSize, wasapiCallback, IntPtr.Zero)) // If device does not initialise successfully
                 {
                     throw new ApplicationException(Bass.BASS_ErrorGetCode().ToString()); // Throw exception with error
                 }
                 #if DEBUG
-                Logger.WriteLogEntry("DEBUG: Output - Buffer " + (deviceInfo.defperiod * 4).ToString() + "s Period " + deviceInfo.defperiod.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
+                Logger.WriteLogEntry("DEBUG: Output - Buffer " + (bufferSize * 4).ToString() + "s Period " + bufferSize.ToString() + "s", System.Diagnostics.EventLogEntryType.Information);
                 #endif
                 ClearBuffer();
                 BassWasapi.BASS_WASAPI_Start();
