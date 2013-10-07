@@ -59,9 +59,12 @@ namespace RouterService
                     BASSError error = Bass.BASS_ErrorGetCode();
                     if (error != BASSError.BASS_ERROR_FILEOPEN && error != BASSError.BASS_ERROR_TIMEOUT)
                     {
-                        throw new ApplicationException("Unable to create input stream - " + error.ToString());
+                        timer.Start();
                     }
-                    timer.Start();
+                    else
+                    {
+                        Logger.WriteLogEntry("Unable to create input stream - " + error.ToString(), EventLogEntryType.Error);
+                    }
                 }
                 else
                 {
