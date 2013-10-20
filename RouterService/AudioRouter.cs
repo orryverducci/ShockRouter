@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using NetworkCommsDotNet;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
-using Un4seen.BassAsio;
-using Un4seen.BassWasapi;
 
 namespace RouterService
 {
@@ -46,8 +44,6 @@ namespace RouterService
             // Load BASS libraries
             Bass.LoadMe("Bass");
             BassMix.LoadMe("Bass");
-            BassWasapi.LoadMe("Bass");
-            BassAsio.LoadMe("Bass");
             // Initialise BASS
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 5);
@@ -79,8 +75,6 @@ namespace RouterService
         {
             output.Stop();
             // Free BASS
-            BassAsio.FreeMe();
-            BassWasapi.FreeMe();
             BassMix.FreeMe();
             Bass.FreeMe();
             // Stop NetworkComms.Net
@@ -211,8 +205,8 @@ namespace RouterService
             {
                 try
                 {
-                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
-                    if (device.IsInput && !device.IsLoopback && device.IsEnabled)
+                    BASS_DEVICEINFO device = Bass.BASS_RecordGetDeviceInfo(i);
+                    if (device.IsEnabled)
                     {
                         DeviceInfo deviceInfo = new DeviceInfo();
                         deviceInfo.Name = device.name;
