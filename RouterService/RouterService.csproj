@@ -110,11 +110,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bass\basswasapi.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Bass\bassmix.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -164,9 +159,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bass\bassasio.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="webroot\fonts\glyphicons-halflings-regular.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
