@@ -49,22 +49,22 @@ namespace RouterService
             BassWasapi.LoadMe("Bass");
             BassAsio.LoadMe("Bass");
             // Initialise BASS
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 0); // Not playing anything via BASS, so don't need an update thread
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
-            Bass.BASS_Init(0, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero); // Setup BASS with no sound output
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 5);
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 50);
+            // Create output
+            output = new Output(1);
             // Create Mixer
-            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP | BASSFlag.BASS_STREAM_DECODE); // Create mixer
+            mixerHandle = BassMix.BASS_Mixer_StreamCreate(44100, 2, BASSFlag.BASS_SAMPLE_FLOAT | BASSFlag.BASS_MIXER_NONSTOP); // Create mixer
             if (mixerHandle == default(int)) // If unable to initialise mixer
             {
                 // Throw exception
                 throw new ApplicationException("Unable to create audio mixer - " + Bass.BASS_ErrorGetCode().ToString());
             }
-            // Create output
-            output = new Output(mixerHandle, GetDefaultOutput(), Output.OutputType.WASAPI);
             // Start output
             try
             {
-                output.Start();
+                output.Start(mixerHandle);
             }
             catch (ApplicationException e)
             {
@@ -275,7 +275,7 @@ namespace RouterService
         /// Get the currently available output devices
         /// </summary>
         /// <returns>A list of DeviceInfo for each available device</returns>
-        public List<DeviceInfo> GetWASAPIOutputs()
+        public List<DeviceInfo> GetOutputs()
         {
             // Setup list
             List<DeviceInfo> outputDevices = new List<DeviceInfo>();
@@ -285,8 +285,8 @@ namespace RouterService
             {
                 try
                 {
-                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
-                    if (!device.IsInput && device.IsEnabled)
+                    BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(i);
+                    if (device.IsEnabled)
                     {
                         DeviceInfo deviceInfo = new DeviceInfo();
                         deviceInfo.Name = device.name;
@@ -309,89 +309,13 @@ namespace RouterService
         }
 
         /// <summary>
-        /// Get the currently available output devices
-        /// </summary>
-        /// <returns>A list of BASS_WASAPI_DEVICEINFO for each available device</returns>
-        public List<DeviceInfo> GetASIOOutputs()
-        {
-            // Setup list
-            List<DeviceInfo> outputDevices = new List<DeviceInfo>();
-            // Retrieve devices
-            bool continueLoop = true;
-            for (int i = 0; continueLoop; i++)
-            {
-                try
-                {
-                    BASS_ASIO_DEVICEINFO device = BassAsio.BASS_ASIO_GetDeviceInfo(i);
-                    DeviceInfo deviceInfo = new DeviceInfo();
-                    deviceInfo.Name = device.name;
-                    deviceInfo.ID = i;
-                    outputDevices.Add(deviceInfo);
-                }
-                catch (Exception)
-                {
-                    continueLoop = false;
-                }
-            }
-            // Output message if there is no available devices
-            if (outputDevices.Count == 0)
-            {
-                Logger.WriteLogEntry("No output devices are currently available", EventLogEntryType.Information);
-            }
-            // Return devices
-            return outputDevices;
-        }
-
-        public int GetDefaultOutput()
-        {
-            // Retrieve devices
-            bool continueLoop = true;
-            int? id = null;
-            for (int i = 0; continueLoop; i++)
-            {
-                try
-                {
-                    BASS_WASAPI_DEVICEINFO device = BassWasapi.BASS_WASAPI_GetDeviceInfo(i);
-                    if (!device.IsInput && device.IsDefault)
-                    {
-                        id = i;
-                        continueLoop = false;
-                    }
-                }
-                catch (Exception)
-                {
-                    continueLoop = false;
-                }
-            }
-            if (id != null)
-            {
-                return (int)id;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
         /// The ID of the current output device
         /// </summary>
-        public string CurrentOutput
+        public int CurrentOutput
         {
             get
             {
-                if (output.Type == Output.OutputType.WASAPI)
-                {
-                    return "1-" + output.DeviceID;
-                }
-                else if (output.Type == Output.OutputType.ASIO)
-                {
-                    return "2-" + output.DeviceID;
-                }
-                else
-                {
-                    return String.Empty;
-                }
+                return output.DeviceID;
             }
         }
 
@@ -399,33 +323,9 @@ namespace RouterService
         /// Change the uncompressd output device
         /// </summary>
         /// <param name="id">ID of the output device to use</param>
-        public void ChangeOutput(string id, int leftChannel, int rightChannel)
+        public void ChangeOutput(int id)
         {
-            // Process input id
-            Output.OutputType outputType;
-            int outputDevice;
-            if (id[0] == '2')
-            {
-                outputType = Output.OutputType.ASIO;
-            }
-            else
-            {
-                outputType = Output.OutputType.WASAPI;
-            }
-            outputDevice = Int32.Parse(id.Substring(2));
-            // Stop old output device
-            output.Stop();
-            // Setup new output device
-            output = new Output(mixerHandle, outputDevice, outputType, leftChannel, rightChannel);
-            // Start new device
-            try
-            {
-                output.Start();
-            }
-            catch (ApplicationException e)
-            {
-                Logger.WriteLogEntry("Unable to start output: " + e.Message, EventLogEntryType.Error);
-            }
+            output.ChangeOutput(id);
         }
         #endregion
 
