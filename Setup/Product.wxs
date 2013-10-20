@@ -47,14 +47,8 @@
             <Component Id="bass.dll">
                 <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bass.dll" />
             </Component>
-            <Component Id="bassasio.dll">
-                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bassasio.dll" />
-            </Component>
             <Component Id="bassmix.dll">
                 <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bassmix.dll" />
-            </Component>
-            <Component Id="basswasapi.dll">
-                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\basswasapi.dll" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="WebTemplates" Directory="WEBROOTFOLDER">
