@@ -42,8 +42,16 @@ namespace RouterService
             // Provided value should be used only for ShockRouter, not derived products
             BassNet.Registration("orry@orryverducci.co.uk", "2X24373423243720");
             // Load BASS libraries
-            Bass.LoadMe("Bass");
-            BassMix.LoadMe("Bass");
+            if (IntPtr.Size == 8) // If running in 64 bit
+            {
+                Bass.LoadMe("x64");
+                BassMix.LoadMe("x64");
+            }
+            else // Else if running in 32 bit
+            {
+                Bass.LoadMe("x86");
+                BassMix.LoadMe("x86");
+            }
             // Initialise BASS
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 5);
