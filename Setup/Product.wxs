@@ -5,7 +5,8 @@
         <MajorUpgrade DowngradeErrorMessage="A newer version of ShockRouter is already installed." />
         <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
         <Feature Id="ProductFeature" Title="ShockRouter" Level="1">
-            <ComponentGroupRef Id="BASS" />
+            <ComponentGroupRef Id="BASSX86" />
+            <ComponentGroupRef Id="BASSX64" />
             <ComponentGroupRef Id="WebTemplates" />
             <ComponentGroupRef Id="WebCSS" />
             <ComponentGroupRef Id="WebFonts" />
@@ -31,7 +32,8 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="INSTALLFOLDER" Name="ShockRouter">
-                    <Directory Id="BASSFOLDER" Name="Bass" />
+                    <Directory Id="BASSX86FOLDER" Name="x86" />
+                    <Directory Id="BASSX64FOLDER" Name="x64" />
                     <Directory Id="WEBROOTFOLDER" Name="webroot">
                         <Directory Id="CSSFOLDER" Name="css" />
                         <Directory Id="FONTSFOLDER" Name="fonts" />
@@ -43,12 +45,20 @@
         </Directory>
     </Fragment>
     <Fragment>
-        <ComponentGroup Id="BASS" Directory="BASSFOLDER">
-            <Component Id="bass.dll">
-                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bass.dll" />
+        <ComponentGroup Id="BASSX86" Directory="BASSX86FOLDER">
+            <Component Id="x86bass.dll">
+                <File KeyPath="yes" Id="x86bass.dll" Source="$(var.RouterService.TargetDir)x86\bass.dll" />
             </Component>
-            <Component Id="bassmix.dll">
-                <File KeyPath="yes" Source="$(var.RouterService.TargetDir)Bass\bassmix.dll" />
+            <Component Id="x86bassmix.dll">
+                <File KeyPath="yes" Id="x86bassmix.dll" Source="$(var.RouterService.TargetDir)x86\bassmix.dll" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="BASSX64" Directory="BASSX64FOLDER">
+            <Component Id="x64bass.dll">
+                <File KeyPath="yes" Id="x64bass.dll" Source="$(var.RouterService.TargetDir)x64\bass.dll" />
+            </Component>
+            <Component Id="x64bassmix.dll">
+                <File KeyPath="yes" Id="x64bassmix.dll" Source="$(var.RouterService.TargetDir)x64\bassmix.dll" />
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="WebTemplates" Directory="WEBROOTFOLDER">
