@@ -28,10 +28,27 @@ namespace RouterService
         public Output(int deviceID)
         {
             device = deviceID;
-            if (Bass.BASS_Init(device, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero) == false)
+            // Init all outputs
+            bool continueLoop = true;
+            for (int i = 0; continueLoop; i++)
             {
-                throw new ArgumentException("Unable to create output: " + Bass.BASS_ErrorGetCode().ToString());
+                try
+                {
+                    BASS_DEVICEINFO currentDevice = Bass.BASS_GetDeviceInfo(i);
+                    if (currentDevice.IsEnabled)
+                    {
+                        if (Bass.BASS_Init(i, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero) == false)
+                        {
+                            throw new ArgumentException("Unable to create output: Device " + device.ToString() + " - " + Bass.BASS_ErrorGetCode().ToString());
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    continueLoop = false;
+                }
             }
+            Bass.BASS_SetDevice(device);
         }
 
         public int DeviceID
@@ -63,13 +80,7 @@ namespace RouterService
 
         public void ChangeOutput(int deviceID)
         {
-            if (Bass.BASS_Init(deviceID, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero) == false)
-            {
-                throw new ArgumentException("Unable to create output: " + Bass.BASS_ErrorGetCode().ToString());
-            }
             Bass.BASS_ChannelSetDevice(mixer, deviceID);
-            Bass.BASS_SetDevice(device);
-            Bass.BASS_Free();
             device = deviceID;
         }
 
