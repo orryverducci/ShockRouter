@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
-using Un4seen.BassWasapi;
 
 namespace RouterService
 {
@@ -33,7 +32,6 @@ namespace RouterService
             {
                 throw new ArgumentException("Unable to create input stream"); // Throw exception with error
             }
-            Bass.BASS_ChannelPlay(OutputChannel, true);
         }
 
         public void Stop()
