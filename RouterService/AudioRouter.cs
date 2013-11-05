@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using NetworkCommsDotNet;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Mix;
+using Un4seen.Bass.Misc;
 
 namespace RouterService
 {
@@ -33,6 +34,16 @@ namespace RouterService
         /// The handle of the current input
         /// </summary>
         private int currentInput;
+        
+        /// <summary>
+        /// Source peak level meter
+        /// </summary>
+        private DSP_PeakLevelMeter inputLevelMeter;
+        
+        /// <summary>
+        /// True if the stream is currently silent
+        /// </summary>
+        private bool currentlySilent = false;
         #endregion
 
         #region Constructor and Destructor
@@ -110,6 +121,11 @@ namespace RouterService
             }
             set
             {
+                if (inputLevelMeter != null)
+                {
+                    inputLevelMeter.Stop();
+                }
+                }
                 if (value != default(int)) // If input is not being deleted
                 {
                     // Find new input and tell it that it has been put on air
@@ -119,7 +135,8 @@ namespace RouterService
                     Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
                     // Fade in new input
                     Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
-                    
+                    inputLevelMeter = new DSP_PeakLevelMeter(value, 1);
+                    inputLevelMeter.Notification += new EventHandler(InputLevelMeterNotification);
                 }
                 currentInput = value;
                 SendChangeToClocks();
@@ -268,6 +285,37 @@ namespace RouterService
                 BassMix.BASS_Mixer_ChannelRemove(input.OutputChannel);
                 input.Stop();
                 inputs.Remove(input);
+            }
+        }
+        
+        #region Levels Meters Update and Silence Detection
+        /// <summary>
+        /// Monitors for periods of silence
+        /// </summary>
+        /// <param name="sender">Sending Object</param>
+        /// <param name="e">Event argument</param>
+        private void InputLevelMeterNotification(object sender, EventArgs e)
+        {
+            // If silent and not already on emergency output, carry out silence detection tasks
+            if (inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
+            {
+                if (currentlySilent) // If already noted as being silent
+                {
+                    // If silent longer than 30 seconds, switch to emergency output
+                    if (silentSince.AddSeconds(30) <= DateTime.Now)
+                    {
+                        currentlySilent = false;
+                    }
+                }
+                else // Else make note that the stream is silent
+                {
+                    currentlySilent = true;
+                    silentSince = DateTime.Now;
+                }
+            }
+            else // Else stream is not silent
+            {
+                currentlySilent = false;
             }
         }
         #endregion
