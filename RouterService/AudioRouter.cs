@@ -44,6 +44,11 @@ namespace RouterService
         /// True if the stream is currently silent
         /// </summary>
         private bool currentlySilent = false;
+
+        /// <summary>
+        /// Time the source first went silent
+        /// </summary>
+        private DateTime silentSince;
         #endregion
 
         #region Constructor and Destructor
@@ -124,7 +129,6 @@ namespace RouterService
                 if (inputLevelMeter != null)
                 {
                     inputLevelMeter.Stop();
-                }
                 }
                 if (value != default(int)) // If input is not being deleted
                 {
@@ -287,6 +291,7 @@ namespace RouterService
                 inputs.Remove(input);
             }
         }
+        #endregion
         
         #region Levels Meters Update and Silence Detection
         /// <summary>
