@@ -184,6 +184,7 @@ namespace RouterService
                 string addID = null;
                 string addName = null;
                 string addStudio = null;
+                string addEmergency = null;
                 // Check for queries adding a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -207,6 +208,11 @@ namespace RouterService
                         addQueriesSet = true;
                         addType = queries.Get(i);
                     }
+                    else if (queries.GetKey(i) == "emergency")
+                    {
+                        addQueriesSet = true;
+                        addEmergency = queries.Get(i);
+                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
@@ -218,7 +224,12 @@ namespace RouterService
                         }
                         else if (addType == "file")
                         {
-                            audioRouter.AddInputFile(addName, addID);
+                            bool emergency = false;
+                            if (addEmergency == "true")
+                            {
+                                emergency = true;
+                            }
+                            audioRouter.AddInputFile(addName, addID, emergency);
                         }
                         else if (addType == "stream")
                         {
@@ -289,6 +300,8 @@ namespace RouterService
                     {
                         // Filename item
                         page += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"inputFilename\">Filename</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"inputFilename\" name=\"id\" placeholder=\"Filename\"></div></div>";
+                        // Emergency Checkbox
+                        page += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><label for=\"inputEmergency\"><input type=\"checkbox\" id=\"inputEmergency\" name=\"emergency\" value=\"true\">Set to the current emergency output</label></div></div>";
                         // Type Field
                         page += "<input type=\"hidden\" name=\"type\" value=\"file\">";
                     }

@@ -49,6 +49,11 @@ namespace RouterService
         /// Time the source first went silent
         /// </summary>
         private DateTime silentSince;
+
+        /// <summary>
+        /// The currently set emergency output source
+        /// </summary>
+        private IInput emergencyOutput;
         #endregion
 
         #region Constructor and Destructor
@@ -156,7 +161,7 @@ namespace RouterService
         public void AddInputDevice(string name, string source, int studio)
         {
             IInput input = new DeviceInput();
-            AddInput(input, name, source, studio);
+            AddInput(input, name, source, studio, false);
         }
 
         /// <summary>
@@ -164,10 +169,11 @@ namespace RouterService
         /// </summary>
         /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID to add</param>
-        public void AddInputFile(string name, string source)
+        /// <param name="emergency">If this file input should be used as emergency output</param>
+        public void AddInputFile(string name, string source, bool emergency)
         {
             IInput input = new FileInput();
-            AddInput(input, name, source, 0);
+            AddInput(input, name, source, 0, emergency);
         }
 
         /// <summary>
@@ -178,7 +184,7 @@ namespace RouterService
         public void AddInputStream(string name, string source)
         {
             IInput input = new StreamInput();
-            AddInput(input, name, source, 0);
+            AddInput(input, name, source, 0, false);
         }
 
         /// <summary>
@@ -188,7 +194,8 @@ namespace RouterService
         /// <param name="name">Name of the input</param>
         /// <param name="source">The source ID or address to add</param>
         /// <param name="studio">The studio number to add</param>
-        private void AddInput(IInput input, string name, string source, int studio)
+        /// <param name="emergency">If this file input should be used as emergency output</param>
+        private void AddInput(IInput input, string name, string source, int studio, bool emergency)
         {
             // Set source
             input.Name = name;
@@ -212,6 +219,11 @@ namespace RouterService
                 if (CurrentInput == default(int))
                 {
                     CurrentInput = input.OutputChannel;
+                }
+                // Set as emergency output source if chosen
+                if (emergency)
+                {
+                    emergencyOutput = input;
                 }
             }
             catch (Exception e)
@@ -309,6 +321,7 @@ namespace RouterService
                     // If silent longer than 30 seconds, switch to emergency output
                     if (silentSince.AddSeconds(30) <= DateTime.Now)
                     {
+                        CurrentInput = emergencyOutput.OutputChannel;
                         currentlySilent = false;
                     }
                 }
