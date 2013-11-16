@@ -402,26 +402,39 @@ namespace RouterService
 
         private void SendChangeToClocks()
         {
-            // Find input
-            IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == CurrentInput);
-            // Get studio number from input
-            int studioNumber;
-            if (input != null) // If the input was found, retrieve input studio number
-            {
-                studioNumber = input.StudioNumber;
-            }
-            else // If input was not found (input has been deleted), return studio number as 0
-            {
-                studioNumber = 0;
-            }
-            // Send to clocks
             if (ClockIP != default(string)) // Send if an IP is set
             {
-                try
+                // Find input
+                IInput input = inputs.Find(specifiedInput => specifiedInput.OutputChannel == CurrentInput);
+                // Send input to clocks
+                if (input != null) // If the input was found, retrieve input studio number
                 {
-                    NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO - " + studioNumber.ToString());
+                    // Send to clocks
+                    if (input.OutputChannel == emergencyOutput.OutputChannel)
+                    {
+                        try
+                        {
+                            NetworkComms.SendObject("Message", ClockIP, 10000, "EMERGENCY");
+                        }
+                        catch { } // Do nothing on exception
+                    }
+                    else
+                    {
+                        try
+                        {
+                            NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO - " + input.StudioNumber.ToString());
+                        }
+                        catch { } // Do nothing on exception
+                    }
                 }
-                catch { } // Do nothing on exception
+                else // If input was not found (input has been deleted), return studio number as 0
+                {
+                    try
+                    {
+                        NetworkComms.SendObject("Message", ClockIP, 10000, "STUDIO - 0");
+                    }
+                    catch { } // Do nothing on exception
+                }
             }
         }
         #endregion
