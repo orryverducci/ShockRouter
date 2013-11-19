@@ -64,6 +64,8 @@ namespace RouterService
                 bool addQueriesSet = false;
                 string changeID = null;
                 string changeIP = null;
+                string changeSilenceTime = null;
+                string changeSilenceThreshold = null;
                 // Check for queries changing a device ID
                 for (int i = 0; i < queries.Count; i++)
                 {
@@ -77,13 +79,25 @@ namespace RouterService
                         addQueriesSet = true;
                         changeIP = queries.Get(i);
                     }
+                    if (queries.GetKey(i) == "silencetime")
+                    {
+                        addQueriesSet = true;
+                        changeSilenceTime = queries.Get(i);
+                    }
+                    if (queries.GetKey(i) == "silencethreshold")
+                    {
+                        addQueriesSet = true;
+                        changeSilenceThreshold = queries.Get(i);
+                    }
                 }
                 if (addQueriesSet) // If a query adding a device has been sent
                 {
-                    if (changeID != null && changeIP != null) // If all queries are set
+                    if (changeID != null && changeIP != null && changeSilenceTime != null & changeSilenceThreshold != null) // If all queries are set
                     {
                         audioRouter.ChangeOutput(Int32.Parse(changeID));
                         audioRouter.ClockIP = changeIP;
+                        audioRouter.SilenceTime = Int32.Parse(changeSilenceTime);
+                        audioRouter.SilenceThreshold = Int32.Parse(changeSilenceThreshold);
                         Status = 303;
                     }
                     else // Else return server error
@@ -125,6 +139,10 @@ namespace RouterService
                     responseContent += "</select></div></div>";
                     // Clock IP item
                     responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"clockIP\">Clock IP</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"clockIP\" name=\"clockip\" placeholder=\"0.0.0.0\" value=\"" + audioRouter.ClockIP + "\"></div></div>";
+                    // Silence detector time item
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"clockIP\">Silence Detector Time</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"silenceTime\" name=\"silencetime\" value=\"" + audioRouter.SilenceTime + "\"></div></div>";
+                    // Silence detector threshold item
+                    responseContent += "<div class=\"form-group\"><label class=\"col-lg-2 control-label\" for=\"clockIP\">Silence Detector Threshold</label><div class=\"col-lg-10\"><input class=\"form-control\" type=\"text\" id=\"silenceThreshold\" name=\"silencethreshold\" value=\"" + audioRouter.SilenceThreshold + "\"></div></div>";
                     // Submit button
                     responseContent += "<div class=\"form-group\"><div class=\"col-lg-10 col-lg-offset-2\"><button type=\"submit\" class=\"btn\">Change</button></div></div>";
                     // Close uncompressed output form form

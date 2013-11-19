@@ -82,6 +82,9 @@ namespace RouterService
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_VISTA_TRUEPOS, 0); // Use less precise position to reduce latency
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_UPDATEPERIOD, 5);
             Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_BUFFER, 50);
+            // Initialise silence detector
+            SilenceTime = 120;
+            SilenceThreshold = -40;
             // Create output
             output = new Output(1);
             // Create Mixer
@@ -314,6 +317,9 @@ namespace RouterService
         #endregion
         
         #region Levels Meters Update and Silence Detection
+        public int SilenceTime { get; set; }
+        public int SilenceThreshold { get; set; }
+
         /// <summary>
         /// Monitors for periods of silence
         /// </summary>
@@ -321,39 +327,43 @@ namespace RouterService
         /// <param name="e">Event argument</param>
         private void InputLevelMeterNotification(object sender, EventArgs e)
         {
-            // If silent and not already on emergency output, carry out silence detection tasks
-            if (CurrentInput != emergencyOutput.OutputChannel && inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
+            // If silence detector is enabled
+            if (SilenceTime != 0)
             {
-                if (currentlySilent) // If already noted as being silent
+                // If silent and not already on emergency output, carry out silence detection tasks
+                if (CurrentInput != emergencyOutput.OutputChannel && inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
                 {
-                    // If silent longer than 30 seconds, switch to emergency output
-                    if (silentSince.AddSeconds(30) <= DateTime.Now)
+                    if (currentlySilent) // If already noted as being silent
                     {
-                        previousInput = CurrentInput;
-                        CurrentInput = emergencyOutput.OutputChannel;
-                        currentlySilent = false;
+                        // If silent longer than 30 seconds, switch to emergency output
+                        if (silentSince.AddSeconds(30) <= DateTime.Now)
+                        {
+                            previousInput = CurrentInput;
+                            CurrentInput = emergencyOutput.OutputChannel;
+                            currentlySilent = false;
+                        }
+                    }
+                    else // Else make note that the stream is silent
+                    {
+                        currentlySilent = true;
+                        silentSince = DateTime.Now;
                     }
                 }
-                else // Else make note that the stream is silent
+                // Else if on emergency output, carry out detection to re-enable previous output
+                else if (previousInput != default(int))
                 {
-                    currentlySilent = true;
-                    silentSince = DateTime.Now;
+                    // If not silent
+                    if (inputLevelMeter.LevelL_dBV > -40 && inputLevelMeter.LevelL_dBV > -40)
+                    {
+                        CurrentInput = previousInput;
+                        previousInput = default(int);
+                    }
                 }
-            }
-            // Else if on emergency output, carry out detection to re-enable previous output
-            else if (previousInput != default(int))
-            {
-                // If not silent
-                if (inputLevelMeter.LevelL_dBV > -40 && inputLevelMeter.LevelL_dBV > -40)
+                // Else stream is not silent
+                else
                 {
-                    CurrentInput = previousInput;
-                    previousInput = default(int);
+                    currentlySilent = false;
                 }
-            }
-            // Else stream is not silent
-            else
-            {
-                currentlySilent = false;
             }
         }
 
