@@ -54,6 +54,11 @@ namespace RouterService
         /// The currently set emergency output source
         /// </summary>
         private IInput emergencyOutput;
+
+        /// <summary>
+        /// The previous input, as set when emergency output is enabled
+        /// </summary>
+        private int previousInput;
         #endregion
 
         #region Constructor and Destructor
@@ -131,7 +136,7 @@ namespace RouterService
             }
             set
             {
-                if (inputLevelMeter != null)
+                if (previousInput == default(int) && inputLevelMeter != null)
                 {
                     inputLevelMeter.Stop();
                 }
@@ -144,8 +149,11 @@ namespace RouterService
                     Bass.BASS_ChannelSlideAttribute(currentInput, BASSAttribute.BASS_ATTRIB_VOL, 0, 500);
                     // Fade in new input
                     Bass.BASS_ChannelSlideAttribute(value, BASSAttribute.BASS_ATTRIB_VOL, 1, 500);
-                    inputLevelMeter = new DSP_PeakLevelMeter(value, 1);
-                    inputLevelMeter.Notification += new EventHandler(InputLevelMeterNotification);
+                    if (previousInput == default(int))
+                    {
+                        inputLevelMeter = new DSP_PeakLevelMeter(value, 1);
+                        inputLevelMeter.Notification += new EventHandler(InputLevelMeterNotification);
+                    }
                 }
                 currentInput = value;
                 SendChangeToClocks();
@@ -321,6 +329,7 @@ namespace RouterService
                     // If silent longer than 30 seconds, switch to emergency output
                     if (silentSince.AddSeconds(30) <= DateTime.Now)
                     {
+                        previousInput = CurrentInput;
                         CurrentInput = emergencyOutput.OutputChannel;
                         currentlySilent = false;
                     }
@@ -331,10 +340,29 @@ namespace RouterService
                     silentSince = DateTime.Now;
                 }
             }
-            else // Else stream is not silent
+            // Else if on emergency output, carry out detection to re-enable previous output
+            else if (previousInput != default(int))
+            {
+                // If not silent
+                if (inputLevelMeter.LevelL_dBV > -40 && inputLevelMeter.LevelL_dBV > -40)
+                {
+                    CurrentInput = previousInput;
+                    previousInput = default(int);
+                }
+            }
+            // Else stream is not silent
+            else
             {
                 currentlySilent = false;
             }
+        }
+
+        /// <summary>
+        /// Resets the silence detector, so that it no longer returns to the previous input if on emergency output
+        /// </summary>
+        public void ResetSilenceDetector()
+        {
+            previousInput = default(int);
         }
         #endregion
 

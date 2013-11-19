@@ -65,6 +65,7 @@ namespace RouterService
                 {
                     source = Int32.Parse(path[2]);
                 }
+                audioRouter.ResetSilenceDetector();
                 audioRouter.CurrentInput = source;
                 Status = 303;
                 success = true;
