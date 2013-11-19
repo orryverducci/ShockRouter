@@ -331,12 +331,12 @@ namespace RouterService
             if (SilenceTime != 0)
             {
                 // If silent and not already on emergency output, carry out silence detection tasks
-                if (CurrentInput != emergencyOutput.OutputChannel && inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
+                if (CurrentInput != emergencyOutput.OutputChannel && inputLevelMeter.LevelL_dBV <= SilenceThreshold && inputLevelMeter.LevelL_dBV <= SilenceThreshold)
                 {
                     if (currentlySilent) // If already noted as being silent
                     {
                         // If silent longer than 30 seconds, switch to emergency output
-                        if (silentSince.AddSeconds(30) <= DateTime.Now)
+                        if (silentSince.AddSeconds(SilenceTime) <= DateTime.Now)
                         {
                             previousInput = CurrentInput;
                             CurrentInput = emergencyOutput.OutputChannel;
@@ -353,7 +353,7 @@ namespace RouterService
                 else if (previousInput != default(int))
                 {
                     // If not silent
-                    if (inputLevelMeter.LevelL_dBV > -40 && inputLevelMeter.LevelL_dBV > -40)
+                    if (inputLevelMeter.LevelL_dBV > SilenceThreshold && inputLevelMeter.LevelL_dBV > SilenceThreshold)
                     {
                         CurrentInput = previousInput;
                         previousInput = default(int);
