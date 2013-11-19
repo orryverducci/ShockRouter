@@ -314,7 +314,7 @@ namespace RouterService
         private void InputLevelMeterNotification(object sender, EventArgs e)
         {
             // If silent and not already on emergency output, carry out silence detection tasks
-            if (inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
+            if (CurrentInput != emergencyOutput.OutputChannel && inputLevelMeter.LevelL_dBV <= -40 && inputLevelMeter.LevelL_dBV <= -40)
             {
                 if (currentlySilent) // If already noted as being silent
                 {
